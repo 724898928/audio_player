@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audio_player/src/rust/api/simple.dart';
 import 'package:audio_player/src/rust/frb_generated.dart';
+import 'src/lee/RouterManager.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -9,20 +10,18 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-   MyApp({super.key});
+  MyApp({super.key});
   late Map<String, WidgetBuilder> routes;
-
-
 
   @override
   Widget build(BuildContext context) {
+    RouterManager.initRouter();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-    //  onGenerateRoute: ,
-      theme: ThemeData(colorScheme:  ColorScheme.fromSeed(seedColor: Colors.blueAccent), useMaterial3: true),
-      routes: {
-        //  "home" => Home(),
-      },
+      onGenerateRoute: RouterManager.router!.generator,
+      theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
+          useMaterial3: true),
       home: Scaffold(
         appBar: AppBar(
           title: const Text('flutter_rust_bridge quickstart'),
@@ -30,19 +29,30 @@ class MyApp extends StatelessWidget {
         body: Text("flutter_rust_bridge simple${greet(name: 'lixin')}"),
         bottomNavigationBar: BottomAppBar(
           color: Colors.grey,
-          height: 40,
+          height: 60,
           shape: CircularNotchedRectangle(),
           notchMargin: 3,
-          child:Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-            IconButton(icon: Icon(Icons.home),tooltip: "Home",onPressed: (){}, padding: EdgeInsets.all(0),),
-           // IconButton(icon: Icon(Icons.music_note), tooltip: "Music",onPressed: (){},padding: EdgeInsets.all(0)),
-            IconButton(icon: Icon(Icons.account_circle),tooltip: "My",onPressed: (){},padding: EdgeInsets.all(0))
-          ],) ,
+              IconButton(
+                icon: Icon(Icons.home),
+                tooltip: "Home",
+                onPressed: () {},
+                padding: EdgeInsets.all(0),
+              ),
+              // IconButton(icon: Icon(Icons.music_note), tooltip: "Music",onPressed: (){},padding: EdgeInsets.all(0)),
+              IconButton(
+                  icon: Icon(Icons.account_circle),
+                  tooltip: "My",
+                  onPressed: () {},
+                  padding: EdgeInsets.all(0))
+            ],
+          ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: (){},child: Icon(Icons.music_note),
+          onPressed: () {},
+          child: Icon(Icons.music_note),
           tooltip: "Music",
           backgroundColor: Colors.blueAccent,
           shape: const CircleBorder(),
@@ -50,7 +60,6 @@ class MyApp extends StatelessWidget {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       ),
-
     );
   }
 }

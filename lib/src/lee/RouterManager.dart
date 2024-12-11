@@ -3,6 +3,7 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 
 import 'Home.dart';
+import 'My.dart';
 
 class RouterManager {
   static String playerPath = '/player';
@@ -17,21 +18,25 @@ class RouterManager {
       defineRoutes();
     }
   }
-
+  static final homeMyListWidget = [
+    Home(),
+    My(),
+    Player()
+  ];
   static final homeHandler = Handler(
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
-    return Home();
+    return homeMyListWidget[0];
+  });
+  static final myHandler = Handler(
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
+    return homeMyListWidget[1];
   });
 
   static final playerHandler = Handler(
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
-    return Player();
+    return  homeMyListWidget[2];
   });
 
-  static final myHandler = Handler(
-      handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
-    return Player();
-  });
 
   static void defineRoutes() {
     router!.define(homePath, handler: homeHandler);

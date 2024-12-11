@@ -1,3 +1,4 @@
+import 'package:audio_player/src/lee/component/CustomBottomNavigationBar.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_player/src/rust/api/simple.dart';
 import 'package:audio_player/src/rust/frb_generated.dart';
@@ -6,60 +7,65 @@ import 'src/lee/RouterManager.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await RustLib.init();
-  runApp(MyApp());
+  RouterManager.initRouter();
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(primaryColor: Colors.blueAccent),
+    onGenerateRoute: RouterManager.router!.generator,
+    home: MyWidget(),
+  ));
 }
 
-class MyApp extends StatelessWidget {
-  MyApp({super.key});
-  late Map<String, WidgetBuilder> routes;
+class MyWidget extends StatefulWidget {
+  const MyWidget({super.key});
+
+  @override
+  State<MyWidget> createState() => _MyWidgetState();
+}
+
+class _MyWidgetState extends State<MyWidget> {
+  int _selectedIndex = 0;
+  static late List<Widget> _widgetOptions;
+  @override
+  void initState() {
+    _widgetOptions = RouterManager.homeMyListWidget;
+    super.initState();
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    RouterManager.initRouter();
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      onGenerateRoute: RouterManager.router!.generator,
-      theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
-          useMaterial3: true),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('flutter_rust_bridge quickstart'),
-        ),
-        body: Text("flutter_rust_bridge simple${greet(name: 'lixin')}"),
-        bottomNavigationBar: BottomAppBar(
-          color: Colors.grey,
-          height: 60,
-          shape: CircularNotchedRectangle(),
-          notchMargin: 3,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: Icon(Icons.home),
-                tooltip: "Home",
-                onPressed: () {},
-                padding: EdgeInsets.all(0),
-              ),
-              // IconButton(icon: Icon(Icons.music_note), tooltip: "Music",onPressed: (){},padding: EdgeInsets.all(0)),
-              IconButton(
-                  icon: Icon(Icons.account_circle),
-                  tooltip: "My",
-                  onPressed: () {},
-                  padding: EdgeInsets.all(0))
-            ],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          child: Icon(Icons.music_note),
-          tooltip: "Music",
-          backgroundColor: Colors.blueAccent,
-          shape: const CircleBorder(),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('flutter_rust_bridge'),
       ),
+      body: _widgetOptions[_selectedIndex],
+      bottomNavigationBar: CustomBottomNavigationBar(
+          selectedIndex: _selectedIndex,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.account_circle), label: "My"),
+          ],
+          onTap: _onItemTapped),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          RouterManager.router!.navigateTo(
+            context, RouterManager.playerPath,
+            // clearStack: true
+          );
+        },
+        child: Icon(Icons.music_note),
+        backgroundColor: Colors.blueAccent,
+        shape: const CircleBorder(),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
     );
   }
 }

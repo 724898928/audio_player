@@ -1,3 +1,4 @@
+import 'package:audio_player/src/rust/api/simple.dart';
 import 'package:flutter/material.dart';
 
 class Player extends StatefulWidget {
@@ -7,6 +8,8 @@ class Player extends StatefulWidget {
 }
 
 class _PlayerState extends State<Player> {
+  String song_context = "";
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -47,6 +50,8 @@ class _PlayerState extends State<Player> {
                       color: Colors.grey,
                     ),
                   ),
+                  SizedBox(height: 20),
+                  Text(song_context)
                 ],
               ),
             ),
@@ -120,6 +125,11 @@ class _PlayerState extends State<Player> {
                       color: Colors.white,
                       onPressed: () {
                         // 播放或暂停
+                        spawnRun().listen((msg) {
+                          setState(() {
+                            song_context = msg;
+                          });
+                        });
                       },
                     ),
                   ),
@@ -129,6 +139,8 @@ class _PlayerState extends State<Player> {
                     iconSize: 48,
                     onPressed: () {
                       // 下一首
+                      var name = greet(name: "lixin");
+                      print("greet=> $name");
                     },
                   ),
                   SizedBox(width: 30),

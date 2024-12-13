@@ -1,9 +1,13 @@
+import 'package:audio_player/src/lee/common/ChangeNotifierProvider.dart';
 import 'package:audio_player/src/lee/component/CustomBottomNavigationBar.dart';
+import 'package:audio_player/src/lee/model/Song.dart';
+import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_player/src/rust/frb_generated.dart';
 import 'src/lee/EventBus.dart';
 import 'src/lee/RouterManager.dart';
-  // 定义一个top-level (全局)变量, 页面引入该文件后可以直接使用Bus
+
+// 定义一个top-level (全局)变量, 页面引入该文件后可以直接使用Bus
 EventBus eventBus = EventBus();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,32 +45,41 @@ class _MyWidgetState extends State<MyWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('flutter_rust_bridge'),
-      ),
-      body: _widgetOptions[_selectedIndex],
-      bottomNavigationBar: CustomBottomNavigationBar(
-          selectedIndex: _selectedIndex,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.account_circle), label: "My"),
-          ],
-          onTap: _onItemTapped),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          RouterManager.router!.navigateTo(
-            context, RouterManager.playerPath,
-            // clearStack: true
+    return ChangeNotifierProvider(
+        data: Songlist(),
+        child: Builder(builder: (context) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('flutter_rust_bridge'),
+            ),
+            body: _widgetOptions[_selectedIndex],
+            bottomNavigationBar: CustomBottomNavigationBar(
+                selectedIndex: _selectedIndex,
+                items: const [
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.search), label: "search"),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.account_circle), label: "My"),
+                ],
+                onTap: _onItemTapped),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                var sl = ChangeNotifierProvider.of<Songlist>(context);
+                // var data = sl.proPlaySongList.first;
+                RouterManager.router!.navigateTo(
+                    context, RouterManager.playerPath,
+                    routeSettings: RouteSettings(arguments: sl)
+                    // clearStack: true
+                    );
+              },
+              child: Icon(Icons.music_note),
+              backgroundColor: Colors.blueAccent,
+              shape: const CircleBorder(),
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+            floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
           );
-        },
-        child: Icon(Icons.music_note),
-        backgroundColor: Colors.blueAccent,
-        shape: const CircleBorder(),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-    );
+        }));
   }
 }

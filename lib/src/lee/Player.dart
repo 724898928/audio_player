@@ -1,3 +1,5 @@
+import 'package:audio_player/src/lee/common/ChangeNotifierProvider.dart';
+import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:audio_player/src/rust/api/simple.dart';
 import 'package:flutter/material.dart';
 
@@ -9,10 +11,14 @@ class Player extends StatefulWidget {
 
 class _PlayerState extends State<Player> {
   String song_context = "";
-
+  String? singer;
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    final sl = ModalRoute.of(context)?.settings.arguments as Songlist;
+    if (sl.proPlaySongList.isNotEmpty) {
+      singer = sl.proPlaySongList.first.toString();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('简约音乐播放器'),
@@ -44,7 +50,8 @@ class _PlayerState extends State<Player> {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    '歌手名称',
+                    //  '歌手名称',
+                    singer ?? "歌手名称00000",
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey,
@@ -126,9 +133,11 @@ class _PlayerState extends State<Player> {
                       onPressed: () {
                         // 播放或暂停
                         spawnRun().listen((msg) {
-                          setState(() {
-                            song_context = msg;
-                          });
+                          if (mounted) {
+                            setState(() {
+                              song_context = msg;
+                            });
+                          }
                         });
                       },
                     ),

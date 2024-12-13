@@ -9,6 +9,11 @@ class Songlist extends ChangeNotifier {
 
   factory Songlist() => _singleton;
 
+  static Songlist getInstance() {
+    _singleton ??= Songlist._iniernal();
+    return _singleton;
+  }
+
   //
   final List<Map<Object, dynamic>> selectSongList = [];
   final List<Map<Object, dynamic>> proPlaySongList = [];

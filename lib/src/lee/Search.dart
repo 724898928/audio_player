@@ -1,14 +1,14 @@
 import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:flutter/material.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class Search extends StatefulWidget {
+  const Search({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<Search> createState() => _SearchState();
 }
 
-class _HomeState extends State<Home> {
+class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return Column(

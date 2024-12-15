@@ -7,6 +7,6 @@ fn main() -> Result<()> {
    // plaryer.add_src_play("D:\\flutter_pro\\audio_player\\rust\\src\\music\\夜的第七章.mp3")?;
     let mut songs = HashMap::new();
    songs.insert("url".to_string(), "D:\\flutter_pro\\audio_player\\rust\\src\\music\\夜的第七章.mp3".to_string());
-   player_thread_run(Some(0),vec![songs],None::<StreamSink<String>>);
+   player_thread_run(Some(0),vec![songs]);
     Ok(())
 }

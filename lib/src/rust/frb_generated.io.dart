@@ -46,9 +46,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<(String, String)> dco_decode_list_record_string_string(dynamic raw);
 
   @protected
-  RustStreamSink<String>? dco_decode_opt_StreamSink_String_Sse(dynamic raw);
-
-  @protected
   int? dco_decode_opt_box_autoadd_i_32(dynamic raw);
 
   @protected
@@ -89,10 +86,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<(String, String)> sse_decode_list_record_string_string(
-      SseDeserializer deserializer);
-
-  @protected
-  RustStreamSink<String>? sse_decode_opt_StreamSink_String_Sse(
       SseDeserializer deserializer);
 
   @protected
@@ -143,10 +136,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_record_string_string(
       List<(String, String)> self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_opt_StreamSink_String_Sse(
-      RustStreamSink<String>? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_i_32(int? self, SseSerializer serializer);

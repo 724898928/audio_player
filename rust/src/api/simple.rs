@@ -23,11 +23,11 @@ pub fn spawn_run(sink: StreamSink<String>){
 }
 
 #[flutter_rust_bridge::frb(sync)]
-pub fn player_thread_run(idx: Option<i32>, songs:Vec<HashMap<String,String>>, flu_sink: Option<StreamSink<String>>){
+pub fn player_thread_run(idx: Option<i32>, songs:Vec<HashMap<String,String>>){
    let thread_1 = thread::spawn(move||{
         println!("player_thread_run begin");
         let plaryer = Player_instance.lock().unwrap();
-        plaryer.run(idx, songs, flu_sink);
+        plaryer.run(idx, songs);
         println!("player_thread_run end");
     });
     thread_1.join().unwrap();

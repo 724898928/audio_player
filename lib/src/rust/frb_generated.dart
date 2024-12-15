@@ -84,9 +84,7 @@ abstract class RustLibApi extends BaseApi {
   Future<void> crateApiSimpleInitApp();
 
   void crateApiSimplePlayerThreadRun(
-      {int? idx,
-      required List<Map<String, String>> songs,
-      RustStreamSink<String>? fluSink});
+      {int? idx, required List<Map<String, String>> songs});
 
   Stream<String> crateApiSimpleSpawnRun();
 }
@@ -147,15 +145,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   void crateApiSimplePlayerThreadRun(
-      {int? idx,
-      required List<Map<String, String>> songs,
-      RustStreamSink<String>? fluSink}) {
+      {int? idx, required List<Map<String, String>> songs}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_opt_box_autoadd_i_32(idx, serializer);
         sse_encode_list_Map_String_String(songs, serializer);
-        sse_encode_opt_StreamSink_String_Sse(fluSink, serializer);
         return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
       },
       codec: SseCodec(
@@ -163,7 +158,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: null,
       ),
       constMeta: kCrateApiSimplePlayerThreadRunConstMeta,
-      argValues: [idx, songs, fluSink],
+      argValues: [idx, songs],
       apiImpl: this,
     ));
   }
@@ -171,7 +166,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiSimplePlayerThreadRunConstMeta =>
       const TaskConstMeta(
         debugName: "player_thread_run",
-        argNames: ["idx", "songs", "fluSink"],
+        argNames: ["idx", "songs"],
       );
 
   @override
@@ -252,12 +247,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   List<(String, String)> dco_decode_list_record_string_string(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_record_string_string).toList();
-  }
-
-  @protected
-  RustStreamSink<String>? dco_decode_opt_StreamSink_String_Sse(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw == null ? null : dco_decode_StreamSink_String_Sse(raw);
   }
 
   @protected
@@ -363,18 +352,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       ans_.add(sse_decode_record_string_string(deserializer));
     }
     return ans_;
-  }
-
-  @protected
-  RustStreamSink<String>? sse_decode_opt_StreamSink_String_Sse(
-      SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    if (sse_decode_bool(deserializer)) {
-      return (sse_decode_StreamSink_String_Sse(deserializer));
-    } else {
-      return null;
-    }
   }
 
   @protected
@@ -485,17 +462,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
       sse_encode_record_string_string(item, serializer);
-    }
-  }
-
-  @protected
-  void sse_encode_opt_StreamSink_String_Sse(
-      RustStreamSink<String>? self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    sse_encode_bool(self != null, serializer);
-    if (self != null) {
-      sse_encode_StreamSink_String_Sse(self, serializer);
     }
   }
 

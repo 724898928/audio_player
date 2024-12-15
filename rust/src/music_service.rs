@@ -172,7 +172,6 @@ impl Player {
         &self,
         idx: Option<i32>,
         song_v: Vec<HashMap<String, String>>,
-        flu_sink: Option<StreamSink<String>>,
     ) {
         println!("player run begin");
         self.add_songs(song_v);
@@ -189,10 +188,6 @@ impl Player {
         println!("player _run idx:{}",idx.try_read().unwrap());
         loop {
             println!("player loop1 idx:{}",idx.try_read().unwrap());
-            if let Some(f_s) =  flu_sink.to_owned(){
-                f_s.add(format!("player_thread_run idx:{}",idx.try_read().unwrap()));
-            }
-            println!("player loop2 idx:{}",idx.try_read().unwrap());
             if song_sink.try_lock().unwrap().empty() {
                 println!("song_sink3 empty:{}",idx.try_read().unwrap());
                 match *mode.read().unwrap() {

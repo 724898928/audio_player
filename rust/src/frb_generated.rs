@@ -133,13 +133,10 @@ fn wire__crate__api__simple__player_thread_run_impl(
             let api_idx = <Option<i32>>::sse_decode(&mut deserializer);
             let api_songs =
                 <Vec<std::collections::HashMap<String, String>>>::sse_decode(&mut deserializer);
-            let api_flu_sink = <Option<
-                StreamSink<String, flutter_rust_bridge::for_generated::SseCodec>,
-            >>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse::<_, ()>((move || {
                 let output_ok = Result::<_, ()>::Ok({
-                    crate::api::simple::player_thread_run(api_idx, api_songs, api_flu_sink);
+                    crate::api::simple::player_thread_run(api_idx, api_songs);
                 })?;
                 Ok(output_ok)
             })())
@@ -258,20 +255,6 @@ impl SseDecode for Vec<(String, String)> {
             ans_.push(<(String, String)>::sse_decode(deserializer));
         }
         return ans_;
-    }
-}
-
-impl SseDecode for Option<StreamSink<String, flutter_rust_bridge::for_generated::SseCodec>> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        if (<bool>::sse_decode(deserializer)) {
-            return Some(<StreamSink<
-                String,
-                flutter_rust_bridge::for_generated::SseCodec,
-            >>::sse_decode(deserializer));
-        } else {
-            return None;
-        }
     }
 }
 
@@ -406,18 +389,6 @@ impl SseEncode for Vec<(String, String)> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <(String, String)>::sse_encode(item, serializer);
-        }
-    }
-}
-
-impl SseEncode for Option<StreamSink<String, flutter_rust_bridge::for_generated::SseCodec>> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <bool>::sse_encode(self.is_some(), serializer);
-        if let Some(value) = self {
-            <StreamSink<String, flutter_rust_bridge::for_generated::SseCodec>>::sse_encode(
-                value, serializer,
-            );
         }
     }
 }

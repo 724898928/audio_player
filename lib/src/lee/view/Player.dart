@@ -137,13 +137,7 @@ class _PlayerState extends State<Player> {
                             "url":
                                 "D:\\flutter_pro\\audio_player\\rust\\src\\music\\夜的第七章.mp3"
                           }
-                        ]).listen((msg) {
-                          if (mounted) {
-                            setState(() {
-                              song_context = msg;
-                            });
-                          }
-                        });
+                        ]);
                       },
                     ),
                   ),

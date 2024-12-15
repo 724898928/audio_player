@@ -1,2 +1,3 @@
 pub mod api;
-mod frb_generated;
+pub mod music_service;
+pub mod frb_generated;

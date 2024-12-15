@@ -1,9 +1,9 @@
-import 'package:audio_player/src/lee/Player.dart';
+import 'package:audio_player/src/lee/view/Player.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 
-import 'Search.dart';
-import 'My.dart';
+import '../view/Search.dart';
+import '../view/My.dart';
 
 class RouterManager {
   static String playerPath = '/player';

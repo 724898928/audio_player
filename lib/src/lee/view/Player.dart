@@ -1,4 +1,4 @@
-import 'package:audio_player/src/lee/common/ChangeNotifierProvider.dart';
+import 'package:audio_player/src/lee/component/ChangeNotifierProvider.dart';
 import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:audio_player/src/rust/api/simple.dart';
 import 'package:flutter/material.dart';
@@ -132,7 +132,12 @@ class _PlayerState extends State<Player> {
                       color: Colors.white,
                       onPressed: () {
                         // 播放或暂停
-                        spawnRun().listen((msg) {
+                        playerThreadRun(songs: [
+                          {
+                            "url":
+                                "D:\\flutter_pro\\audio_player\\rust\\src\\music\\夜的第七章.mp3"
+                          }
+                        ]).listen((msg) {
                           if (mounted) {
                             setState(() {
                               song_context = msg;

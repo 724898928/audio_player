@@ -10,3 +10,10 @@ String greet({required String name}) =>
     RustLib.instance.api.crateApiSimpleGreet(name: name);
 
 Stream<String> spawnRun() => RustLib.instance.api.crateApiSimpleSpawnRun();
+
+void playerThreadRun(
+        {int? idx,
+        required List<Map<String, String>> songs,
+        RustStreamSink<String>? fluSink}) =>
+    RustLib.instance.api.crateApiSimplePlayerThreadRun(
+        idx: idx, songs: songs, fluSink: fluSink);

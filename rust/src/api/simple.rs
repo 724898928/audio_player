@@ -1,6 +1,8 @@
-use std::{thread, time::Duration};
+use std::{collections::HashMap, thread, time::Duration};
 
-use crate::frb_generated::StreamSink;
+use serde_json::Value;
+
+use crate::{frb_generated::StreamSink, music_service::{Player_instance}};
 
 #[flutter_rust_bridge::frb(sync)] // Synchronous mode for simplicity of the demo
 pub fn greet(name: String) -> String {
@@ -18,6 +20,17 @@ pub fn spawn_run(sink: StreamSink<String>){
         }
         println!("spawned thread print sleep end");
     });
+}
+
+#[flutter_rust_bridge::frb(sync)]
+pub fn player_thread_run(idx: Option<i32>, songs:Vec<HashMap<String,String>>, flu_sink: Option<StreamSink<String>>){
+   let thread_1 = thread::spawn(move||{
+        println!("player_thread_run begin");
+        let plaryer = Player_instance.lock().unwrap();
+        plaryer.run(idx, songs, flu_sink);
+        println!("player_thread_run end");
+    });
+    thread_1.join().unwrap();
 }
 
 #[flutter_rust_bridge::frb(init)]

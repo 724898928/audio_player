@@ -1,11 +1,11 @@
-import 'package:audio_player/src/lee/common/ChangeNotifierProvider.dart';
+import 'package:audio_player/src/lee/component/ChangeNotifierProvider.dart';
 import 'package:audio_player/src/lee/component/CustomBottomNavigationBar.dart';
 import 'package:audio_player/src/lee/model/Song.dart';
 import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_player/src/rust/frb_generated.dart';
-import 'src/lee/EventBus.dart';
-import 'src/lee/RouterManager.dart';
+import 'src/lee/common/EventBus.dart';
+import 'src/lee/common/RouterManager.dart';
 
 // 定义一个top-level (全局)变量, 页面引入该文件后可以直接使用Bus
 EventBus eventBus = EventBus();
@@ -65,7 +65,6 @@ class _MyWidgetState extends State<MyWidget> {
             floatingActionButton: FloatingActionButton(
               onPressed: () {
                 var sl = ChangeNotifierProvider.of<Songlist>(context);
-                // var data = sl.proPlaySongList.first;
                 RouterManager.router!.navigateTo(
                     context, RouterManager.playerPath,
                     routeSettings: RouteSettings(arguments: sl)

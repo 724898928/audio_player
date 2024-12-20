@@ -193,9 +193,6 @@ class _PlayerState extends State<Player> {
                     onPressed: () {
                       // 下一首
                       nextSong();
-                      // spawnRun().listen((x){ setState(() {
-                      //   singer= x;
-                      // });});
                       print("nextSong");
                     },
                   ),
@@ -207,7 +204,6 @@ class _PlayerState extends State<Player> {
                       PlayMode.values.forEach((v) {
                         print(" v.index:${v.index} , mode_click:$mode_click");
                         if (v.index == mode_click) {
-
                           crrentModleIcon = modleIcon[v.index];
                           setPlayMode(mode: v);
                         }else if(PlayMode.values.length <= mode_click){

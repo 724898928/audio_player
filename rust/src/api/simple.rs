@@ -89,6 +89,12 @@ pub fn get_pos(sink: StreamSink<String>){
     player.get_pos(sink).expect("get_pos failed!");
 }
 
+#[flutter_rust_bridge::frb(sync)]
+pub fn set_speed(v:f32, _sink: StreamSink<String>){
+    let mut player = Player_instance.lock().unwrap();
+    player.set_speed(v).expect("seek failed!");
+}
+
 
 #[flutter_rust_bridge::frb(init)]
 pub fn init_app() {

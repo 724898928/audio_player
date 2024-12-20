@@ -29,6 +29,7 @@ pub enum PlayerCommand {
     PreviousTrack,
     Seek(f64),
     Position,
+    Speed(f32),
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -48,6 +49,7 @@ pub struct Player {
     flutter_sink: Arc<Mutex<Option<StreamSink<String>>>>,
     total_len: Arc<RwLock<TDuration>>,
 }
+
 impl Player {
     pub fn new() -> Result<Self> {
         let (command_sender, command_receiver) = mpsc::channel();
@@ -86,6 +88,11 @@ impl Player {
                             s.play();
                         }
                     }
+                    PlayerCommand::Speed(v)=>{
+                        if let Some(s) =  &sink{
+                            s.set_speed(v);
+                        }
+                    },
                     PlayerCommand::Stop => {
                         if let Some(s) = &sink {
                             s.stop();
@@ -319,6 +326,11 @@ impl Player {
 
     pub fn seek(&mut self, t: f64)-> Result<()>{
         self.command_sender.send(PlayerCommand::Seek(t))?;
+        Ok(())
+    }
+
+    pub fn set_speed(&mut self, t: f32)-> Result<()>{
+        self.command_sender.send(PlayerCommand::Speed(t))?;
         Ok(())
     }
 

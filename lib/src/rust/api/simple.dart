@@ -36,3 +36,6 @@ Stream<String> seek({required double tm}) =>
     RustLib.instance.api.crateApiSimpleSeek(tm: tm);
 
 Stream<String> getPos() => RustLib.instance.api.crateApiSimpleGetPos();
+
+Stream<String> setSpeed({required double v}) =>
+    RustLib.instance.api.crateApiSimpleSetSpeed(v: v);

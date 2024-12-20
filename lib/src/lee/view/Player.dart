@@ -15,7 +15,7 @@ class Player extends StatefulWidget {
 class _PlayerState extends State<Player> {
   String song_context = "";
   String? singer;
-  int mode_click = 1;  // 乱序
+  int mode_click = 0;  // 乱序
   List<IconData> modleIcon = [Icons.looks_one_rounded, Icons.repeat_rounded, Icons.repeat_one, Icons.open_in_full_rounded];
   IconData crrentModleIcon = Icons.looks_one_rounded;
 
@@ -164,6 +164,7 @@ class _PlayerState extends State<Player> {
                         if(!is_playing){
                           playIcon = Icons.pause;
                           play();
+                          seek(tm: current_pross);
                           Timer.periodic(Duration(milliseconds: 500), (timer) async {
                             // 每 5 秒执行一次
                             getPos().listen((v){
@@ -204,14 +205,18 @@ class _PlayerState extends State<Player> {
                     iconSize: 30,
                     onPressed: () {
                       PlayMode.values.forEach((v) {
+                        print(" v.index:${v.index} , mode_click:$mode_click");
                         if (v.index == mode_click) {
+
                           crrentModleIcon = modleIcon[v.index];
                           setPlayMode(mode: v);
-                          setState(() {});
                         }else if(PlayMode.values.length <= mode_click){
                           mode_click = 0;
+                          crrentModleIcon = modleIcon[mode_click];
                         }
+                        setState(() {});
                       });
+                      mode_click+=1;
                     },
                   ),
                 ],

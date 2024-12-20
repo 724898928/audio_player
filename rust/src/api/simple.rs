@@ -96,6 +96,16 @@ pub fn set_speed(v:f32, _sink: StreamSink<String>){
 }
 
 
+#[flutter_rust_bridge::frb(sync)]
+pub fn get_total_len() -> Duration{
+    let mut player = Player_instance.lock().unwrap();
+    let t = player.get_total_len().expect("seek failed!");
+    let ch_t = Duration::milliseconds(t.as_millis() as i64);
+   // format!("{}:{}",ch_t.num_minutes(),ch_t.num_seconds())
+   ch_t
+}
+
+
 #[flutter_rust_bridge::frb(init)]
 pub fn init_app() {
     // Default utilities - feel free to customize

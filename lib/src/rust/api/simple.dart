@@ -39,3 +39,5 @@ Stream<String> getPos() => RustLib.instance.api.crateApiSimpleGetPos();
 
 Stream<String> setSpeed({required double v}) =>
     RustLib.instance.api.crateApiSimpleSetSpeed(v: v);
+
+Duration getTotalLen() => RustLib.instance.api.crateApiSimpleGetTotalLen();

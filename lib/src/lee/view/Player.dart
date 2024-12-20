@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:audio_player/src/lee/common/Utils.dart';
 import 'package:audio_player/src/lee/component/ChangeNotifierProvider.dart';
 import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:audio_player/src/rust/api/simple.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/material.dart';
 
 class Player extends StatefulWidget {
   Player({super.key});
+
   @override
   State<StatefulWidget> createState() => _PlayerState();
 }
@@ -15,13 +18,23 @@ class Player extends StatefulWidget {
 class _PlayerState extends State<Player> {
   String song_context = "";
   String? singer;
-  int mode_click = 0;  // 乱序
-  List<IconData> modleIcon = [Icons.looks_one_rounded, Icons.repeat_rounded, Icons.repeat_one, Icons.open_in_full_rounded];
+  int mode_click = 0; // 乱序
+  List<IconData> modleIcon = [
+    Icons.looks_one_rounded,
+    Icons.repeat_rounded,
+    Icons.repeat_one,
+    Icons.open_in_full_rounded
+  ];
   IconData crrentModleIcon = Icons.looks_one_rounded;
 
   double current_pross = 0.0;
+
   bool is_playing = false;
+
   IconData playIcon = Icons.play_arrow;
+
+  String? total_d = "";
+  String? current_d = "";
 
   @override
   void initState() {
@@ -95,9 +108,11 @@ class _PlayerState extends State<Player> {
                     Slider(
                       // overlayColor: WidgetStatePropertyAll(Colors.blueAccent),
                       thumbColor: Colors.blueAccent,
-                      value: current_pross, // 当前播放进度（可以绑定实际数据）
+                      value: current_pross,
+                      // 当前播放进度（可以绑定实际数据）
                       min: 0.0,
-                      max: 1.0, // 音乐总时长
+                      max: 1.0,
+                      // 音乐总时长
                       onChanged: (value) {
                         current_pross = value;
                         print("current_pross :$current_pross");
@@ -106,18 +121,20 @@ class _PlayerState extends State<Player> {
                         // 实现进度调整
                       },
                     ),
-                    const Padding(
+                    Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 16.0, vertical: 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          // 当前播放时间
                           Text(
-                            '01:25', // 当前播放时间
+                            '$current_d',
                             style: TextStyle(color: Colors.grey),
                           ),
+                          // 总时长
                           Text(
-                            '04:30', // 总时长
+                            '$total_d',
                             style: TextStyle(color: Colors.grey),
                           ),
                         ],
@@ -148,7 +165,7 @@ class _PlayerState extends State<Player> {
                     iconSize: 48,
                     onPressed: () {
                       // 上一首
-                    previousSong();
+                      previousSong();
                     },
                   ),
                   SizedBox(width: 20),
@@ -161,26 +178,37 @@ class _PlayerState extends State<Player> {
                       color: Colors.white,
                       onPressed: () {
                         // 播放或暂停
-                        if(!is_playing){
+                        if (!is_playing) {
                           playIcon = Icons.pause;
                           play();
                           seek(tm: current_pross);
-                          Timer.periodic(Duration(milliseconds: 500), (timer) async {
+                          Timer.periodic(Duration(milliseconds: 500),
+                              (timer) async {
                             // 每 5 秒执行一次
-                            getPos().listen((v){
+                            getPos().listen((v) {
                               // 处理返回的数据
-                              current_pross = double.parse(v) ;
-                              current_pross = current_pross  > 1 ? 1 : current_pross;
-                              setState(() {
-                              });
-                              print("playerThreadRun  msg:$current_pross");
+                              print("playerThreadRun  msg1:$v");
+                              var dat = jsonDecode(v);
+                              current_pross = dat['pos'];
+                              current_pross =
+                                  current_pross > 1 ? 1 : current_pross;
+                              total_d = Duration(seconds: dat['len'])
+                                  .toFormattedString();
+                              current_d = Duration(
+                                      seconds: (dat['len'].toDouble() *
+                                              current_pross)
+                                          .toInt())
+                                  .toFormattedString();
+                              print(
+                                  "playerThreadRun dat:$dat, len:${dat['len']}  msg:$current_pross");
+                              setState(() {});
+                              print("playerThreadRun  msg2:$current_pross");
                             });
                           });
-                        }else{
+                        } else {
                           pause();
                           playIcon = Icons.play_arrow;
-                          setState(() {
-                          });
+                          setState(() {});
                         }
                         is_playing = !is_playing;
                       },
@@ -206,13 +234,13 @@ class _PlayerState extends State<Player> {
                         if (v.index == mode_click) {
                           crrentModleIcon = modleIcon[v.index];
                           setPlayMode(mode: v);
-                        }else if(PlayMode.values.length <= mode_click){
+                        } else if (PlayMode.values.length <= mode_click) {
                           mode_click = 0;
                           crrentModleIcon = modleIcon[mode_click];
                         }
                         setState(() {});
                       });
-                      mode_click+=1;
+                      mode_click += 1;
                     },
                   ),
                 ],

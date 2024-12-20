@@ -1,0 +1,53 @@
+TARGET = Some("x86_64-pc-windows-msvc")
+OPT_LEVEL = Some("0")
+HOST = Some("x86_64-pc-windows-msvc")
+cargo:rerun-if-env-changed=CC_x86_64-pc-windows-msvc
+CC_x86_64-pc-windows-msvc = None
+cargo:rerun-if-env-changed=CC_x86_64_pc_windows_msvc
+CC_x86_64_pc_windows_msvc = None
+cargo:rerun-if-env-changed=HOST_CC
+HOST_CC = None
+cargo:rerun-if-env-changed=CC
+CC = None
+cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
+CRATE_CC_NO_DEFAULTS = None
+CARGO_CFG_TARGET_FEATURE = Some("cmpxchg16b,fxsr,sse,sse2,sse3")
+DEBUG = Some("true")
+cargo:rerun-if-env-changed=CFLAGS_x86_64-pc-windows-msvc
+CFLAGS_x86_64-pc-windows-msvc = None
+cargo:rerun-if-env-changed=CFLAGS_x86_64_pc_windows_msvc
+CFLAGS_x86_64_pc_windows_msvc = None
+cargo:rerun-if-env-changed=HOST_CFLAGS
+HOST_CFLAGS = None
+cargo:rerun-if-env-changed=CFLAGS
+CFLAGS = None
+running: "D:\\Program Files\\VC\\Tools\\MSVC\\14.42.34433\\bin\\HostX64\\x64\\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "A:\\programFiles\\rust\\.cargo\\registry\\src\\rsproxy.cn-0dccff568467c15b\\dart-sys-4.1.5\\dart-sdk\\include" "-W4" "-FoD:\\flutter_pro\\audio_player\\rust\\example\\debug\\build\\dart-sys-6b5a212c01103ab0\\out\\d0c3b5e95349371a-dart_api_dl.o" "-c" "A:\\programFiles\\rust\\.cargo\\registry\\src\\rsproxy.cn-0dccff568467c15b\\dart-sys-4.1.5\\dart-sdk\\include\\dart_api_dl.c"
+dart_api_dl.c
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\dart-sys-4.1.5\dart-sdk\include\dart_api_dl.c(26): warning C4152: nonstandard extension, function/data pointer conversion in expression
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\dart-sys-4.1.5\dart-sdk\include\dart_api_dl.c(33): warning C4100: 'external_size': unreferenced formal parameter
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\dart-sys-4.1.5\dart-sdk\include\dart_api_dl.c(33): warning C4100: 'object': unreferenced formal parameter
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\dart-sys-4.1.5\dart-sdk\include\dart_api_dl.c(40): warning C4100: 'external_allocation_size': unreferenced formal parameter
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\dart-sys-4.1.5\dart-sdk\include\dart_api_dl.c(39): warning C4100: 'strong_ref_to_object': unreferenced formal parameter
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\dart-sys-4.1.5\dart-sdk\include\dart_api_dl.c(38): warning C4100: 'object': unreferenced formal parameter
+exit code: 0
+cargo:rerun-if-env-changed=AR_x86_64-pc-windows-msvc
+AR_x86_64-pc-windows-msvc = None
+cargo:rerun-if-env-changed=AR_x86_64_pc_windows_msvc
+AR_x86_64_pc_windows_msvc = None
+cargo:rerun-if-env-changed=HOST_AR
+HOST_AR = None
+cargo:rerun-if-env-changed=AR
+AR = None
+cargo:rerun-if-env-changed=ARFLAGS_x86_64-pc-windows-msvc
+ARFLAGS_x86_64-pc-windows-msvc = None
+cargo:rerun-if-env-changed=ARFLAGS_x86_64_pc_windows_msvc
+ARFLAGS_x86_64_pc_windows_msvc = None
+cargo:rerun-if-env-changed=HOST_ARFLAGS
+HOST_ARFLAGS = None
+cargo:rerun-if-env-changed=ARFLAGS
+ARFLAGS = None
+running: "D:\\Program Files\\VC\\Tools\\MSVC\\14.42.34433\\bin\\HostX64\\x64\\lib.exe" "-out:D:\\flutter_pro\\audio_player\\rust\\example\\debug\\build\\dart-sys-6b5a212c01103ab0\\out\\libdart_api_dl.a" "-nologo" "D:\\flutter_pro\\audio_player\\rust\\example\\debug\\build\\dart-sys-6b5a212c01103ab0\\out\\d0c3b5e95349371a-dart_api_dl.o"
+exit code: 0
+cargo:rustc-link-search=native=D:\Program Files\VC\Tools\MSVC\14.42.34433\atlmfc\lib\x64
+cargo:rustc-link-lib=static=dart_api_dl
+cargo:rustc-link-search=native=D:\flutter_pro\audio_player\rust\example\debug\build\dart-sys-6b5a212c01103ab0\out

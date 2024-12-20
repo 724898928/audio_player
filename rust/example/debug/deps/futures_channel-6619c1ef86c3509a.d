@@ -1,0 +1,10 @@
+D:\flutter_pro\audio_player\rust\example\debug\deps\libfutures_channel-6619c1ef86c3509a.rmeta: A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\futures-channel-0.3.29\src\lib.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\futures-channel-0.3.29\src\lock.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\futures-channel-0.3.29\src\mpsc\mod.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\futures-channel-0.3.29\src\mpsc\queue.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\futures-channel-0.3.29\src\mpsc\sink_impl.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\futures-channel-0.3.29\src\oneshot.rs
+
+D:\flutter_pro\audio_player\rust\example\debug\deps\futures_channel-6619c1ef86c3509a.d: A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\futures-channel-0.3.29\src\lib.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\futures-channel-0.3.29\src\lock.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\futures-channel-0.3.29\src\mpsc\mod.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\futures-channel-0.3.29\src\mpsc\queue.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\futures-channel-0.3.29\src\mpsc\sink_impl.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\futures-channel-0.3.29\src\oneshot.rs
+
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\futures-channel-0.3.29\src\lib.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\futures-channel-0.3.29\src\lock.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\futures-channel-0.3.29\src\mpsc\mod.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\futures-channel-0.3.29\src\mpsc\queue.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\futures-channel-0.3.29\src\mpsc\sink_impl.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\futures-channel-0.3.29\src\oneshot.rs:

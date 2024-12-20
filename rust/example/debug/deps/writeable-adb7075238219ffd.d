@@ -1,0 +1,11 @@
+D:\flutter_pro\audio_player\rust\example\debug\deps\libwriteable-adb7075238219ffd.rmeta: A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\lib.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\cmp.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\impls.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\ops.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\parts_write_adapter.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\testing.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\try_writeable.rs
+
+D:\flutter_pro\audio_player\rust\example\debug\deps\writeable-adb7075238219ffd.d: A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\lib.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\cmp.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\impls.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\ops.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\parts_write_adapter.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\testing.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\try_writeable.rs
+
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\lib.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\cmp.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\impls.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\ops.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\parts_write_adapter.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\testing.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\writeable-0.5.5\src\try_writeable.rs:

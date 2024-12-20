@@ -1,0 +1,12 @@
+D:\flutter_pro\audio_player\rust\example\debug\deps\libhttparse-010e60c85afe894b.rmeta: A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src/lib.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\iter.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\macros.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\simd\mod.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\simd\swar.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\simd\sse42.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\simd\avx2.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\simd\runtime.rs
+
+D:\flutter_pro\audio_player\rust\example\debug\deps\httparse-010e60c85afe894b.d: A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src/lib.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\iter.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\macros.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\simd\mod.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\simd\swar.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\simd\sse42.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\simd\avx2.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\simd\runtime.rs
+
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src/lib.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\iter.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\macros.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\simd\mod.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\simd\swar.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\simd\sse42.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\simd\avx2.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\httparse-1.9.5\src\simd\runtime.rs:

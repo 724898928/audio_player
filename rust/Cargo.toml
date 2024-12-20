@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [lib]
-name = "audio_player"
+name = "rust_lib_audio_player"
 crate-type = ["cdylib", "staticlib"]
 path ="src/lib.rs"
 
@@ -12,16 +12,22 @@ path ="src/lib.rs"
 name = "app"
 path = "src/example/test.rs"
 
+[[example]]
+name = "test"
+path = "src/example/test1.rs"
+
 [dependencies]
 flutter_rust_bridge = "=2.6.0"
 rodio = "^0.20.1"
 symphonia = "^0.5"
 tokio = { version = "^1", features = ["full"] }
-serde = "^1.0"
-serde_json = "^1.0"
+serde = "^1"
+serde_json = "^1"
 lazy_static = "1.5.0"
 reqwest = {version = "0.12.9", features = ["blocking","json"]}
 rand = "0.8.5"
+dart-sys = "^4"
+chrono = "^0.4"
 
 [profile.release]
 strip=true

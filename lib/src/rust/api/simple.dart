@@ -4,6 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import '../music_service.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 String greet({required String name}) =>
@@ -11,5 +12,27 @@ String greet({required String name}) =>
 
 Stream<String> spawnRun() => RustLib.instance.api.crateApiSimpleSpawnRun();
 
-void playerThreadRun({int? idx, required List<Map<String, String>> songs}) =>
-    RustLib.instance.api.crateApiSimplePlayerThreadRun(idx: idx, songs: songs);
+Stream<String> playerThreadRun({required List<String> songs}) =>
+    RustLib.instance.api.crateApiSimplePlayerThreadRun(songs: songs);
+
+Stream<String> nextSong() => RustLib.instance.api.crateApiSimpleNextSong();
+
+Stream<String> previousSong() =>
+    RustLib.instance.api.crateApiSimplePreviousSong();
+
+Stream<String> setPlaylist({required List<String> songs}) =>
+    RustLib.instance.api.crateApiSimpleSetPlaylist(songs: songs);
+
+Stream<String> pause() => RustLib.instance.api.crateApiSimplePause();
+
+Stream<String> stop() => RustLib.instance.api.crateApiSimpleStop();
+
+Stream<String> play() => RustLib.instance.api.crateApiSimplePlay();
+
+Stream<String> setPlayMode({required PlayMode mode}) =>
+    RustLib.instance.api.crateApiSimpleSetPlayMode(mode: mode);
+
+Stream<String> seek({required double tm}) =>
+    RustLib.instance.api.crateApiSimpleSeek(tm: tm);
+
+Stream<String> getPos() => RustLib.instance.api.crateApiSimpleGetPos();

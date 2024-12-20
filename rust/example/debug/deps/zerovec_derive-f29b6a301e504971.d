@@ -1,0 +1,10 @@
+D:\flutter_pro\audio_player\rust\example\debug\deps\zerovec_derive-f29b6a301e504971.dll: A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\zerovec-derive-0.10.3\src/lib.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\zerovec-derive-0.10.3\src\make_ule.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\zerovec-derive-0.10.3\src\make_varule.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\zerovec-derive-0.10.3\src\ule.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\zerovec-derive-0.10.3\src\utils.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\zerovec-derive-0.10.3\src\varule.rs
+
+D:\flutter_pro\audio_player\rust\example\debug\deps\zerovec_derive-f29b6a301e504971.d: A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\zerovec-derive-0.10.3\src/lib.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\zerovec-derive-0.10.3\src\make_ule.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\zerovec-derive-0.10.3\src\make_varule.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\zerovec-derive-0.10.3\src\ule.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\zerovec-derive-0.10.3\src\utils.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\zerovec-derive-0.10.3\src\varule.rs
+
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\zerovec-derive-0.10.3\src/lib.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\zerovec-derive-0.10.3\src\make_ule.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\zerovec-derive-0.10.3\src\make_varule.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\zerovec-derive-0.10.3\src\ule.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\zerovec-derive-0.10.3\src\utils.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\zerovec-derive-0.10.3\src\varule.rs:

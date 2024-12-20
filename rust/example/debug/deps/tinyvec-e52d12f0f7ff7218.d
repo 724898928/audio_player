@@ -1,0 +1,11 @@
+D:\flutter_pro\audio_player\rust\example\debug\deps\libtinyvec-e52d12f0f7ff7218.rmeta: A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src/lib.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src\array.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src\array\generated_impl.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src\arrayvec.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src\arrayvec_drain.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src\slicevec.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src\tinyvec.rs
+
+D:\flutter_pro\audio_player\rust\example\debug\deps\tinyvec-e52d12f0f7ff7218.d: A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src/lib.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src\array.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src\array\generated_impl.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src\arrayvec.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src\arrayvec_drain.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src\slicevec.rs A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src\tinyvec.rs
+
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src/lib.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src\array.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src\array\generated_impl.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src\arrayvec.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src\arrayvec_drain.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src\slicevec.rs:
+A:\programFiles\rust\.cargo\registry\src\rsproxy.cn-0dccff568467c15b\tinyvec-1.8.0\src\tinyvec.rs:

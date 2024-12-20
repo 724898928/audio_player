@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:audio_player/src/lee/component/ChangeNotifierProvider.dart';
 import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:audio_player/src/rust/api/simple.dart';
+import 'package:audio_player/src/rust/music_service.dart';
 import 'package:flutter/material.dart';
 
 class Player extends StatefulWidget {
@@ -12,6 +15,25 @@ class Player extends StatefulWidget {
 class _PlayerState extends State<Player> {
   String song_context = "";
   String? singer;
+  int mode_click = 1;  // 乱序
+  List<IconData> modleIcon = [Icons.looks_one_rounded, Icons.repeat_rounded, Icons.repeat_one, Icons.open_in_full_rounded];
+  IconData crrentModleIcon = Icons.looks_one_rounded;
+
+  double current_pross = 0.0;
+  bool is_playing = false;
+  IconData playIcon = Icons.play_arrow;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setPlaylist(songs: [
+      "D:\\flutter_pro\\audio_player\\rust\\src\\music\\夜的第七章.mp3",
+      "D:\\flutter_pro\\audio_player\\rust\\src\\music\\118806715.mp3",
+      "D:\\flutter_pro\\audio_player\\rust\\src\\music\\614252728.mp3"
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     final sl = ModalRoute.of(context)?.settings.arguments as Songlist;
@@ -65,7 +87,7 @@ class _PlayerState extends State<Player> {
           ),
           // 播放进度条
           Expanded(
-              flex: 1,
+              flex: 2,
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Column(
@@ -73,14 +95,20 @@ class _PlayerState extends State<Player> {
                     Slider(
                       // overlayColor: WidgetStatePropertyAll(Colors.blueAccent),
                       thumbColor: Colors.blueAccent,
-                      value: 20, // 当前播放进度（可以绑定实际数据）
-                      max: 100, // 音乐总时长
+                      value: current_pross, // 当前播放进度（可以绑定实际数据）
+                      min: 0.0,
+                      max: 1.0, // 音乐总时长
                       onChanged: (value) {
+                        current_pross = value;
+                        print("current_pross :$current_pross");
+                        seek(tm: current_pross);
+                        setState(() {});
                         // 实现进度调整
                       },
                     ),
                     const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -103,7 +131,7 @@ class _PlayerState extends State<Player> {
           Expanded(
             flex: 1,
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.only(bottom: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -120,6 +148,7 @@ class _PlayerState extends State<Player> {
                     iconSize: 48,
                     onPressed: () {
                       // 上一首
+                    previousSong();
                     },
                   ),
                   SizedBox(width: 20),
@@ -127,17 +156,32 @@ class _PlayerState extends State<Player> {
                     radius: 30,
                     backgroundColor: Colors.blueAccent,
                     child: IconButton(
-                      icon: Icon(Icons.play_arrow),
+                      icon: Icon(playIcon),
                       iconSize: 40,
                       color: Colors.white,
                       onPressed: () {
                         // 播放或暂停
-                        playerThreadRun(songs: [
-                          {
-                            "url":
-                                "D:\\flutter_pro\\audio_player\\rust\\src\\music\\夜的第七章.mp3"
-                          }
-                        ]);
+                        if(!is_playing){
+                          playIcon = Icons.pause;
+                          play();
+                          Timer.periodic(Duration(milliseconds: 500), (timer) async {
+                            // 每 5 秒执行一次
+                            getPos().listen((v){
+                              // 处理返回的数据
+                              current_pross = double.parse(v) ;
+                              current_pross = current_pross  > 1 ? 1 : current_pross;
+                              setState(() {
+                              });
+                              print("playerThreadRun  msg:$current_pross");
+                            });
+                          });
+                        }else{
+                          pause();
+                          playIcon = Icons.play_arrow;
+                          setState(() {
+                          });
+                        }
+                        is_playing = !is_playing;
                       },
                     ),
                   ),
@@ -147,16 +191,27 @@ class _PlayerState extends State<Player> {
                     iconSize: 48,
                     onPressed: () {
                       // 下一首
-                      var name = greet(name: "lixin");
-                      print("greet=> $name");
+                      nextSong();
+                      // spawnRun().listen((x){ setState(() {
+                      //   singer= x;
+                      // });});
+                      print("nextSong");
                     },
                   ),
                   SizedBox(width: 30),
                   IconButton(
-                    icon: Icon(Icons.repeat),
+                    icon: Icon(crrentModleIcon),
                     iconSize: 30,
                     onPressed: () {
-                      // 打开设置界面
+                      PlayMode.values.forEach((v) {
+                        if (v.index == mode_click) {
+                          crrentModleIcon = modleIcon[v.index];
+                          setPlayMode(mode: v);
+                          setState(() {});
+                        }else if(PlayMode.values.length <= mode_click){
+                          mode_click = 0;
+                        }
+                      });
                     },
                   ),
                 ],

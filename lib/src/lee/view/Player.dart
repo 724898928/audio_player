@@ -8,6 +8,8 @@ import 'package:audio_player/src/rust/api/simple.dart';
 import 'package:audio_player/src/rust/music_service.dart';
 import 'package:flutter/material.dart';
 
+import '../component/DDownButton.dart';
+
 class Player extends StatefulWidget {
   Player({super.key});
 
@@ -15,7 +17,7 @@ class Player extends StatefulWidget {
   State<StatefulWidget> createState() => _PlayerState();
 }
 
-class _PlayerState extends State<Player> {
+class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
   String song_context = "";
   String? singer;
   int mode_click = 0; // 乱序
@@ -34,7 +36,20 @@ class _PlayerState extends State<Player> {
   IconData playIcon = Icons.play_arrow;
 
   String? total_d = "";
+
   String? current_d = "";
+
+  double? dropdownValue = 1.0;
+
+  List<Map<String, dynamic>> labels = [
+    {'label': 'x4', 'value': 4.0},
+    {'label': 'x3', 'value': 3.0},
+    {'label': 'x2', 'value': 2.0},
+    {'label': 'x1.5', 'value': 1.5},
+    {'label': 'x1', 'value': 1.0},
+    {'label': 'x0.75', 'value': 0.75},
+    {'label': 'x0.5', 'value': 0.5},
+  ];
 
   @override
   void initState() {
@@ -49,11 +64,11 @@ class _PlayerState extends State<Player> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final sl = ModalRoute.of(context)?.settings.arguments as Songlist;
     if (sl.proPlaySongList.isNotEmpty) {
       singer = sl.proPlaySongList.first.toString();
     }
-
     return Scaffold(
       appBar: AppBar(
         title: Text('简约音乐播放器'),
@@ -163,9 +178,10 @@ class _PlayerState extends State<Player> {
                   IconButton(
                     icon: Icon(Icons.skip_previous),
                     iconSize: 48,
-                    onPressed: () {
+                    onPressed: () async {
                       // 上一首
-                      previousSong();
+                      await previousSong();
+                      await setSpeed(v: dropdownValue!);
                     },
                   ),
                   SizedBox(width: 20),
@@ -176,40 +192,45 @@ class _PlayerState extends State<Player> {
                       icon: Icon(playIcon),
                       iconSize: 40,
                       color: Colors.white,
-                      onPressed: () {
+                      onPressed: () async {
                         // 播放或暂停
                         if (!is_playing) {
                           playIcon = Icons.pause;
-                          play();
-                          seek(tm: current_pross);
+                          await play();
+                          await seek(tm: current_pross);
+                          await setSpeed(v: dropdownValue!);
                           Timer.periodic(Duration(milliseconds: 500),
                               (timer) async {
                             // 每 5 秒执行一次
-                            getPos().listen((v) {
+                            await getPos().listen((v) {
                               // 处理返回的数据
                               print("playerThreadRun  msg1:$v");
-                              var dat = jsonDecode(v);
-                              current_pross = dat['pos'];
-                              current_pross =
-                                  current_pross > 1 ? 1 : current_pross;
-                              total_d = Duration(seconds: dat['len'])
-                                  .toFormattedString();
-                              current_d = Duration(
-                                      seconds: (dat['len'].toDouble() *
-                                              current_pross)
-                                          .toInt())
-                                  .toFormattedString();
-                              print(
-                                  "playerThreadRun dat:$dat, len:${dat['len']}  msg:$current_pross");
-                              setState(() {});
-                              print("playerThreadRun  msg2:$current_pross");
+                              if (mounted) {
+                                var dat = jsonDecode(v);
+                                current_pross = dat['pos'];
+                                current_pross =
+                                    current_pross > 1 ? 1 : current_pross;
+                                total_d = Duration(seconds: dat['len'])
+                                    .toFormattedString();
+                                current_d = Duration(
+                                        seconds: (dat['len'].toDouble() *
+                                                current_pross)
+                                            .toInt())
+                                    .toFormattedString();
+                                print(
+                                    "playerThreadRun dat:$dat, len:${dat['len']}  msg:$current_pross");
+                                setState(() {});
+                                print("playerThreadRun  msg2:$current_pross");
+                              } else {
+                                timer.cancel();
+                              }
                             });
                           });
                         } else {
-                          pause();
+                          await pause();
                           playIcon = Icons.play_arrow;
-                          setState(() {});
                         }
+                        setState(() {});
                         is_playing = !is_playing;
                       },
                     ),
@@ -218,9 +239,10 @@ class _PlayerState extends State<Player> {
                   IconButton(
                     icon: Icon(Icons.skip_next),
                     iconSize: 48,
-                    onPressed: () {
+                    onPressed: () async {
                       // 下一首
-                      nextSong();
+                      await nextSong();
+                      await setSpeed(v: dropdownValue!);
                       print("nextSong");
                     },
                   ),
@@ -228,12 +250,12 @@ class _PlayerState extends State<Player> {
                   IconButton(
                     icon: Icon(crrentModleIcon),
                     iconSize: 30,
-                    onPressed: () {
-                      PlayMode.values.forEach((v) {
+                    onPressed: () async {
+                      PlayMode.values.forEach((v) async {
                         print(" v.index:${v.index} , mode_click:$mode_click");
                         if (v.index == mode_click) {
                           crrentModleIcon = modleIcon[v.index];
-                          setPlayMode(mode: v);
+                          await setPlayMode(mode: v);
                         } else if (PlayMode.values.length <= mode_click) {
                           mode_click = 0;
                           crrentModleIcon = modleIcon[mode_click];
@@ -243,6 +265,15 @@ class _PlayerState extends State<Player> {
                       mode_click += 1;
                     },
                   ),
+                  DDbutton(
+                      labels: labels,
+                      onChange: (v) async {
+                        if (null != v) {
+                          dropdownValue = v;
+                          await setSpeed(v: v);
+                          print("DDbutton onChange value:$v");
+                        }
+                      })
                 ],
               ),
             ),
@@ -251,4 +282,7 @@ class _PlayerState extends State<Player> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

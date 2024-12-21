@@ -134,8 +134,11 @@ impl Player {
                     PlayerCommand::Position => {
                         if let Some(f_s) = &*flutter_sink2.try_lock().unwrap(){
                             if let Some(s) = &mut sink {
-                                let offset = s.get_pos().div_duration_f64(*total_duration.read().unwrap());
-                                f_s.add(format!("{{\"pos\":{},\"len\":{:?}}}",offset,&total_duration.read().unwrap().as_secs()));
+                                if let Ok(t_d) = total_duration.read(){
+                                    let offset = s.get_pos().div_duration_f64(*t_d);
+                                    f_s.add(format!("{{\"pos\":{},\"len\":{:?}}}",offset,&t_d.as_secs())).expect("Send flutter sink failed");
+                                }
+                               
                             }
                         }
                     },

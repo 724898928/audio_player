@@ -64,6 +64,7 @@ impl Player {
             let mut sink = None::<Sink>;
             let mut current_track = 0;
             let mut play_mode = PlayMode::Normal;
+            let mut play_speed:f32 = 1.0;
            // let mut total_duration = TDuration::ZERO;
             while let Ok(command) = command_receiver.recv() {
                 println!("command :{:#?}, idx:{}", command, &current_track);
@@ -75,7 +76,8 @@ impl Player {
                             &mut sink,
                             &*playlist.read().unwrap()[current_track],
                             &flutter_sink2,
-                            &mut total_duration.write().unwrap()
+                            &mut total_duration.write().unwrap(),
+                            &play_speed
                         );
                     }
                     PlayerCommand::Pause => {
@@ -90,6 +92,7 @@ impl Player {
                     }
                     PlayerCommand::Speed(v)=>{
                         if let Some(s) =  &sink{
+                            play_speed = v;
                             s.set_speed(v);
                         }
                     },
@@ -110,7 +113,8 @@ impl Player {
                             &playlist.read().unwrap(),
                             &play_mode,
                             &flutter_sink2,
-                            &mut total_duration.write().unwrap()
+                            &mut total_duration.write().unwrap(),
+                            &play_speed
                         );
                     }
                     PlayerCommand::PreviousTrack => {
@@ -121,7 +125,8 @@ impl Player {
                             &playlist.read().unwrap(),
                             &play_mode,
                             &flutter_sink2,
-                            &mut total_duration.write().unwrap()
+                            &mut total_duration.write().unwrap(),
+                            &play_speed
                         );
                     }
                     PlayerCommand::Seek(t) => {
@@ -155,7 +160,8 @@ impl Player {
                                         &mut sink,
                                         &playlist.read().unwrap()[current_track],
                                         &flutter_sink2,
-                                        &mut total_duration.write().unwrap()
+                                        &mut total_duration.write().unwrap(),
+                                        &play_speed
                                     );
                                 }
                             }
@@ -167,7 +173,8 @@ impl Player {
                                     &mut sink,
                                     &playlist.read().unwrap()[current_track],
                                     &flutter_sink2,
-                                    &mut total_duration.write().unwrap()
+                                    &mut total_duration.write().unwrap(),
+                                    &play_speed
                                 );
                             }
                             PlayMode::SingleLoop => {
@@ -176,7 +183,8 @@ impl Player {
                                     &mut sink,
                                     &playlist.read().unwrap()[current_track],
                                     &flutter_sink2,
-                                    &mut total_duration.write().unwrap()
+                                    &mut total_duration.write().unwrap(),
+                                    &play_speed
                                 );
                             }
                             PlayMode::Random => {
@@ -187,7 +195,8 @@ impl Player {
                                     &mut sink,
                                     &playlist.read().unwrap()[current_track],
                                     &flutter_sink2,
-                                    &mut total_duration.write().unwrap()
+                                    &mut total_duration.write().unwrap(),
+                                    &play_speed
                                 );
                             }
                         }
@@ -206,7 +215,7 @@ impl Player {
         })
     }
 
-    fn play_track(handle: &rodio::OutputStreamHandle, sink: &mut Option<Sink>, path: &str, _flu_sink:&Arc<Mutex<Option<StreamSink<String>>>>, total_duration:&mut TDuration) {
+    fn play_track(handle: &rodio::OutputStreamHandle, sink: &mut Option<Sink>, path: &str, _flu_sink:&Arc<Mutex<Option<StreamSink<String>>>>, total_duration:&mut TDuration, play_speed: &f32) {
         *sink = Some(Sink::try_new(handle).unwrap());
         if let Some(s) = sink {
             let file = std::fs::File::open(path).unwrap();
@@ -226,6 +235,7 @@ impl Player {
             //     }
             // }).buffered();
             s.append(source);
+            s.set_speed(play_speed.to_owned());
             s.play();
         }
     }
@@ -236,7 +246,8 @@ impl Player {
         current_track: &mut usize,
         playlist: &Vec<String>,
         play_mode: &PlayMode,
-        flu_sink: &Arc<Mutex<Option<StreamSink<String>>>>,total_duration:&mut TDuration
+        flu_sink: &Arc<Mutex<Option<StreamSink<String>>>>,total_duration:&mut TDuration,
+        play_speed:&f32
     ) {
         match play_mode {
             PlayMode::Normal | PlayMode::Loop => {
@@ -251,7 +262,7 @@ impl Player {
             "next_track command :{:#?}, idx:{}, playlist:{:#?}",
             play_mode, &current_track, &playlist
         );
-        Self::play_track(handle, sink, &playlist[*current_track],flu_sink,total_duration);
+        Self::play_track(handle, sink, &playlist[*current_track],flu_sink,total_duration,  play_speed);
     }
 
     fn previous_track(
@@ -260,7 +271,8 @@ impl Player {
         current_track: &mut usize,
         playlist: &Vec<String>,
         play_mode: &PlayMode,
-        flu_sink: &Arc<Mutex<Option<StreamSink<String>>>>,total_duration:&mut TDuration
+        flu_sink: &Arc<Mutex<Option<StreamSink<String>>>>,total_duration:&mut TDuration,
+        play_speed: &f32
     ) {
         match play_mode {
             PlayMode::Normal | PlayMode::Loop => {
@@ -279,7 +291,7 @@ impl Player {
             "previous_track command :{:#?}, idx:{}, playlist:{:#?}",
             play_mode, &current_track, &playlist
         );
-        Self::play_track(handle, sink, &playlist[*current_track],flu_sink, total_duration);
+        Self::play_track(handle, sink, &playlist[*current_track],flu_sink, total_duration,  play_speed);
     }
 
     pub fn play(&mut self) -> Result<()> {

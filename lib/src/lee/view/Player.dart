@@ -29,7 +29,7 @@ class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
   ];
   IconData crrentModleIcon = Icons.looks_one_rounded;
 
-  double current_pross = 0.0;
+  double currentPross = 0.0;
 
   bool is_playing = false;
 
@@ -123,15 +123,15 @@ class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
                     Slider(
                       // overlayColor: WidgetStatePropertyAll(Colors.blueAccent),
                       thumbColor: Colors.blueAccent,
-                      value: current_pross,
+                      value: currentPross,
                       // 当前播放进度（可以绑定实际数据）
                       min: 0.0,
                       max: 1.0,
                       // 音乐总时长
                       onChanged: (value) {
-                        current_pross = value;
-                        print("current_pross :$current_pross");
-                        seek(tm: current_pross);
+                        currentPross = value;
+                        print("current_pross :$currentPross");
+                        seek(tm: currentPross);
                         setState(() {});
                         // 实现进度调整
                       },
@@ -196,9 +196,9 @@ class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
                         // 播放或暂停
                         if (!is_playing) {
                           playIcon = Icons.pause;
-                          await play();
-                          await seek(tm: current_pross);
+                          await seek(tm: currentPross);
                           await setSpeed(v: dropdownValue!);
+                          await play();
                           Timer.periodic(Duration(milliseconds: 500),
                               (timer) async {
                             // 每 5 秒执行一次
@@ -207,20 +207,20 @@ class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
                               print("playerThreadRun  msg1:$v");
                               if (mounted) {
                                 var dat = jsonDecode(v);
-                                current_pross = dat['pos'];
-                                current_pross =
-                                    current_pross > 1 ? 1 : current_pross;
+                                currentPross = dat['pos'] * dropdownValue!;
+                                currentPross =
+                                    currentPross > 1 ? 1 : currentPross;
                                 total_d = Duration(seconds: dat['len'])
                                     .toFormattedString();
                                 current_d = Duration(
                                         seconds: (dat['len'].toDouble() *
-                                                current_pross)
+                                                currentPross)
                                             .toInt())
                                     .toFormattedString();
                                 print(
-                                    "playerThreadRun dat:$dat, len:${dat['len']}  msg:$current_pross");
+                                    "playerThreadRun dat:$dat, len:${dat['len']}  msg:$currentPross");
                                 setState(() {});
-                                print("playerThreadRun  msg2:$current_pross");
+                                print("playerThreadRun  msg2:$currentPross");
                               } else {
                                 timer.cancel();
                               }

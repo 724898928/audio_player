@@ -196,9 +196,9 @@ class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
                         // 播放或暂停
                         if (!is_playing) {
                           playIcon = Icons.pause;
+                          await play();
                           await seek(tm: currentPross);
                           await setSpeed(v: dropdownValue!);
-                          await play();
                           Timer.periodic(Duration(milliseconds: 500),
                               (timer) async {
                             // 每 5 秒执行一次

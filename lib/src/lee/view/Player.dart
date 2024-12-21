@@ -58,7 +58,8 @@ class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
     setPlaylist(songs: [
       "D:\\flutter_pro\\audio_player\\rust\\src\\music\\夜的第七章.mp3",
       "D:\\flutter_pro\\audio_player\\rust\\src\\music\\118806715.mp3",
-      "D:\\flutter_pro\\audio_player\\rust\\src\\music\\614252728.mp3"
+      "D:\\flutter_pro\\audio_player\\rust\\src\\music\\614252728.mp3",
+      "https://er-sycdn.kuwo.cn/9525650654da9eba954132661069fc53/67665d97/resource/30106/trackmedia/M5000033ZrqK3ulGrw.mp3?bitrate\$128&from=vip"
     ]);
   }
 
@@ -207,6 +208,7 @@ class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
                               print("playerThreadRun  msg1:$v");
                               if (mounted) {
                                 var dat = jsonDecode(v);
+                                // currentPross = dat['pos'] * dropdownValue!;
                                 currentPross = dat['pos'] * dropdownValue!;
                                 currentPross =
                                     currentPross > 1 ? 1 : currentPross;

@@ -1,5 +1,5 @@
 use std::{
-    fmt::Debug, fs::File, io::BufReader, sync::{mpsc, Arc, Mutex, RwLock}, thread, time::{Duration as TDuration, Instant}
+    fmt::Debug, fs::File, io::{BufReader, Cursor}, sync::{mpsc, Arc, Mutex, RwLock}, thread, time::{Duration as TDuration, Instant}
 };
 
 use crate::{api::Result, frb_generated::StreamSink};
@@ -218,26 +218,34 @@ impl Player {
     fn play_track(handle: &rodio::OutputStreamHandle, sink: &mut Option<Sink>, path: &str, _flu_sink:&Arc<Mutex<Option<StreamSink<String>>>>, total_duration:&mut TDuration, play_speed: &f32) {
         *sink = Some(Sink::try_new(handle).unwrap());
         if let Some(s) = sink {
-            let file = std::fs::File::open(path).unwrap();
-            let source = Decoder::new(BufReader::new(file)).unwrap();
-          
-            *total_duration = source.total_duration().unwrap_or(TDuration::ZERO);
+            if Self::url_start_http(path) {
+               Self::play_online(path,s,total_duration);
+            }else {
+                let file = std::fs::File::open(path).unwrap();
+                let source = Decoder::new(BufReader::new(file)).unwrap();
+                *total_duration = source.total_duration().unwrap_or(TDuration::ZERO);
+                s.append(source);
+            }
             println!("total_duration:{:?}",total_duration);
-            //let flu_sink = flu_sink.clone();
-            //let start_time = Instant::now();
-            //let t_d = total_duration.clone();
-            // let d = source.periodic_access(TDuration::from_millis(500), move|_src|{
-            //     if let Some(flu_sink) = &*flu_sink.lock().unwrap(){
-            //         let elapsed = start_time.elapsed();
-            //         let current_d = elapsed.div_f64(t_d.as_secs_f64());
-            //         println!("elapsed:{:#?}, current_d: {:?},  total_duration:{:?}",elapsed, current_d, t_d);
-            //         flu_sink.add(current_d.as_secs_f64().to_string());
-            //     }
-            // }).buffered();
-            s.append(source);
             s.set_speed(play_speed.to_owned());
             s.play();
         }
+    }
+    
+    fn play_online<'a>(url: &str, sink: &mut Sink, total_duration:&mut TDuration,) {
+        println!("play_online for url {}", url);
+        if let Ok(resp) = reqwest::blocking::get(url) {
+          if let Ok(bytes) =   resp.bytes(){
+            let cursor = Cursor::new(bytes);
+            let url_source = rodio::Decoder::new(cursor).unwrap();
+            *total_duration = url_source.total_duration().unwrap_or(TDuration::ZERO);
+            sink.append(url_source);   
+          }
+        }
+    }
+
+    fn url_start_http(path: &str) -> bool {
+        path.starts_with("http")
     }
 
     fn next_track(

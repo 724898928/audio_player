@@ -46,7 +46,7 @@ class _MyWidgetState extends State<MyWidget> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        data: Songlist(),
+        data: Songlist.getInstance(),
         child: Builder(builder: (context) {
           return Scaffold(
             appBar: AppBar(

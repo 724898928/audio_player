@@ -16,10 +16,16 @@ class Songlist extends ChangeNotifier {
 
   //
   final List<Map<Object, dynamic>> selectSongList = [];
-  final List<Map<Object, dynamic>> proPlaySongList = [];
+  final List<String> proPlaySongList = [];
 
   void add(dynamic item) {
     proPlaySongList.add(item);
+    notifyListeners();
+  }
+
+  void addSongs(List<String> item) {
+    proPlaySongList.addAll(item);
+    print("proPlaySongList :$proPlaySongList");
     notifyListeners();
   }
 }

@@ -9,7 +9,7 @@ fn main() -> Result<()> {
 
     // 设置播放列表
     player.set_playlist(vec![
-         "https://er-sycdn.kuwo.cn/9525650654da9eba954132661069fc53/67665d97/resource/30106/trackmedia/M5000033ZrqK3ulGrw.mp3?bitrate$128&from=vip".to_string(),
+         "https://www.gequbao.com/music/6420".to_string(),
         "D:\\flutter_pro\\audio_player\\rust\\src\\music\\118806715.mp3".to_string(),
         "D:\\flutter_pro\\audio_player\\rust\\src\\music\\614252728.mp3".to_string(),
     ]);

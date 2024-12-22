@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:audio_player/src/lee/common/Utils.dart';
-import 'package:audio_player/src/lee/component/ChangeNotifierProvider.dart';
 import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:audio_player/src/rust/api/simple.dart';
 import 'package:audio_player/src/rust/music_service.dart';
@@ -20,9 +19,9 @@ class Player extends StatefulWidget {
 class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
   String song_context = "";
   String? singer;
-  int mode_click = 0; // 乱序
+  int mode_click = 0;
   List<IconData> modleIcon = [
-    Icons.looks_one_rounded,
+    Icons.width_normal,
     Icons.repeat_rounded,
     Icons.repeat_one,
     Icons.open_in_full_rounded
@@ -59,7 +58,7 @@ class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
       "D:\\flutter_pro\\audio_player\\rust\\src\\music\\夜的第七章.mp3",
       "D:\\flutter_pro\\audio_player\\rust\\src\\music\\118806715.mp3",
       "D:\\flutter_pro\\audio_player\\rust\\src\\music\\614252728.mp3",
-      "https://er-sycdn.kuwo.cn/9525650654da9eba954132661069fc53/67665d97/resource/30106/trackmedia/M5000033ZrqK3ulGrw.mp3?bitrate\$128&from=vip"
+      "https://lv-sycdn.kuwo.cn/af334a1468f285aa2440b4689931ee8c/67679190/resource/30106/trackmedia/M500001hE0cD4NPYfX.mp3?bitrate\$128&from=vip"
     ]);
   }
 
@@ -243,30 +242,37 @@ class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
                     iconSize: 48,
                     onPressed: () async {
                       // 下一首
-                      await nextSong();
                       await setSpeed(v: dropdownValue!);
+                      await nextSong();
                       print("nextSong");
                     },
                   ),
                   SizedBox(width: 30),
                   IconButton(
-                    icon: Icon(crrentModleIcon),
-                    iconSize: 30,
-                    onPressed: () async {
-                      PlayMode.values.forEach((v) async {
-                        print(" v.index:${v.index} , mode_click:$mode_click");
-                        if (v.index == mode_click) {
-                          crrentModleIcon = modleIcon[v.index];
-                          await setPlayMode(mode: v);
-                        } else if (PlayMode.values.length <= mode_click) {
-                          mode_click = 0;
-                          crrentModleIcon = modleIcon[mode_click];
+                      icon: Icon(crrentModleIcon),
+                      iconSize: 30,
+                      onPressed: () async {
+                        mode_click += 1;
+                        switch (mode_click) {
+                          case 0:
+                            await setPlayMode(mode: PlayMode.normal);
+                            break;
+                          case 1:
+                            await setPlayMode(mode: PlayMode.loop);
+                            break;
+                          case 2:
+                            await setPlayMode(mode: PlayMode.singleLoop);
+                            break;
+                          case 3:
+                            await setPlayMode(mode: PlayMode.random);
+                            break;
                         }
+                        if (mode_click >= PlayMode.values.length) {
+                          mode_click = 0;
+                        }
+                        crrentModleIcon = modleIcon[mode_click];
                         setState(() {});
-                      });
-                      mode_click += 1;
-                    },
-                  ),
+                      }),
                   DDbutton(
                       labels: labels,
                       onChange: (v) async {
@@ -286,5 +292,5 @@ class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
   }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => true; // keepAlive
 }

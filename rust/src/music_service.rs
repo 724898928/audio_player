@@ -1,22 +1,30 @@
 use std::{
-    fmt::Debug, fs::File, io::{BufReader, Cursor}, sync::{mpsc, Arc, Mutex, RwLock}, thread, time::{Duration as TDuration, Instant}
+    fmt::Debug,
+    fs::File,
+    io::{BufReader, Cursor},
+    sync::{mpsc, Arc, Mutex, RwLock},
+    thread,
+    time::{Duration as TDuration, Instant},
 };
 
 use crate::{api::Result, frb_generated::StreamSink};
 use chrono::Duration;
 use lazy_static::lazy_static;
-use rodio::{source::{Buffered, PeriodicAccess}, Decoder, OutputStream, Sink, Source};
+use rodio::{
+    source::{Buffered, PeriodicAccess},
+    Decoder, OutputStream, Sink, Source,
+};
 
 lazy_static! {
-    pub static ref Player_instance: Arc<Mutex<Player>> = Arc::new(Mutex::new(Player::new().unwrap()));
+    pub static ref Player_instance: Arc<Mutex<Player>> =
+        Arc::new(Mutex::new(Player::new().unwrap()));
 }
 
-impl <T> Debug for StreamSink<T> {
+impl<T> Debug for StreamSink<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("StreamSink").field("base", &self).finish()
     }
 }
-
 
 #[derive(Debug, Clone)]
 pub enum PlayerCommand {
@@ -55,8 +63,8 @@ impl Player {
         let (command_sender, command_receiver) = mpsc::channel();
         let playlist1: Arc<RwLock<Vec<String>>> = Arc::new(RwLock::new(vec![]));
         let playlist = playlist1.clone();
-        let flutter_sink =  Arc::new(Mutex::new(None::<StreamSink<String>>));
-        let flutter_sink2=  flutter_sink.clone();
+        let flutter_sink = Arc::new(Mutex::new(None::<StreamSink<String>>));
+        let flutter_sink2 = flutter_sink.clone();
         let total_len = Arc::new(RwLock::new(TDuration::ZERO));
         let total_duration = total_len.clone();
         thread::spawn(move || {
@@ -64,8 +72,8 @@ impl Player {
             let mut sink = None::<Sink>;
             let mut current_track = 0;
             let mut play_mode = PlayMode::Normal;
-            let mut play_speed:f32 = 1.0;
-           // let mut total_duration = TDuration::ZERO;
+            let mut play_speed: f32 = 1.0;
+            // let mut total_duration = TDuration::ZERO;
             while let Ok(command) = command_receiver.recv() {
                 println!("command :{:#?}, idx:{}", command, &current_track);
                 match command {
@@ -77,7 +85,7 @@ impl Player {
                             &*playlist.read().unwrap()[current_track],
                             &flutter_sink2,
                             &mut total_duration.write().unwrap(),
-                            &play_speed
+                            &play_speed,
                         );
                     }
                     PlayerCommand::Pause => {
@@ -90,12 +98,12 @@ impl Player {
                             s.play();
                         }
                     }
-                    PlayerCommand::Speed(v)=>{
-                        if let Some(s) =  &sink{
+                    PlayerCommand::Speed(v) => {
+                        if let Some(s) = &sink {
                             play_speed = v;
                             s.set_speed(v);
                         }
-                    },
+                    }
                     PlayerCommand::Stop => {
                         if let Some(s) = &sink {
                             s.stop();
@@ -114,7 +122,7 @@ impl Player {
                             &play_mode,
                             &flutter_sink2,
                             &mut total_duration.write().unwrap(),
-                            &play_speed
+                            &play_speed,
                         );
                     }
                     PlayerCommand::PreviousTrack => {
@@ -126,27 +134,31 @@ impl Player {
                             &play_mode,
                             &flutter_sink2,
                             &mut total_duration.write().unwrap(),
-                            &play_speed
+                            &play_speed,
                         );
                     }
                     PlayerCommand::Seek(t) => {
                         if let Some(s) = &mut sink {
                             let offset = total_duration.read().unwrap().mul_f64(t);
-                            println!("seek input t:{:#?},  offset:{:#?}",t,offset);
+                            println!("seek input t:{:#?},  offset:{:#?}", t, offset);
                             s.try_seek(offset).unwrap();
                         }
-                    },
+                    }
                     PlayerCommand::Position => {
-                        if let Some(f_s) = &*flutter_sink2.try_lock().unwrap(){
+                        if let Some(f_s) = &*flutter_sink2.try_lock().unwrap() {
                             if let Some(s) = &mut sink {
-                                if let Ok(t_d) = total_duration.read(){
+                                if let Ok(t_d) = total_duration.read() {
                                     let offset = s.get_pos().div_duration_f64(*t_d);
-                                    f_s.add(format!("{{\"pos\":{},\"len\":{:?}}}",offset,&t_d.as_secs())).expect("Send flutter sink failed");
+                                    f_s.add(format!(
+                                        "{{\"pos\":{},\"len\":{:?}}}",
+                                        offset,
+                                        &t_d.as_secs()
+                                    ))
+                                    .expect("Send flutter sink failed");
                                 }
-                               
                             }
                         }
-                    },
+                    }
                 }
 
                 if let Some(s) = &sink {
@@ -161,7 +173,7 @@ impl Player {
                                         &playlist.read().unwrap()[current_track],
                                         &flutter_sink2,
                                         &mut total_duration.write().unwrap(),
-                                        &play_speed
+                                        &play_speed,
                                     );
                                 }
                             }
@@ -174,7 +186,7 @@ impl Player {
                                     &playlist.read().unwrap()[current_track],
                                     &flutter_sink2,
                                     &mut total_duration.write().unwrap(),
-                                    &play_speed
+                                    &play_speed,
                                 );
                             }
                             PlayMode::SingleLoop => {
@@ -184,7 +196,7 @@ impl Player {
                                     &playlist.read().unwrap()[current_track],
                                     &flutter_sink2,
                                     &mut total_duration.write().unwrap(),
-                                    &play_speed
+                                    &play_speed,
                                 );
                             }
                             PlayMode::Random => {
@@ -196,7 +208,7 @@ impl Player {
                                     &playlist.read().unwrap()[current_track],
                                     &flutter_sink2,
                                     &mut total_duration.write().unwrap(),
-                                    &play_speed
+                                    &play_speed,
                                 );
                             }
                         }
@@ -211,36 +223,46 @@ impl Player {
             play_mode: PlayMode::Normal,
             playlist: playlist1,
             flutter_sink,
-            total_len
+            total_len,
         })
     }
 
-    fn play_track(handle: &rodio::OutputStreamHandle, sink: &mut Option<Sink>, path: &str, _flu_sink:&Arc<Mutex<Option<StreamSink<String>>>>, total_duration:&mut TDuration, play_speed: &f32) {
+    fn play_track(
+        handle: &rodio::OutputStreamHandle,
+        sink: &mut Option<Sink>,
+        path: &str,
+        _flu_sink: &Arc<Mutex<Option<StreamSink<String>>>>,
+        total_duration: &mut TDuration,
+        play_speed: &f32,
+    ) {
         *sink = Some(Sink::try_new(handle).unwrap());
         if let Some(s) = sink {
             if Self::url_start_http(path) {
-               Self::play_online(path,s,total_duration);
-            }else {
-                let file = std::fs::File::open(path).unwrap();
-                let source = Decoder::new(BufReader::new(file)).unwrap();
-                *total_duration = source.total_duration().unwrap_or(TDuration::ZERO);
-                s.append(source);
+                Self::play_online(path, s, total_duration);
+            } else {
+                if let Ok(file) = std::fs::File::open(path) {
+                    if let Ok(source) = Decoder::new(BufReader::new(file)) {
+                        *total_duration = source.total_duration().unwrap_or(TDuration::ZERO);
+                        s.append(source);
+                    }
+                }
             }
-            println!("total_duration:{:?}",total_duration);
+            println!("total_duration:{:?}", total_duration);
             s.set_speed(play_speed.to_owned());
             s.play();
         }
     }
-    
-    fn play_online<'a>(url: &str, sink: &mut Sink, total_duration:&mut TDuration,) {
+
+    fn play_online<'a>(url: &str, sink: &mut Sink, total_duration: &mut TDuration) {
         println!("play_online for url {}", url);
         if let Ok(resp) = reqwest::blocking::get(url) {
-          if let Ok(bytes) =   resp.bytes(){
-            let cursor = Cursor::new(bytes);
-            let url_source = rodio::Decoder::new(cursor).unwrap();
-            *total_duration = url_source.total_duration().unwrap_or(TDuration::ZERO);
-            sink.append(url_source);   
-          }
+            if let Ok(bytes) = resp.bytes() {
+                let cursor = Cursor::new(bytes);
+                if let Ok(url_source) = rodio::Decoder::new(cursor) {
+                    *total_duration = url_source.total_duration().unwrap_or(TDuration::ZERO);
+                    sink.append(url_source);
+                }
+            }
         }
     }
 
@@ -254,8 +276,9 @@ impl Player {
         current_track: &mut usize,
         playlist: &Vec<String>,
         play_mode: &PlayMode,
-        flu_sink: &Arc<Mutex<Option<StreamSink<String>>>>,total_duration:&mut TDuration,
-        play_speed:&f32
+        flu_sink: &Arc<Mutex<Option<StreamSink<String>>>>,
+        total_duration: &mut TDuration,
+        play_speed: &f32,
     ) {
         match play_mode {
             PlayMode::Normal | PlayMode::Loop => {
@@ -270,7 +293,14 @@ impl Player {
             "next_track command :{:#?}, idx:{}, playlist:{:#?}",
             play_mode, &current_track, &playlist
         );
-        Self::play_track(handle, sink, &playlist[*current_track],flu_sink,total_duration,  play_speed);
+        Self::play_track(
+            handle,
+            sink,
+            &playlist[*current_track],
+            flu_sink,
+            total_duration,
+            play_speed,
+        );
     }
 
     fn previous_track(
@@ -279,8 +309,9 @@ impl Player {
         current_track: &mut usize,
         playlist: &Vec<String>,
         play_mode: &PlayMode,
-        flu_sink: &Arc<Mutex<Option<StreamSink<String>>>>,total_duration:&mut TDuration,
-        play_speed: &f32
+        flu_sink: &Arc<Mutex<Option<StreamSink<String>>>>,
+        total_duration: &mut TDuration,
+        play_speed: &f32,
     ) {
         match play_mode {
             PlayMode::Normal | PlayMode::Loop => {
@@ -299,7 +330,14 @@ impl Player {
             "previous_track command :{:#?}, idx:{}, playlist:{:#?}",
             play_mode, &current_track, &playlist
         );
-        Self::play_track(handle, sink, &playlist[*current_track],flu_sink, total_duration,  play_speed);
+        Self::play_track(
+            handle,
+            sink,
+            &playlist[*current_track],
+            flu_sink,
+            total_duration,
+            play_speed,
+        );
     }
 
     pub fn play(&mut self) -> Result<()> {
@@ -347,21 +385,21 @@ impl Player {
         Ok(())
     }
 
-    pub fn seek(&mut self, t: f64)-> Result<()>{
+    pub fn seek(&mut self, t: f64) -> Result<()> {
         self.command_sender.send(PlayerCommand::Seek(t))?;
         Ok(())
     }
 
-    pub fn set_speed(&mut self, t: f32)-> Result<()>{
+    pub fn set_speed(&mut self, t: f32) -> Result<()> {
         self.command_sender.send(PlayerCommand::Speed(t))?;
         Ok(())
     }
 
-    pub fn get_total_len(&mut self) -> Result<TDuration>{
+    pub fn get_total_len(&mut self) -> Result<TDuration> {
         Ok(self.total_len.read().unwrap().clone())
     }
 
-    pub fn get_pos(&mut self, sink: StreamSink<String>)-> Result<()>{
+    pub fn get_pos(&mut self, sink: StreamSink<String>) -> Result<()> {
         *self.flutter_sink.try_lock().unwrap() = Some(sink);
         self.command_sender.send(PlayerCommand::Position)?;
         Ok(())

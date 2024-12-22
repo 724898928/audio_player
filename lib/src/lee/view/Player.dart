@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 
 import '../component/DDownButton.dart';
 
+final GlobalKey<_PlayerState> _key = GlobalKey<_PlayerState>();
+
 class Player extends StatefulWidget {
   Player({super.key});
 
@@ -16,7 +18,8 @@ class Player extends StatefulWidget {
   State<StatefulWidget> createState() => _PlayerState();
 }
 
-class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
+class _PlayerState extends State<Player>
+    with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
   String song_context = "";
   String? singer;
   int mode_click = 0;
@@ -38,7 +41,9 @@ class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
 
   String? current_d = "";
 
-  double? dropdownValue = 1.0;
+  double dropdownValue = 1.0;
+
+  Timer? _timer;
 
   List<Map<String, dynamic>> labels = [
     {'label': 'x4', 'value': 4.0},
@@ -60,6 +65,60 @@ class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
       "D:\\flutter_pro\\audio_player\\rust\\src\\music\\614252728.mp3",
       "https://lv-sycdn.kuwo.cn/af334a1468f285aa2440b4689931ee8c/67679190/resource/30106/trackmedia/M500001hE0cD4NPYfX.mp3?bitrate\$128&from=vip"
     ]);
+    WidgetsBinding.instance.addObserver(this);
+    setTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print(
+        "didChangeAppLifecycleState _timer == null : ${null == _timer} state: $state");
+    // setState(() {});
+    switch (state) {
+      case AppLifecycleState.resumed:
+        break;
+      case AppLifecycleState.paused:
+        break;
+      case AppLifecycleState.detached:
+        break;
+      case AppLifecycleState.inactive:
+        break;
+      case AppLifecycleState.hidden:
+        break;
+    }
+  }
+
+  void setTimer() {
+    _timer = Timer.periodic(Duration(milliseconds: 500), (timer) async {
+      // 每 5 秒执行一次
+      await getPos().listen((v) {
+        // 处理返回的数据
+        print("playerThreadRun  msg1:$v");
+        if (mounted) {
+          var dat = jsonDecode(v);
+          // currentPross = dat['pos'] * dropdownValue;
+          currentPross = dat['pos'] * dropdownValue;
+          currentPross = currentPross > 1 ? 1 : currentPross;
+          total_d = Duration(seconds: dat['len']).toFormattedString();
+          current_d =
+              Duration(seconds: (dat['len'].toDouble() * currentPross).toInt())
+                  .toFormattedString();
+          is_playing = dat['playing'];
+          playIcon = is_playing ? Icons.pause : Icons.play_arrow;
+          setState(() {});
+        }
+        // else {
+        //   timer.cancel();
+        // }
+      });
+    });
   }
 
   @override
@@ -181,7 +240,7 @@ class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
                     onPressed: () async {
                       // 上一首
                       await previousSong();
-                      await setSpeed(v: dropdownValue!);
+                      await setSpeed(v: dropdownValue);
                     },
                   ),
                   SizedBox(width: 20),
@@ -198,35 +257,8 @@ class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
                           playIcon = Icons.pause;
                           await play();
                           await seek(tm: currentPross);
-                          await setSpeed(v: dropdownValue!);
-                          Timer.periodic(Duration(milliseconds: 500),
-                              (timer) async {
-                            // 每 5 秒执行一次
-                            await getPos().listen((v) {
-                              // 处理返回的数据
-                              print("playerThreadRun  msg1:$v");
-                              if (mounted) {
-                                var dat = jsonDecode(v);
-                                // currentPross = dat['pos'] * dropdownValue!;
-                                currentPross = dat['pos'] * dropdownValue!;
-                                currentPross =
-                                    currentPross > 1 ? 1 : currentPross;
-                                total_d = Duration(seconds: dat['len'])
-                                    .toFormattedString();
-                                current_d = Duration(
-                                        seconds: (dat['len'].toDouble() *
-                                                currentPross)
-                                            .toInt())
-                                    .toFormattedString();
-                                print(
-                                    "playerThreadRun dat:$dat, len:${dat['len']}  msg:$currentPross");
-                                setState(() {});
-                                print("playerThreadRun  msg2:$currentPross");
-                              } else {
-                                timer.cancel();
-                              }
-                            });
-                          });
+                          await setSpeed(v: dropdownValue);
+                          setTimer();
                         } else {
                           await pause();
                           playIcon = Icons.play_arrow;
@@ -242,7 +274,7 @@ class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
                     iconSize: 48,
                     onPressed: () async {
                       // 下一首
-                      await setSpeed(v: dropdownValue!);
+                      await setSpeed(v: dropdownValue);
                       await nextSong();
                       print("nextSong");
                     },
@@ -294,3 +326,4 @@ class _PlayerState extends State<Player> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true; // keepAlive
 }
+// Condition

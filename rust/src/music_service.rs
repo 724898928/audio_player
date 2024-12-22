@@ -73,28 +73,35 @@ impl Player {
             let mut current_track = 0;
             let mut play_mode = PlayMode::Normal;
             let mut play_speed: f32 = 1.0;
+            let mut is_playing = false;
             // let mut total_duration = TDuration::ZERO;
             while let Ok(command) = command_receiver.recv() {
-                println!("command :{:#?}, idx:{}", command, &current_track);
+               // println!("command :{:#?}, idx:{}", command, &current_track);
                 match command {
                     PlayerCommand::Play => {
-                        current_track = 0;
-                        Self::play_track(
-                            &handle,
-                            &mut sink,
-                            &*playlist.read().unwrap()[current_track],
-                            &flutter_sink2,
-                            &mut total_duration.write().unwrap(),
-                            &play_speed,
-                        );
+                        if playlist.read().unwrap().len() >0 {
+                            current_track = 0;
+                          //  is_playing = true;
+                            Self::play_track(
+                                &handle,
+                                &mut sink,
+                                &*playlist.read().unwrap()[current_track],
+                                &flutter_sink2,
+                                &mut total_duration.write().unwrap(),
+                                &play_speed,
+                                &mut is_playing,
+                            ); 
+                        }
                     }
                     PlayerCommand::Pause => {
                         if let Some(s) = &sink {
+                            is_playing = false;
                             s.pause();
                         }
                     }
                     PlayerCommand::Resume => {
                         if let Some(s) = &sink {
+                            is_playing = true;
                             s.play();
                         }
                     }
@@ -106,6 +113,7 @@ impl Player {
                     }
                     PlayerCommand::Stop => {
                         if let Some(s) = &sink {
+                            is_playing = false;
                             s.stop();
                         }
                         break;
@@ -123,6 +131,7 @@ impl Player {
                             &flutter_sink2,
                             &mut total_duration.write().unwrap(),
                             &play_speed,
+                            &mut is_playing
                         );
                     }
                     PlayerCommand::PreviousTrack => {
@@ -135,6 +144,7 @@ impl Player {
                             &flutter_sink2,
                             &mut total_duration.write().unwrap(),
                             &play_speed,
+                            &mut is_playing
                         );
                     }
                     PlayerCommand::Seek(t) => {
@@ -150,9 +160,10 @@ impl Player {
                                 if let Ok(t_d) = total_duration.read() {
                                     let offset = s.get_pos().div_duration_f64(*t_d);
                                     f_s.add(format!(
-                                        "{{\"pos\":{},\"len\":{:?}}}",
+                                        "{{\"pos\":{},\"len\":{:?}, \"playing\":{:?}}}",
                                         offset,
-                                        &t_d.as_secs()
+                                        &t_d.as_secs(),
+                                        &is_playing
                                     ))
                                     .expect("Send flutter sink failed");
                                 }
@@ -174,6 +185,7 @@ impl Player {
                                         &flutter_sink2,
                                         &mut total_duration.write().unwrap(),
                                         &play_speed,
+                                        &mut is_playing
                                     );
                                 }
                             }
@@ -187,6 +199,7 @@ impl Player {
                                     &flutter_sink2,
                                     &mut total_duration.write().unwrap(),
                                     &play_speed,
+                                    &mut is_playing
                                 );
                             }
                             PlayMode::SingleLoop => {
@@ -197,6 +210,7 @@ impl Player {
                                     &flutter_sink2,
                                     &mut total_duration.write().unwrap(),
                                     &play_speed,
+                                    &mut is_playing
                                 );
                             }
                             PlayMode::Random => {
@@ -209,6 +223,7 @@ impl Player {
                                     &flutter_sink2,
                                     &mut total_duration.write().unwrap(),
                                     &play_speed,
+                                    &mut is_playing
                                 );
                             }
                         }
@@ -234,15 +249,17 @@ impl Player {
         _flu_sink: &Arc<Mutex<Option<StreamSink<String>>>>,
         total_duration: &mut TDuration,
         play_speed: &f32,
+        is_playing: &mut bool
     ) {
         *sink = Some(Sink::try_new(handle).unwrap());
         if let Some(s) = sink {
             if Self::url_start_http(path) {
-                Self::play_online(path, s, total_duration);
+                Self::play_online(path, s, total_duration, is_playing);
             } else {
                 if let Ok(file) = std::fs::File::open(path) {
                     if let Ok(source) = Decoder::new(BufReader::new(file)) {
                         *total_duration = source.total_duration().unwrap_or(TDuration::ZERO);
+                        *is_playing = true;
                         s.append(source);
                     }
                 }
@@ -253,13 +270,14 @@ impl Player {
         }
     }
 
-    fn play_online<'a>(url: &str, sink: &mut Sink, total_duration: &mut TDuration) {
+    fn play_online<'a>(url: &str, sink: &mut Sink, total_duration: &mut TDuration, is_playing: &mut bool) {
         println!("play_online for url {}", url);
         if let Ok(resp) = reqwest::blocking::get(url) {
             if let Ok(bytes) = resp.bytes() {
                 let cursor = Cursor::new(bytes);
                 if let Ok(url_source) = rodio::Decoder::new(cursor) {
                     *total_duration = url_source.total_duration().unwrap_or(TDuration::ZERO);
+                    *is_playing = true;
                     sink.append(url_source);
                 }
             }
@@ -279,6 +297,7 @@ impl Player {
         flu_sink: &Arc<Mutex<Option<StreamSink<String>>>>,
         total_duration: &mut TDuration,
         play_speed: &f32,
+        is_playing: &mut bool,
     ) {
         match play_mode {
             PlayMode::Normal | PlayMode::Loop => {
@@ -300,6 +319,7 @@ impl Player {
             flu_sink,
             total_duration,
             play_speed,
+            is_playing,
         );
     }
 
@@ -312,6 +332,7 @@ impl Player {
         flu_sink: &Arc<Mutex<Option<StreamSink<String>>>>,
         total_duration: &mut TDuration,
         play_speed: &f32,
+        is_playing: &mut bool
     ) {
         match play_mode {
             PlayMode::Normal | PlayMode::Loop => {
@@ -337,6 +358,7 @@ impl Player {
             flu_sink,
             total_duration,
             play_speed,
+            is_playing
         );
     }
 

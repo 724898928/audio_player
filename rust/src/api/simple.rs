@@ -12,25 +12,25 @@ pub fn greet(name: String) -> String {
 
 #[flutter_rust_bridge::frb(sync)]
 pub fn spawn_run(sink: StreamSink<String>){
-    println!("spawn_run");
+ //   println!("spawn_run");
     thread::spawn(move||{
-        println!("spawned thread print sleep begin");
+     //   println!("spawned thread print sleep begin");
         thread::sleep(TDuration::from_secs(20));
         for i in 0..5 {
             sink.add(format!("Message from rust thread:{}",i));
         }
-        println!("spawned thread print sleep end");
+    //    println!("spawned thread print sleep end");
     });
 }
 
 #[flutter_rust_bridge::frb(sync)]
 pub fn player_thread_run(songs:Vec<String>,sink: StreamSink<String>){
-    println!("player_thread_run begin");
+  //  println!("player_thread_run begin");
     let mut plaryer = Player_instance.lock().unwrap();
     plaryer.set_playlist(songs);
     plaryer.get_pos(sink);
     plaryer.play();
-    println!("player_thread_run end");
+  //  println!("player_thread_run end");
 
 }
 #[flutter_rust_bridge::frb(sync)]

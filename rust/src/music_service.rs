@@ -1,10 +1,5 @@
 use std::{
-    fmt::Debug,
-    fs::File,
-    io::{BufReader, Cursor},
-    sync::{mpsc, Arc, Mutex, RwLock},
-    thread,
-    time::{Duration as TDuration, Instant},
+    any::Any, fmt::Debug, fs::File, io::{BufReader, Cursor}, sync::{mpsc, Arc, Mutex, RwLock}, thread, time::{Duration as TDuration, Instant}
 };
 
 use crate::{api::Result, frb_generated::StreamSink};
@@ -46,6 +41,21 @@ pub enum PlayMode {
     Loop,
     SingleLoop,
     Random,
+}
+
+impl PlayMode {
+    fn get_id(&self) -> u8{
+        match &self {
+            PlayMode::Normal => 0,
+            PlayMode::Loop => 1,
+            PlayMode::SingleLoop => 2,
+            PlayMode::Random => 3,
+        }
+    }
+
+    fn values(&self) ->Vec<Self>{
+        vec![PlayMode::Normal, PlayMode::Loop,PlayMode::SingleLoop,PlayMode::Random]
+    }
 }
 
 #[derive(Clone)]
@@ -160,10 +170,12 @@ impl Player {
                                 if let Ok(t_d) = total_duration.read() {
                                     let offset = s.get_pos().div_duration_f64(*t_d);
                                     f_s.add(format!(
-                                        "{{\"pos\":{},\"len\":{:?}, \"playing\":{:?}}}",
+                                        "{{\"pos\":{},\"len\":{:?}, \"playing\":{:?}, \"speed\":{:?}, \"mode\":{:?}}}",
                                         offset,
                                         &t_d.as_secs(),
-                                        &is_playing
+                                        &is_playing,
+                                        &play_speed,
+                                        &play_mode.get_id()
                                     ))
                                     .expect("Send flutter sink failed");
                                 }

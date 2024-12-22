@@ -41,7 +41,7 @@ class _PlayerState extends State<Player>
 
   String? current_d = "";
 
-  double dropdownValue = 1.0;
+  double playSpeed = 1.0;
 
   Timer? _timer;
 
@@ -79,9 +79,10 @@ class _PlayerState extends State<Player>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     print(
         "didChangeAppLifecycleState _timer == null : ${null == _timer} state: $state");
-    // setState(() {});
     switch (state) {
       case AppLifecycleState.resumed:
+        setTimer();
+        setState(() {});
         break;
       case AppLifecycleState.paused:
         break;
@@ -95,29 +96,33 @@ class _PlayerState extends State<Player>
   }
 
   void setTimer() {
-    _timer = Timer.periodic(Duration(milliseconds: 500), (timer) async {
-      // 每 5 秒执行一次
-      await getPos().listen((v) {
-        // 处理返回的数据
-        print("playerThreadRun  msg1:$v");
-        if (mounted) {
-          var dat = jsonDecode(v);
-          // currentPross = dat['pos'] * dropdownValue;
-          currentPross = dat['pos'] * dropdownValue;
-          currentPross = currentPross > 1 ? 1 : currentPross;
-          total_d = Duration(seconds: dat['len']).toFormattedString();
-          current_d =
-              Duration(seconds: (dat['len'].toDouble() * currentPross).toInt())
+    _timer ??
+        Timer.periodic(Duration(milliseconds: 500), (timer) async {
+          // 每 5 秒执行一次
+          await getPos().listen((v) {
+            // 处理返回的数据
+            print("playerThreadRun  msg1:$v");
+            if (mounted) {
+              var dat = jsonDecode(v);
+              // currentPross = dat['pos'] * dropdownValue;
+              currentPross = dat['pos'];
+              currentPross = currentPross > 1 ? 1 : currentPross;
+              total_d = Duration(seconds: dat['len']).toFormattedString();
+              current_d = Duration(
+                      seconds: (dat['len'].toDouble() * currentPross).toInt())
                   .toFormattedString();
-          is_playing = dat['playing'];
-          playIcon = is_playing ? Icons.pause : Icons.play_arrow;
-          setState(() {});
-        }
-        // else {
-        //   timer.cancel();
-        // }
-      });
-    });
+              is_playing = dat['playing'];
+              playIcon = is_playing ? Icons.pause : Icons.play_arrow;
+              mode_click = dat['mode'];
+              crrentModleIcon = modleIcon[mode_click];
+              playSpeed = dat['speed'];
+              setState(() {});
+            }
+            // else {
+            //   timer.cancel();
+            // }
+          });
+        });
   }
 
   @override
@@ -244,7 +249,7 @@ class _PlayerState extends State<Player>
                     onPressed: () async {
                       // 上一首
                       await previousSong();
-                      await setSpeed(v: dropdownValue);
+                      await setSpeed(v: playSpeed);
                     },
                   ),
                   SizedBox(width: 20),
@@ -262,7 +267,7 @@ class _PlayerState extends State<Player>
                           playIcon = Icons.pause;
                           await play();
                           await seek(tm: currentPross);
-                          await setSpeed(v: dropdownValue);
+                          await setSpeed(v: playSpeed);
                           setTimer();
                         } else {
                           await pause();
@@ -281,7 +286,7 @@ class _PlayerState extends State<Player>
                     iconSize: 48,
                     onPressed: () async {
                       // 下一首
-                      await setSpeed(v: dropdownValue);
+                      await setSpeed(v: playSpeed);
                       await nextSong();
                       print("nextSong");
                     },
@@ -292,7 +297,7 @@ class _PlayerState extends State<Player>
                       icon: Icon(crrentModleIcon),
                       iconSize: 30,
                       onPressed: () async {
-                        mode_click += 1;
+                        mode_click = (mode_click + 1) % PlayMode.values.length;
                         switch (mode_click) {
                           case 0:
                             await setPlayMode(mode: PlayMode.normal);
@@ -307,9 +312,6 @@ class _PlayerState extends State<Player>
                             await setPlayMode(mode: PlayMode.random);
                             break;
                         }
-                        if (mode_click >= PlayMode.values.length) {
-                          mode_click = 0;
-                        }
                         crrentModleIcon = modleIcon[mode_click];
                         setState(() {});
                       }),
@@ -318,9 +320,10 @@ class _PlayerState extends State<Player>
                   ),
                   DDbutton(
                       labels: labels,
+                      dropdownValue: playSpeed,
                       onChange: (v) async {
                         if (null != v) {
-                          dropdownValue = v;
+                          playSpeed = v;
                           await setSpeed(v: v);
                           print("DDbutton onChange value:$v");
                         }

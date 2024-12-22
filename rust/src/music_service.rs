@@ -422,7 +422,13 @@ impl Player {
     }
 
     pub fn get_pos(&mut self, sink: StreamSink<String>) -> Result<()> {
-        *self.flutter_sink.try_lock().unwrap() = Some(sink);
+        self.flutter_sink.clear_poison();
+        self.flutter_sink.try_lock().map(|mut x|{
+            *x = Some(sink)
+        });
+        // if let Ok(sk) =  {
+        //    *sk = Some(sink);
+        // }
         self.command_sender.send(PlayerCommand::Position)?;
         Ok(())
     }

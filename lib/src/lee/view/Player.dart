@@ -57,8 +57,8 @@ class _PlayerState extends State<Player>
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    setTimer();
     setPlaylist(songs: [
       "D:\\flutter_pro\\audio_player\\rust\\src\\music\\夜的第七章.mp3",
       "D:\\flutter_pro\\audio_player\\rust\\src\\music\\118806715.mp3",
@@ -66,7 +66,6 @@ class _PlayerState extends State<Player>
       "https://lv-sycdn.kuwo.cn/af334a1468f285aa2440b4689931ee8c/67679190/resource/30106/trackmedia/M500001hE0cD4NPYfX.mp3?bitrate\$128&from=vip"
     ]);
     WidgetsBinding.instance.addObserver(this);
-    setTimer();
   }
 
   @override

@@ -14,6 +14,8 @@ class _DDbuttonState extends State<DDbutton> {
   @override
   Widget build(BuildContext context) {
     return DropdownButton<double>(
+      menuWidth: 65,
+      padding: EdgeInsets.all(0),
       value: dropdownValue,
       onChanged: (val) {
         dropdownValue = val;
@@ -21,13 +23,11 @@ class _DDbuttonState extends State<DDbutton> {
         setState(() {});
       },
       style: const TextStyle(color: Colors.blueAccent),
-      underline: Container(
-        height: 1,
-        color: Colors.blueAccent,
-      ),
       items: widget.labels.map((a) {
         return DropdownMenuItem<double>(
-            value: a['value'], child: Text(a['label']));
+            alignment: Alignment.center,
+            value: a['value'],
+            child: Text(a['label']));
       }).toList(),
     );
   }

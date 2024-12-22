@@ -224,8 +224,11 @@ class _PlayerState extends State<Player>
               padding: const EdgeInsets.only(bottom: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   IconButton(
+                    padding: EdgeInsets.all(0),
+                    alignment: Alignment.center,
                     icon: Icon(Icons.playlist_play),
                     iconSize: 30,
                     onPressed: () {
@@ -234,6 +237,8 @@ class _PlayerState extends State<Player>
                   ),
                   SizedBox(width: 30),
                   IconButton(
+                    padding: EdgeInsets.all(0),
+                    alignment: Alignment.center,
                     icon: Icon(Icons.skip_previous),
                     iconSize: 48,
                     onPressed: () async {
@@ -247,6 +252,7 @@ class _PlayerState extends State<Player>
                     radius: 30,
                     backgroundColor: Colors.blueAccent,
                     child: IconButton(
+                      padding: EdgeInsets.all(0),
                       icon: Icon(playIcon),
                       iconSize: 40,
                       color: Colors.white,
@@ -269,6 +275,8 @@ class _PlayerState extends State<Player>
                   ),
                   SizedBox(width: 20),
                   IconButton(
+                    padding: EdgeInsets.all(0),
+                    alignment: Alignment.center,
                     icon: Icon(Icons.skip_next),
                     iconSize: 48,
                     onPressed: () async {
@@ -280,6 +288,7 @@ class _PlayerState extends State<Player>
                   ),
                   SizedBox(width: 30),
                   IconButton(
+                      alignment: Alignment.center,
                       icon: Icon(crrentModleIcon),
                       iconSize: 30,
                       onPressed: () async {
@@ -304,6 +313,9 @@ class _PlayerState extends State<Player>
                         crrentModleIcon = modleIcon[mode_click];
                         setState(() {});
                       }),
+                  SizedBox(
+                    width: 30,
+                  ),
                   DDbutton(
                       labels: labels,
                       onChange: (v) async {

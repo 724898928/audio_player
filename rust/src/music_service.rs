@@ -23,7 +23,7 @@ impl<T> Debug for StreamSink<T> {
 
 #[derive(Debug, Clone)]
 pub enum PlayerCommand {
-    Play,
+    Play(usize),
     Pause,
     Resume,
     Stop,
@@ -88,9 +88,9 @@ impl Player {
             while let Ok(command) = command_receiver.recv() {
                // println!("command :{:#?}, idx:{}", command, &current_track);
                 match command {
-                    PlayerCommand::Play => {
+                    PlayerCommand::Play(i) => {
                         if playlist.read().unwrap().len() >0 {
-                            current_track = 0;
+                            current_track = i;
                           //  is_playing = true;
                             Self::play_track(
                                 &handle,
@@ -165,20 +165,27 @@ impl Player {
                         }
                     }
                     PlayerCommand::Position => {
-                        if let Some(f_s) = &*flutter_sink2.try_lock().unwrap() {
-                            if let Some(s) = &mut sink {
-                                if let Ok(t_d) = total_duration.read() {
-                                    let offset = s.get_pos().div_duration_f64(*t_d);
-                                    f_s.add(format!(
-                                        "{{\"pos\":{},\"len\":{:?}, \"playing\":{:?}, \"speed\":{:?}, \"mode\":{:?}}}",
-                                        offset,
-                                        &t_d.as_secs(),
-                                        &is_playing,
-                                        &play_speed,
-                                        &play_mode.get_id()
-                                    ))
-                                    .expect("Send flutter sink failed");
-                                }
+                        print!("PlayerCommand::Position get_pos ");
+                        if let Ok(mut guard) = flutter_sink2.try_lock() {
+                            if let Some(f_s) = &mut *guard{
+                                if let Some(s) = &mut sink {
+                                    if let Ok(t_d) = total_duration.read() {
+                                        let mut offset = s.get_pos().div_duration_f64(*t_d);
+                                        if offset.is_infinite(){
+                                            offset = 0.0_f64;
+                                        }
+                                        f_s.add(format!(
+                                            "{{\"pos\":{:?},\"len\":{:?}, \"playing\":{:?}, \"speed\":{:?}, \"mode\":{:?},\"idx\":{:?}}}",
+                                            offset,
+                                            &t_d.as_secs(),
+                                            &is_playing,
+                                            &play_speed,
+                                            &play_mode.get_id(),
+                                            &current_track
+                                        ))
+                                        .expect("Send flutter sink failed");
+                                    }
+                                }  
                             }
                         }
                     }
@@ -374,8 +381,8 @@ impl Player {
         );
     }
 
-    pub fn play(&mut self) -> Result<()> {
-        self.command_sender.send(PlayerCommand::Play)?;
+    pub fn play(&mut self, i: usize) -> Result<()> {
+        self.command_sender.send(PlayerCommand::Play(i))?;
         self.is_playing = true;
         Ok(())
     }
@@ -434,6 +441,7 @@ impl Player {
     }
 
     pub fn get_pos(&mut self, sink: StreamSink<String>) -> Result<()> {
+        print!("command_sender get_pos ");
         self.flutter_sink.clear_poison();
         self.flutter_sink.try_lock().map(|mut x|{
             *x = Some(sink)
@@ -468,7 +476,7 @@ mod tests {
         ]);
 
         // 开始播放
-        player.play()?;
+        player.play(0)?;
 
         // 设置循环播放模式
         player.set_play_mode(PlayMode::Loop)?;

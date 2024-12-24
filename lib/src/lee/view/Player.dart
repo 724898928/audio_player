@@ -239,8 +239,13 @@ class _PlayerState extends State<Player>
                     alignment: Alignment.center,
                     icon: Icon(Icons.playlist_play),
                     iconSize: 30,
-                    onPressed: () {
+                    onPressed: () async {
                       // 打开播放列表
+                      await Utils.showListDialog(
+                          context, Songlist.getInstance().proPlaySongList,
+                          (i) async {
+                        await play(idx: i);
+                      });
                     },
                   ),
                   SizedBox(width: 30),
@@ -268,7 +273,7 @@ class _PlayerState extends State<Player>
                         // 播放或暂停
                         if (!is_playing) {
                           playIcon = Icons.pause;
-                          await play();
+                          await play(idx: BigInt.from(0));
                           await seek(tm: currentPross);
                           await setSpeed(v: playSpeed);
                           setTimer();

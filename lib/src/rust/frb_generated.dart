@@ -92,9 +92,10 @@ abstract class RustLibApi extends BaseApi {
 
   Stream<String> crateApiSimplePause();
 
-  Stream<String> crateApiSimplePlay();
+  Stream<String> crateApiSimplePlay({required BigInt idx});
 
-  Stream<String> crateApiSimplePlayerThreadRun({required List<String> songs});
+  Stream<String> crateApiSimplePlayerThreadRun(
+      {required List<String> songs, required BigInt idx});
 
   Stream<String> crateApiSimplePreviousSong();
 
@@ -263,11 +264,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Stream<String> crateApiSimplePlay() {
+  Stream<String> crateApiSimplePlay({required BigInt idx}) {
     final sink = RustStreamSink<String>();
     handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_usize(idx, serializer);
         sse_encode_StreamSink_String_Sse(sink, serializer);
         return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7)!;
       },
@@ -276,7 +278,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: null,
       ),
       constMeta: kCrateApiSimplePlayConstMeta,
-      argValues: [sink],
+      argValues: [idx, sink],
       apiImpl: this,
     ));
     return sink.stream;
@@ -284,16 +286,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiSimplePlayConstMeta => const TaskConstMeta(
         debugName: "play",
-        argNames: ["sink"],
+        argNames: ["idx", "sink"],
       );
 
   @override
-  Stream<String> crateApiSimplePlayerThreadRun({required List<String> songs}) {
+  Stream<String> crateApiSimplePlayerThreadRun(
+      {required List<String> songs, required BigInt idx}) {
     final sink = RustStreamSink<String>();
     handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_list_String(songs, serializer);
+        sse_encode_usize(idx, serializer);
         sse_encode_StreamSink_String_Sse(sink, serializer);
         return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 8)!;
       },
@@ -302,7 +306,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: null,
       ),
       constMeta: kCrateApiSimplePlayerThreadRunConstMeta,
-      argValues: [songs, sink],
+      argValues: [songs, idx, sink],
       apiImpl: this,
     ));
     return sink.stream;
@@ -311,7 +315,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiSimplePlayerThreadRunConstMeta =>
       const TaskConstMeta(
         debugName: "player_thread_run",
-        argNames: ["songs", "sink"],
+        argNames: ["songs", "idx", "sink"],
       );
 
   @override
@@ -572,6 +576,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  BigInt dco_decode_usize(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeU64(raw);
+  }
+
+  @protected
   AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_String(deserializer);
@@ -658,6 +668,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_decode_unit(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  BigInt sse_decode_usize(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getBigUint64();
   }
 
   @protected
@@ -754,6 +770,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_encode_unit(void self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_usize(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putBigUint64(self);
   }
 
   @protected

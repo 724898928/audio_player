@@ -24,12 +24,12 @@ pub fn spawn_run(sink: StreamSink<String>){
 }
 
 #[flutter_rust_bridge::frb(sync)]
-pub fn player_thread_run(songs:Vec<String>,sink: StreamSink<String>){
+pub fn player_thread_run(songs:Vec<String>, idx: usize, sink: StreamSink<String>){
   //  println!("player_thread_run begin");
     let mut plaryer = Player_instance.lock().unwrap();
     plaryer.set_playlist(songs);
     plaryer.get_pos(sink);
-    plaryer.play();
+    plaryer.play(idx);
   //  println!("player_thread_run end");
 
 }
@@ -65,9 +65,9 @@ pub fn stop(_sink: StreamSink<String>){
 }
 
 #[flutter_rust_bridge::frb(sync)]
-pub fn play(_sink: StreamSink<String>){
+pub fn play(idx: usize, _sink: StreamSink<String>){
     let mut player = Player_instance.lock().unwrap();
-    player.play().expect("play failed!");
+    player.play(idx).expect("play failed!");
 }
 
 #[flutter_rust_bridge::frb(sync)]
@@ -85,6 +85,7 @@ pub fn seek(tm:f64, _sink: StreamSink<String>){
 
 #[flutter_rust_bridge::frb(sync)]
 pub fn get_pos(sink: StreamSink<String>){
+    print!("flutter_rust_bridge get_pos ");
     let mut player = Player_instance.lock().unwrap();
     player.get_pos(sink).expect("get_pos failed!");
 }

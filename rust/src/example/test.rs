@@ -15,7 +15,7 @@ fn main() -> Result<()> {
     ]);
 
     // 开始播放
-    player.play()?;
+    player.play(0)?;
 
     // 设置循环播放模式
     player.set_play_mode(PlayMode::Loop)?;

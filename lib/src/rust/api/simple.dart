@@ -12,8 +12,9 @@ String greet({required String name}) =>
 
 Stream<String> spawnRun() => RustLib.instance.api.crateApiSimpleSpawnRun();
 
-Stream<String> playerThreadRun({required List<String> songs}) =>
-    RustLib.instance.api.crateApiSimplePlayerThreadRun(songs: songs);
+Stream<String> playerThreadRun(
+        {required List<String> songs, required BigInt idx}) =>
+    RustLib.instance.api.crateApiSimplePlayerThreadRun(songs: songs, idx: idx);
 
 Stream<String> nextSong() => RustLib.instance.api.crateApiSimpleNextSong();
 
@@ -27,7 +28,8 @@ Stream<String> pause() => RustLib.instance.api.crateApiSimplePause();
 
 Stream<String> stop() => RustLib.instance.api.crateApiSimpleStop();
 
-Stream<String> play() => RustLib.instance.api.crateApiSimplePlay();
+Stream<String> play({required BigInt idx}) =>
+    RustLib.instance.api.crateApiSimplePlay(idx: idx);
 
 Stream<String> setPlayMode({required PlayMode mode}) =>
     RustLib.instance.api.crateApiSimpleSetPlayMode(mode: mode);

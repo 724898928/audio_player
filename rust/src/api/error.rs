@@ -11,7 +11,7 @@ pub enum PlayerError {
     DecodeError(rodio::decoder::DecoderError),
     PlayeError(rodio::PlayError),
     RodioError(rodio::StreamError),
-    SenderError(SendError<PlayerCommand>)
+    SenderError(SendError<PlayerCommand>),
 }
 
 impl From<std::io::Error> for PlayerError {
@@ -42,4 +42,22 @@ impl  From<SendError<PlayerCommand>> for PlayerError {
     fn from(value: SendError<PlayerCommand>) -> Self {
         PlayerError::SenderError(value) 
        }
+}
+
+impl std::error::Error for PlayerError {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match self {
+            PlayerError::IoError(err) => Some(err),
+            PlayerError::DecodeError(err) => Some(err),
+            PlayerError::PlayeError(err) => Some(err),
+            PlayerError::RodioError(err) => Some(err),
+            PlayerError::SenderError(err) => Some(err),
+        }
+    }
+}
+
+impl std::fmt::Display for PlayerError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "PlayerError: {}", self)
+    }
 }

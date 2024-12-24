@@ -1,4 +1,4 @@
-use std::{collections::HashMap, thread, time::Duration as TDuration};
+use std::{thread, time::Duration as TDuration};
 
 
 use chrono::Duration;
@@ -104,6 +104,11 @@ pub fn get_total_len() -> Duration{
     let ch_t = Duration::milliseconds(t.as_millis() as i64);
    // format!("{}:{}",ch_t.num_minutes(),ch_t.num_seconds())
    ch_t
+}
+
+#[flutter_rust_bridge::frb(sync)]
+pub fn get_song_metadata(file_path: String) -> String{
+    crate::api::utils::get_song_metadata(&file_path).expect("get_song_metadata failed!")
 }
 
 

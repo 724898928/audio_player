@@ -43,3 +43,6 @@ Stream<String> setSpeed({required double v}) =>
     RustLib.instance.api.crateApiSimpleSetSpeed(v: v);
 
 Duration getTotalLen() => RustLib.instance.api.crateApiSimpleGetTotalLen();
+
+String getSongMetadata({required String filePath}) =>
+    RustLib.instance.api.crateApiSimpleGetSongMetadata(filePath: filePath);

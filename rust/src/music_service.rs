@@ -1,12 +1,10 @@
 use std::{
-    any::Any, fmt::Debug, fs::File, io::{BufReader, Cursor}, sync::{mpsc, Arc, Mutex, RwLock}, thread, time::{Duration as TDuration, Instant}
+    fmt::Debug, io::{BufReader, Cursor}, sync::{mpsc, Arc, Mutex, RwLock}, thread, time::Duration as TDuration
 };
 
 use crate::{api::Result, frb_generated::StreamSink};
-use chrono::Duration;
 use lazy_static::lazy_static;
 use rodio::{
-    source::{Buffered, PeriodicAccess},
     Decoder, OutputStream, Sink, Source,
 };
 
@@ -53,8 +51,8 @@ impl PlayMode {
         }
     }
 
-    fn values(&self) ->Vec<Self>{
-        vec![PlayMode::Normal, PlayMode::Loop,PlayMode::SingleLoop,PlayMode::Random]
+    fn values(&self) ->Vec<(u8, Self)>{
+        vec![(0, PlayMode::Normal), (1, PlayMode::Loop), (2, PlayMode::SingleLoop), (3,PlayMode::Random)]
     }
 }
 

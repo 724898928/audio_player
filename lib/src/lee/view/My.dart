@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../rust/api/simple.dart';
 import '../component/ChangeNotifierProvider.dart';
 import '../model/SongList.dart';
 
@@ -28,6 +29,8 @@ class _MyState extends State<My> {
           if (result != null) {
             songs.proPlaySongList.clear();
             List<String> songList = result.files.map((path) {
+              var fileMetadata = getSongMetadata(filePath: path.path!);
+              print("fileMetadata :$fileMetadata");
               return path.path!;
             }).toList();
             print("songs :$songList");

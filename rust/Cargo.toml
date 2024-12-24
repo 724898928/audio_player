@@ -5,15 +5,15 @@ edition = "2021"
 
 [lib]
 name = "rust_lib_audio_player"
-crate-type = ["cdylib", "staticlib"]
+#crate-type = ["cdylib", "staticlib"]
 path ="src/lib.rs"
 
 [[example]]
-name = "app"
+name = "test"
 path = "src/example/test.rs"
 
 [[example]]
-name = "test"
+name = "test1"
 path = "src/example/test1.rs"
 
 [dependencies]
@@ -28,6 +28,9 @@ reqwest = {version = "0.12.9", features = ["blocking","json"]}
 rand = "0.8.5"
 dart-sys = "^4"
 chrono = "^0.4"
+## 使用ffmpeg-next 要配置 ffmpeg-4.3 交叉编译后的环境 和 llvm 以及 MinGW64环境
+#ffmpeg-next = {version = "^7", features = ["format"]}
+id3 = "^1"
 
 [profile.release]
 strip=true

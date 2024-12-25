@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, fmt::format};
 //use ffmpeg_next as ffmpeg;
 use crate::api::Result;
 use id3::{Tag, TagLike};
@@ -48,13 +48,13 @@ pub fn get_song_metadata(file_path: &str) -> Result<String>{
                 \"album\": {:?},
                 \"year\":  {:?},
                 \"track\": {:?},
-                \"genre\": {:?}, }}",
+                \"genre\": {:?} }}",
                 tag.title().unwrap_or(""),
                 tag.artist().unwrap_or(""),
                 tag.album().unwrap_or(""),
                 tag.year().unwrap_or(0),
                 tag.track().unwrap_or(0),
-                tag.genre().unwrap_or(""),
+                tag.genre().unwrap_or("")
             ));
             // Get frames before getting their content for more complex tags.
             // if let Some(artist) = tag.get("TPE1").and_then(|frame| frame.content().text()) {
@@ -62,8 +62,13 @@ pub fn get_song_metadata(file_path: &str) -> Result<String>{
             // }
         },
         Err(e) => {
+            let title_1: Vec<&str>  = file_path.split(&['\\', '/', '.'][..]).collect();
+            if title_1.len() >= 2 {
+                return Ok(format!("{{\"title\":{:?}}}", title_1[title_1.len()-2]));
+                
+            }
             println!("Error reading ID3 tag: {}", e);
-            return  Ok("".to_string());
+            return  Ok(format!("{{\"title\":\"\"}}"));
         }
     }
 }

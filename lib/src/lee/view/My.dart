@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,8 +31,13 @@ class _MyState extends State<My> {
           if (result != null) {
             songs.proPlaySongList.clear();
             List<String> songList = result.files.map((path) {
-              var fileMetadata = getSongMetadata(filePath: path.path!);
-              print("fileMetadata :$fileMetadata");
+              var fileMetadata = getSongMetadata(filePath: path.path!)?.trim();
+              if (null != fileMetadata || fileMetadata!.isNotEmpty) {
+                print("fileMetadata :$fileMetadata");
+                var metaJson = jsonDecode(fileMetadata);
+                print("metaJson :$metaJson");
+              }
+
               return path.path!;
             }).toList();
             print("songs :$songList");

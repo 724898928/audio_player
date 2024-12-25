@@ -169,7 +169,7 @@ impl Player {
                                 if let Some(s) = &mut sink {
                                     if let Ok(t_d) = total_duration.read() {
                                         let mut offset = s.get_pos().div_duration_f64(*t_d);
-                                        if offset.is_infinite(){
+                                        if offset.is_infinite() || offset.is_nan(){
                                             offset = 0.0_f64;
                                         }
                                         f_s.add(format!(

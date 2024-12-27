@@ -42,7 +42,13 @@ Stream<String> getPos() => RustLib.instance.api.crateApiSimpleGetPos();
 Stream<String> setSpeed({required double v}) =>
     RustLib.instance.api.crateApiSimpleSetSpeed(v: v);
 
+Stream<String> setVolume({required double v}) =>
+    RustLib.instance.api.crateApiSimpleSetVolume(v: v);
+
 Duration getTotalLen() => RustLib.instance.api.crateApiSimpleGetTotalLen();
 
 String getSongMetadata({required String filePath}) =>
     RustLib.instance.api.crateApiSimpleGetSongMetadata(filePath: filePath);
+
+String httpGet({required String url}) =>
+    RustLib.instance.api.crateApiSimpleHttpGet(url: url);

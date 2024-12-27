@@ -31,6 +31,7 @@ pub enum PlayerCommand {
     Seek(f64),
     Position,
     Speed(f32),
+    Volume(f32),  //音量
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -101,6 +102,7 @@ impl Player {
                             ); 
                         }
                     }
+                
                     PlayerCommand::Pause => {
                         if let Some(s) = &sink {
                             is_playing = false;
@@ -117,6 +119,12 @@ impl Player {
                         if let Some(s) = &sink {
                             play_speed = v;
                             s.set_speed(v);
+                        }
+                    }
+
+                    PlayerCommand::Volume(v) => {
+                        if let Some(s) = &sink {
+                            s.set_volume(v);
                         }
                     }
                     PlayerCommand::Stop => {
@@ -434,6 +442,11 @@ impl Player {
         Ok(())
     }
 
+    pub fn set_volume(&mut self, t: f32) -> Result<()> {
+        self.command_sender.send(PlayerCommand::Volume(t))?;
+        Ok(())
+    }
+    
     pub fn get_total_len(&mut self) -> Result<TDuration> {
         Ok(self.total_len.read().unwrap().clone())
     }

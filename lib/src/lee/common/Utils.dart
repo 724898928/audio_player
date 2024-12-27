@@ -1,8 +1,43 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:audio_player/src/rust/api/simple.dart';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 
 class Utils {
+  static final dio = Dio(BaseOptions(
+    contentType: Headers.formUrlEncodedContentType,
+  ));
+
+  static final option = Options(
+    headers: {
+      "contentType": "application/x-www-form-urlencoded", // set content-type
+    },
+  );
+
+  static Future<dynamic> get(String url, Map<String, dynamic>? qp) async {
+    Uri uri = Uri(scheme: 'https', host: url, queryParameters: qp);
+    try {
+      var response = await dio.get(uri.toString());
+      print("response: " + response.toString());
+      if (response.statusCode == 200) {
+        return jsonDecode(response.data);
+      } else {
+        print("Error: " + response.data);
+        return response.data;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future<dynamic> hget(String url) async {
+    var requs = await httpGet(url: url);
+    //print("value :$requs");
+    return jsonDecode(requs);
+  }
+
   static Future<void> toShowDialog(BuildContext context,
       {required children}) async {
     showDialog(

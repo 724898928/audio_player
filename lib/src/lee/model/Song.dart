@@ -1,7 +1,154 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
-class Song extends ChangeNotifier {}
+abstract class BaseSong {
+  dynamic decodeMate(dynamic);
+  dynamic dealSongMate(dynamic);
+  Widget getWidget(BuildContext ctx, dynamic);
+}
 
+// 要播放的歌
+class ProSong implements BaseSong {
+  @override
+  dealSongMate(dynamic) {
+    // TODO: implement dealSongMate
+    throw UnimplementedError();
+  }
+
+  @override
+  decodeMate(dynamic) {
+    // TODO: implement decodeMate
+    throw UnimplementedError();
+  }
+
+  @override
+  Widget getWidget(BuildContext ctx, dynamic) {
+    // TODO: implement getWidget
+    throw UnimplementedError();
+  }
+}
+
+// 搜索到的歌
+class SearchSong implements BaseSong {
+  bool selected = false;
+  final String? id;
+  final String? name;
+  final String? resourceType;
+  final String? contentId;
+  final String? copyrightId;
+  final List<dynamic>? singers;
+  final List<dynamic>? albums;
+  final List<dynamic>? tags;
+  final String? lyricUrl;
+  final List<dynamic>? imgItems;
+  final List<dynamic>? televisionNames;
+  final List<dynamic>? tones;
+  final List<dynamic>? relatedSongs;
+  final String? toneControl;
+  final List<dynamic>? rateFormats;
+  final List<dynamic>? newRateFormats;
+  final String? songType;
+  final String? isInDAlbum;
+  final String? digitalColumnId;
+  final String? mrcurl;
+  final String? songDescs;
+  final String? invalidateDate;
+  final String? isInSalesPeriod;
+  final String? dalbumId;
+  final String? isInSideDalbum;
+  final String? vipType;
+  final String? chargeAuditions;
+  final String? scopeOfcopyright;
+
+  set setSelected(bool value) {
+    this.selected = value;
+  }
+
+  get isSelected => this.selected;
+
+  SearchSong({
+    this.selected = false,
+    required this.id,
+    required this.name,
+    required this.resourceType,
+    required this.contentId,
+    required this.copyrightId,
+    required this.singers,
+    required this.albums,
+    required this.tags,
+    required this.lyricUrl,
+    required this.imgItems,
+    required this.televisionNames,
+    required this.tones,
+    required this.relatedSongs,
+    required this.toneControl,
+    required this.rateFormats,
+    required this.newRateFormats,
+    required this.songType,
+    required this.isInDAlbum,
+    required this.digitalColumnId,
+    required this.mrcurl,
+    required this.songDescs,
+    required this.invalidateDate,
+    required this.isInSalesPeriod,
+    required this.dalbumId,
+    required this.isInSideDalbum,
+    required this.vipType,
+    required this.chargeAuditions,
+    required this.scopeOfcopyright,
+  });
+
+  factory SearchSong.fromJson(Map<String, dynamic> json) {
+    return SearchSong(
+        selected: false,
+        id: json['id'],
+        name: json['name'],
+        resourceType: json['resourceType'],
+        contentId: json['contentId'],
+        copyrightId: json['copyrightId'],
+        singers: json['singers'],
+        albums: json['albums'],
+        tags: json['tags'],
+        lyricUrl: json['lyricUrl'],
+        imgItems: json['imgItems'],
+        televisionNames: json['televisionNames'],
+        tones: json['tones'],
+        relatedSongs: json['relatedSongs'],
+        toneControl: json['toneControl'],
+        rateFormats: json['rateFormats'],
+        newRateFormats: json['newRateFormats'],
+        songType: json['songType'],
+        isInDAlbum: json['isInDAlbum'],
+        digitalColumnId: json['digitalColumnId'],
+        mrcurl: json['mrcurl'],
+        songDescs: json['songDescs'],
+        invalidateDate: json['invalidateDate'],
+        isInSalesPeriod: json['isInSalesPeriod'],
+        dalbumId: json['dalbumId'],
+        isInSideDalbum: json['isInSideDalbum'],
+        vipType: json['vipType'],
+        chargeAuditions: json['chargeAuditions'],
+        scopeOfcopyright: json['scopeOfcopyright']);
+  }
+
+  @override
+  dealSongMate(dynamic) {
+    // TODO: implement dealSongMate
+    throw UnimplementedError();
+  }
+
+  @override
+  decodeMate(dynamic) {
+    // TODO: implement decodeMate
+    throw UnimplementedError();
+  }
+
+  @override
+  Widget getWidget(BuildContext ctx, dynamic) {
+    // TODO: implement getWidget
+    throw UnimplementedError();
+  }
+}
 /**
  * {
     "code": "000000",

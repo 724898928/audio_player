@@ -16,6 +16,11 @@ path = "src/example/test.rs"
 name = "test1"
 path = "src/example/test1.rs"
 
+[[example]]
+name = "test2"
+path = "src/example/testReq.rs"
+
+
 [dependencies]
 flutter_rust_bridge = "=2.6.0"
 rodio = "^0.20.1"
@@ -24,7 +29,7 @@ tokio = { version = "^1", features = ["full"] }
 serde = "^1"
 serde_json = "^1"
 lazy_static = "1.5.0"
-reqwest = {version = "0.12.9", features = ["blocking","json"]}
+reqwest = {version = "^0.12", features = ["blocking","json"]}
 rand = "0.8.5"
 dart-sys = "^4"
 chrono = "^0.4"

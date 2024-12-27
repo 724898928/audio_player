@@ -11,3 +11,6 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 Future<String> getSongMetadata({required String filePath}) =>
     RustLib.instance.api.crateApiUtilsGetSongMetadata(filePath: filePath);
+
+Future<String> httpGet({required String url}) =>
+    RustLib.instance.api.crateApiUtilsHttpGet(url: url);

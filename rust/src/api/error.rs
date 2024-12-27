@@ -12,6 +12,7 @@ pub enum PlayerError {
     PlayeError(rodio::PlayError),
     RodioError(rodio::StreamError),
     SenderError(SendError<PlayerCommand>),
+    ReqError(reqwest::Error),
 }
 
 impl From<std::io::Error> for PlayerError {
@@ -44,6 +45,13 @@ impl  From<SendError<PlayerCommand>> for PlayerError {
        }
 }
 
+impl From<reqwest::Error> for PlayerError {
+    fn from(err: reqwest::Error) -> Self {
+        PlayerError::ReqError(err)
+    }
+}
+
+
 impl std::error::Error for PlayerError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -52,6 +60,7 @@ impl std::error::Error for PlayerError {
             PlayerError::PlayeError(err) => Some(err),
             PlayerError::RodioError(err) => Some(err),
             PlayerError::SenderError(err) => Some(err),
+            PlayerError::ReqError(err) => Some(err),
         }
     }
 }

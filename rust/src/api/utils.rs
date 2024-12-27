@@ -72,3 +72,8 @@ pub fn get_song_metadata(file_path: &str) -> Result<String>{
         }
     }
 }
+
+pub fn http_get(url: &str) -> Result<String> {
+    let response = reqwest::blocking::get(url)?;
+    Ok(response.text()?)
+}

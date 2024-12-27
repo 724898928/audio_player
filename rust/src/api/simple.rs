@@ -96,6 +96,11 @@ pub fn set_speed(v:f32, _sink: StreamSink<String>){
     player.set_speed(v).expect("seek failed!");
 }
 
+#[flutter_rust_bridge::frb(sync)]
+pub fn set_volume(v:f32, _sink: StreamSink<String>){
+    let mut player = Player_instance.lock().unwrap();
+    player.set_volume(v).expect("set_volume failed!")
+}
 
 #[flutter_rust_bridge::frb(sync)]
 pub fn get_total_len() -> Duration{
@@ -109,6 +114,11 @@ pub fn get_total_len() -> Duration{
 #[flutter_rust_bridge::frb(sync)]
 pub fn get_song_metadata(file_path: String) -> String{
     crate::api::utils::get_song_metadata(&file_path).expect("get_song_metadata failed!")
+}
+
+#[flutter_rust_bridge::frb(sync)]
+pub fn http_get(url: String) -> String{
+    crate::api::utils::http_get(&url).expect("get_song_metadata2 failed!")
 }
 
 

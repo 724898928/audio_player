@@ -1,0 +1,1 @@
+此目录下的dll包仅在window平台和项目使用ffmpeg的情况下, 添加到Debug或release的执行文件路径下.

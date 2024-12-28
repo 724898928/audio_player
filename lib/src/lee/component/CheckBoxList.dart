@@ -1,3 +1,4 @@
+import 'package:audio_player/src/lee/common/Utils.dart';
 import 'package:flutter/material.dart';
 
 import '../model/Song.dart';
@@ -21,6 +22,11 @@ class _CheckBoxListState extends State<CheckBoxList> {
   void selectedAll(bool v) {
     for (var i = 0; i < widget.searchSelected.length; i++) {
       widget.searchSelected[i].setSelected = v;
+      if (v) {
+        widget.searchSelected[i].getPlaySong();
+      } else {
+        widget.searchSelected[i].removeSong();
+      }
     }
     setState(() {});
   }
@@ -37,11 +43,10 @@ class _CheckBoxListState extends State<CheckBoxList> {
             Text(widget.searchSelected[idx].name ?? ""),
           ]),
           onTap: () {
-            setState(() {
-              widget.searchSelected[idx].setSelected =
-                  !widget.searchSelected[idx].selected!;
-            });
+            widget.searchSelected[idx].setSelected =
+                !widget.searchSelected[idx].selected!;
             widget.callback(idx, widget.searchSelected[idx].selected);
+            setState(() {});
           },
         );
       },

@@ -61,7 +61,8 @@ class _PlayerState extends State<Player>
     setTimer();
     Songlist songList = Songlist.getInstance();
     print("_PlayerState songList:${songList.proPlaySongList}");
-    setPlaylist(songs: songList.proPlaySongList);
+    setPlaylist(
+        songs: songList.proPlaySongList.map((e) => e.url ?? "").toList());
     WidgetsBinding.instance.addObserver(this);
   }
 

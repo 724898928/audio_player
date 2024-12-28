@@ -38,6 +38,10 @@ class Utils {
     return jsonDecode(requs);
   }
 
+  static Future<dynamic> download(String? url, String path) async {
+    print("download url: $url, path :$path");
+  }
+
   static Future<void> toShowDialog(BuildContext context,
       {required children}) async {
     showDialog(

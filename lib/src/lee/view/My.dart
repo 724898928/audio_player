@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../rust/api/simple.dart';
 import '../component/ChangeNotifierProvider.dart';
+import '../model/Song.dart';
 import '../model/SongList.dart';
 
 class My extends StatefulWidget {
@@ -35,13 +36,13 @@ class _MyState extends State<My> {
               if (null != fileMetadata || fileMetadata!.isNotEmpty) {
                 print("fileMetadata :$fileMetadata");
                 var metaJson = jsonDecode(fileMetadata);
+                songs.add(ProSong.fromJson(metaJson as Map<String, dynamic>));
                 print("metaJson :$metaJson");
               }
-
               return path.path!;
             }).toList();
             print("songs :$songList");
-            songs.addSongs(songList);
+
             print("songs :$songs");
           }
         },

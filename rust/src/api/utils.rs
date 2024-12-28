@@ -48,13 +48,16 @@ pub fn get_song_metadata(file_path: &str) -> Result<String>{
                 \"album\": {:?},
                 \"year\":  {:?},
                 \"track\": {:?},
-                \"genre\": {:?} }}",
+                \"genre\": {:?},
+                \"lyrics\": {:#?},
+                 }}",
                 tag.title().unwrap_or(""),
                 tag.artist().unwrap_or(""),
                 tag.album().unwrap_or(""),
                 tag.year().unwrap_or(0),
                 tag.track().unwrap_or(0),
-                tag.genre().unwrap_or("")
+                tag.genre().unwrap_or(""),
+                tag.lyrics().collect::<Vec<&id3::frame::Lyrics>>()
             ));
             // Get frames before getting their content for more complex tags.
             // if let Some(artist) = tag.get("TPE1").and_then(|frame| frame.content().text()) {

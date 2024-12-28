@@ -1,3 +1,4 @@
+import 'package:audio_player/src/lee/model/Song.dart';
 import 'package:flutter/foundation.dart';
 
 class Songlist extends ChangeNotifier {
@@ -15,17 +16,22 @@ class Songlist extends ChangeNotifier {
   }
 
   //
-  final List<Map<Object, dynamic>> selectSongList = [];
-  final List<String> proPlaySongList = [];
+  //final List<Map<Object, dynamic>> selectSongList = [];
+  final List<ProSong> proPlaySongList = [];
 
-  void add(dynamic item) {
+  void add(ProSong item) {
     proPlaySongList.add(item);
     notifyListeners();
   }
 
-  void addSongs(List<String> item) {
+  void addSongs(List<ProSong> item) {
     proPlaySongList.addAll(item);
     print("proPlaySongList :$proPlaySongList");
+    notifyListeners();
+  }
+
+  void remove(ProSong item) {
+    proPlaySongList.remove(item);
     notifyListeners();
   }
 }

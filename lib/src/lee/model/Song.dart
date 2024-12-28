@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:flutter/material.dart';
 
 abstract class BaseSong {
@@ -9,6 +9,74 @@ abstract class BaseSong {
 
 // 要播放的歌
 class ProSong implements BaseSong {
+  final String? id;
+  final String? title;
+  final List<dynamic>? artist;
+  final List<dynamic>? album;
+  final List<dynamic>? imgItems;
+  final List<dynamic>? lyrics;
+  late String? url;
+  final String? year;
+  final String? track;
+  final String? genre;
+
+  ProSong(
+      {required this.id,
+      required this.title,
+      required this.artist,
+      required this.album,
+      required this.imgItems,
+      required this.year,
+      required this.track,
+      required this.genre,
+      required this.lyrics,
+      required this.url});
+
+  factory ProSong.fromJson(Map<String, dynamic> json) {
+    return ProSong(
+      id: json['id'],
+      title: json['title'],
+      artist: json['artist'],
+      album: json['album'],
+      imgItems: json['imgItems'],
+      year: json['year'],
+      track: json['track'],
+      genre: json['genre'],
+      lyrics: json['lyrics'],
+      url: json['url'],
+    );
+  }
+
+  void setUrl(String url) {
+    this.url = url;
+  }
+
+  @override
+  String toString() {
+    return super.toString();
+  }
+
+  @override
+  // TODO: implement hashCode
+  int get hashCode {
+    return id.hashCode +
+        title.hashCode +
+        artist.hashCode +
+        album.hashCode +
+        url.hashCode;
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ProSong &&
+        other.id == id &&
+        other.title == title &&
+        other.artist == artist &&
+        other.album == album;
+  }
+
   @override
   dealSongMate(dynamic) {
     // TODO: implement dealSongMate
@@ -59,6 +127,7 @@ class SearchSong implements BaseSong {
   final String? vipType;
   final String? chargeAuditions;
   final String? scopeOfcopyright;
+  late ProSong? proSong;
 
   set setSelected(bool value) {
     print("setSelected value: $value");
@@ -97,7 +166,20 @@ class SearchSong implements BaseSong {
     required this.vipType,
     required this.chargeAuditions,
     required this.scopeOfcopyright,
-  });
+  }) {
+    proSong = ProSong(
+      id: id,
+      title: name,
+      artist: singers,
+      album: albums,
+      lyrics: [lyricUrl],
+      url: null,
+      imgItems: imgItems,
+      year: 'Unknown Year',
+      track: 'Unknown Track',
+      genre: 'Unknown Genre',
+    );
+  }
 
   factory SearchSong.fromJson(Map<String, dynamic> json) {
     return SearchSong(
@@ -130,6 +212,21 @@ class SearchSong implements BaseSong {
         vipType: json['vipType'],
         chargeAuditions: json['chargeAuditions'],
         scopeOfcopyright: json['scopeOfcopyright']);
+  }
+
+  void getPlaySong() {
+    var playUrl =
+        "https://app.pd.nf.migu.cn/MIGUM2.0/v1.0/content/sub/listenSong.do?toneFlag=E&netType=00&userId=15548614588710179085069&ua=Android_migu&version=5.1&copyrightId=${copyrightId}&contentId=${contentId}&resourceType=${resourceType}&channel=0";
+    var song = Songlist.getInstance();
+    proSong!.setUrl(playUrl);
+    song.add(proSong!);
+  }
+
+  void removeSong() {
+    // var playUrl =
+    //     "https://app.pd.nf.migu.cn/MIGUM2.0/v1.0/content/sub/listenSong.do?toneFlag=E&netType=00&userId=15548614588710179085069&ua=Android_migu&version=5.1&copyrightId=${copyrightId}&contentId=${contentId}&resourceType=${resourceType}&channel=0";
+    var song = Songlist.getInstance();
+    song.remove(proSong!);
   }
 
   @override

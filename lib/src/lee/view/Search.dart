@@ -3,6 +3,7 @@ import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:audio_player/src/lee/model/platformTools.dart';
 import 'package:flutter/material.dart';
 
+import '../common/Utils.dart';
 import '../component/CheckBoxList.dart';
 import '../model/Song.dart';
 
@@ -104,6 +105,11 @@ class _SearchState extends State<Search> {
                             flex: 1,
                             child: ElevatedButton(
                                 onPressed: () {
+                                  var sl = Songlist.getInstance();
+                                  var path = "";
+                                  sl.proPlaySongList.map((e) {
+                                    return Utils.download(e.url, path);
+                                  });
                                   print("download");
                                 },
                                 child: Text("download"))),

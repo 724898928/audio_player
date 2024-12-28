@@ -7,11 +7,6 @@ import '../frb_generated.dart';
 import '../music_service.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-String greet({required String name}) =>
-    RustLib.instance.api.crateApiSimpleGreet(name: name);
-
-Stream<String> spawnRun() => RustLib.instance.api.crateApiSimpleSpawnRun();
-
 Stream<String> playerThreadRun(
         {required List<String> songs, required BigInt idx}) =>
     RustLib.instance.api.crateApiSimplePlayerThreadRun(songs: songs, idx: idx);

@@ -1,4 +1,5 @@
 import 'package:audio_player/src/lee/common/Utils.dart';
+import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:flutter/material.dart';
 
 import '../component/CheckBoxList.dart';
@@ -119,6 +120,11 @@ class MiGu implements PlatformTools {
     return CheckBoxList(
         searchSelected: proSongList,
         callback: (idx, v) {
+          if (v) {
+            proSongList[idx].getPlaySong();
+          } else {
+            proSongList[idx].removeSong();
+          }
           callback(idx, v);
         });
   }

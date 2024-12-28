@@ -9,8 +9,8 @@ class CheckBoxList extends StatefulWidget {
   List<SearchSong> searchSelected;
   Function(int, dynamic) callback;
 
-  _CheckBoxListState checkBoxListState = _CheckBoxListState();
-  void selectedAll(bool v) {
+  static _CheckBoxListState checkBoxListState = _CheckBoxListState();
+  static void selectedAll(bool v) {
     checkBoxListState.selectedAll(v);
   }
 
@@ -18,16 +18,20 @@ class CheckBoxList extends StatefulWidget {
   State<CheckBoxList> createState() => checkBoxListState;
 }
 
-class _CheckBoxListState extends State<CheckBoxList> {
+class _CheckBoxListState extends State<CheckBoxList>
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   void selectedAll(bool v) {
-    for (var i = 0; i < widget.searchSelected.length; i++) {
-      widget.searchSelected[i].setSelected = v;
-      if (v) {
-        widget.searchSelected[i].getPlaySong();
-      } else {
-        widget.searchSelected[i].removeSong();
+    if (null != widget.searchSelected && widget.searchSelected.isNotEmpty) {
+      for (var i = 0; i < widget.searchSelected.length; i++) {
+        widget.searchSelected[i].setSelected = v;
+        if (v) {
+          widget.searchSelected[i].getPlaySong();
+        } else {
+          widget.searchSelected[i].removeSong();
+        }
       }
     }
+
     setState(() {});
   }
 
@@ -56,4 +60,7 @@ class _CheckBoxListState extends State<CheckBoxList> {
       itemCount: widget.searchSelected.length,
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

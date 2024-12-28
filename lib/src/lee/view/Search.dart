@@ -16,7 +16,7 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   var searchController = TextEditingController();
-  var platformTools = MiGu();
+  var platformTools = MiGu.getInstance();
   Widget container = Container();
   Widget? proSongs;
   bool selectAll = false;
@@ -52,11 +52,15 @@ class _SearchState extends State<Search> {
                                 iconSize: 50,
                                 alignment: Alignment.center,
                                 onPressed: () async {
+                                  selectAll = false;
                                   var words = searchController.text;
-                                  var pt = await platformTools.doGetSongs(
+                                  var miGu = await platformTools.doGetSongs(
                                       searchController.text, 1, 10);
-                                  proSongs = pt.getWidget(context, (idx, v) {});
-                                  setState(() {});
+                                  //proSongList = miGu.proSongList;
+                                  setState(() {
+                                    proSongs =
+                                        miGu.getWidget(context, (i, v) {});
+                                  });
                                 },
                                 icon: Icon(
                                   Icons.search,
@@ -91,8 +95,8 @@ class _SearchState extends State<Search> {
                                 onChanged: (v) {
                                   if (null != proSongs) {
                                     selectAll = !selectAll;
-                                    (proSongs as CheckBoxList)
-                                        .selectedAll(selectAll);
+                                    // (proSongs as CheckBoxList)
+                                    CheckBoxList.selectedAll(selectAll);
                                   }
                                   setState(() {});
                                   print("Select All");

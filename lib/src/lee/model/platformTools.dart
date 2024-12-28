@@ -1,5 +1,6 @@
 import 'package:audio_player/src/lee/common/Utils.dart';
 import 'package:audio_player/src/lee/model/SongList.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../component/CheckBoxList.dart';
@@ -14,6 +15,14 @@ abstract class PlatformTools {
 }
 
 class MiGu implements PlatformTools {
+  MiGu._init();
+
+  static MiGu _singleton = MiGu._init();
+
+  factory MiGu() => _singleton;
+
+  static MiGu getInstance() => _singleton;
+
   String songName = "";
 
   int pageNo = 1;
@@ -68,7 +77,7 @@ class MiGu implements PlatformTools {
   Future<MiGu> doGetSongs(String songName, int pageNo, int pageSize) async {
     print("doGetSongs songName :$songName");
     this.proSongList.clear();
-    var migu = setSearchUrl(songName, pageNo, pageSize);
+    setSearchUrl(songName, pageNo, pageSize);
     Utils.hget(this.searchUrl).then((value) {
       //  print("value :$value \n");
       if (value != null) {
@@ -84,7 +93,7 @@ class MiGu implements PlatformTools {
         }
       }
     });
-    return migu;
+    return this;
   }
 
   MiGu setLyricUrl(String copyrightId) {
@@ -117,6 +126,9 @@ class MiGu implements PlatformTools {
 
   @override
   Widget getWidget(ctx, Function(int, dynamic) callback) {
+    if (null == proSongList || proSongList.isEmpty) {
+      return Container();
+    }
     return CheckBoxList(
         searchSelected: proSongList,
         callback: (idx, v) {

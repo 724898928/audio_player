@@ -30,7 +30,7 @@ class ProSong implements BaseSong {
 
 // 搜索到的歌
 class SearchSong implements BaseSong {
-  bool selected = false;
+  late bool? selected = false;
   final String? id;
   final String? name;
   final String? resourceType;
@@ -61,6 +61,7 @@ class SearchSong implements BaseSong {
   final String? scopeOfcopyright;
 
   set setSelected(bool value) {
+    print("setSelected value: $value");
     this.selected = value;
   }
 

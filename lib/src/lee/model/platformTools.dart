@@ -1,6 +1,7 @@
 import 'package:audio_player/src/lee/common/Utils.dart';
 import 'package:flutter/material.dart';
 
+import '../component/CheckBoxList.dart';
 import 'Song.dart';
 
 abstract class PlatformTools {
@@ -8,7 +9,7 @@ abstract class PlatformTools {
   Future<dynamic> doGetSongs(String songName, int pageNo, int pageSize);
   String getPlatformUrl();
   String setPlatformUrl();
-  Widget getWidget(BuildContext ctx, dynamic);
+  Widget getWidget(BuildContext ctx, Function(int, dynamic) callback);
 }
 
 class MiGu implements PlatformTools {
@@ -65,11 +66,12 @@ class MiGu implements PlatformTools {
   @override
   Future<MiGu> doGetSongs(String songName, int pageNo, int pageSize) async {
     print("doGetSongs songName :$songName");
+    this.proSongList.clear();
     var migu = setSearchUrl(songName, pageNo, pageSize);
     Utils.hget(this.searchUrl).then((value) {
       //  print("value :$value \n");
       if (value != null) {
-        var songs = value['songResultData']['result'];
+        var songs = value['songResultData']?['result'];
         print("songs :$songs \n");
         if (songs != null) {
           songs.forEach((song) {
@@ -113,20 +115,11 @@ class MiGu implements PlatformTools {
   }
 
   @override
-  Widget getWidget(ctx, dynamic) {
-    return ListView.separated(
-        itemBuilder: (context, idx) {
-          return ElevatedButton(
-              onPressed: () {
-                Utils.showListDialog(ctx, proSongList, (idx) {
-                  print("idx :$idx");
-                });
-              },
-              child: Text(proSongList[idx].name ?? ""));
-        },
-        separatorBuilder: (ctx, idx) {
-          return Divider();
-        },
-        itemCount: proSongList.length);
+  Widget getWidget(ctx, Function(int, dynamic) callback) {
+    return CheckBoxList(
+        searchSelected: proSongList,
+        callback: (idx, v) {
+          callback(idx, v);
+        });
   }
 }

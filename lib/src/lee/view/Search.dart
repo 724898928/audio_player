@@ -3,6 +3,9 @@ import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:audio_player/src/lee/model/platformTools.dart';
 import 'package:flutter/material.dart';
 
+import '../component/CheckBoxList.dart';
+import '../model/Song.dart';
+
 class Search extends StatefulWidget {
   const Search({super.key});
 
@@ -12,12 +15,20 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   var searchController = TextEditingController();
-  var PlatformTools = MiGu();
-  Widget containner = Container();
+  var platformTools = MiGu();
+  Widget container = Container();
   Widget? proSongs;
+  bool selectAll = false;
+  late List<SearchSong> proSongList;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    print("build");
     return Row(
       children: [
         // lift the search bar
@@ -40,12 +51,10 @@ class _SearchState extends State<Search> {
                                 iconSize: 50,
                                 alignment: Alignment.center,
                                 onPressed: () async {
-                                  // TODO search
                                   var words = searchController.text;
-                                  var pt = await PlatformTools.doGetSongs(
+                                  var pt = await platformTools.doGetSongs(
                                       searchController.text, 1, 10);
-                                  proSongs =
-                                      pt.getWidget(context, null) ?? containner;
+                                  proSongs = pt.getWidget(context, (idx, v) {});
                                   setState(() {});
                                 },
                                 icon: Icon(
@@ -71,15 +80,45 @@ class _SearchState extends State<Search> {
                       ),
                     ),
                     Expanded(
+                      flex: 1,
+                      child: Row(children: [
+                        Expanded(
+                          flex: 1,
+                          child: ListTile(
+                              leading: Checkbox(
+                                value: selectAll,
+                                onChanged: (v) {
+                                  if (null != proSongs) {
+                                    selectAll = !selectAll;
+                                    (proSongs as CheckBoxList)
+                                        .selectedAll(selectAll);
+                                  }
+                                  setState(() {});
+                                  print("Select All");
+                                },
+                                semanticLabel: "Select All",
+                              ),
+                              title: Text("Select All")),
+                        ),
+                        Expanded(
+                            flex: 1,
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  print("download");
+                                },
+                                child: Text("download"))),
+                      ]),
+                    ),
+                    Expanded(
                       flex: 9,
-                      child: proSongs ?? containner,
+                      child: proSongs ?? container,
                     )
                   ],
                 ))),
-        // right side
+        //right side
         Expanded(
             child: Card(
-          child: containner,
+          child: Text("right side"),
         ))
       ],
     );

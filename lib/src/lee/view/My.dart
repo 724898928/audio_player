@@ -36,7 +36,8 @@ class _MyState extends State<My> {
               if (null != fileMetadata || fileMetadata!.isNotEmpty) {
                 print("fileMetadata :$fileMetadata");
                 var metaJson = jsonDecode(fileMetadata);
-                songs.add(ProSong.fromJson(metaJson as Map<String, dynamic>));
+                songs.add(ProSong.fromJson(
+                    metaJson as Map<String, dynamic>, path.path));
                 print("metaJson :$metaJson");
               }
               return path.path!;

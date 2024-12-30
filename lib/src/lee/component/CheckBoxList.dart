@@ -44,7 +44,8 @@ class _CheckBoxListState extends State<CheckBoxList>
             Icon(widget.searchSelected[idx].selected == true
                 ? Icons.check_box
                 : Icons.check_box_outline_blank),
-            Text(widget.searchSelected[idx].name ?? ""),
+            Text(
+                '${widget.searchSelected[idx].name} ${widget.searchSelected[idx].singers?.last['name']}'),
           ]),
           onTap: () {
             widget.searchSelected[idx].setSelected =

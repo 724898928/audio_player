@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:audio_player/src/lee/model/Song.dart';
 import 'package:audio_player/src/rust/api/simple.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -55,7 +56,7 @@ class Utils {
   }
 
   static Future<void> showListDialog(
-      BuildContext context, List<dynamic> songs, ValueChanged callback) async {
+      BuildContext context, List<ProSong> songs, ValueChanged callback) async {
     toShowDialog(context, children: [
       Container(
           height: 500,
@@ -64,11 +65,15 @@ class Utils {
               shrinkWrap: true,
               itemBuilder: (ctx, idx) {
                 //return Text(songs[idx].toString());
-                return ElevatedButton(
-                    onPressed: () async {
-                      callback(BigInt.from(idx));
-                    },
-                    child: Text(songs[idx].toString()));
+                return Container(
+                  padding: EdgeInsets.only(left: 30),
+                  child: GestureDetector(
+                      onTap: () async {
+                        callback(BigInt.from(idx));
+                      },
+                      child: Text(
+                          '${songs[idx].title.toString()}  ${songs[idx].artist.toString()}')),
+                );
               },
               separatorBuilder: (ctx, i) {
                 return Divider();

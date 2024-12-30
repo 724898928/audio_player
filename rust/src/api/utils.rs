@@ -49,7 +49,7 @@ pub fn get_song_metadata(file_path: &str) -> Result<String>{
                 \"year\":  {:?},
                 \"track\": {:?},
                 \"genre\": {:?},
-                \"lyrics\": {:#?},
+                \"lyrics\": {:#?}
                  }}",
                 tag.title().unwrap_or(""),
                 tag.artist().unwrap_or(""),

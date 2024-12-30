@@ -95,7 +95,6 @@ class _SearchState extends State<Search> {
                                 onChanged: (v) {
                                   if (null != proSongs) {
                                     selectAll = !selectAll;
-                                    // (proSongs as CheckBoxList)
                                     CheckBoxList.selectedAll(selectAll);
                                   }
                                   setState(() {});

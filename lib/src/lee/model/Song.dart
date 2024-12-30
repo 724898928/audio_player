@@ -11,8 +11,8 @@ abstract class BaseSong {
 class ProSong implements BaseSong {
   final String? id;
   final String? title;
-  final List<dynamic>? artist;
-  final List<dynamic>? album;
+  final String? artist;
+  final String? album;
   final List<dynamic>? imgItems;
   final List<dynamic>? lyrics;
   late String? url;
@@ -32,18 +32,18 @@ class ProSong implements BaseSong {
       required this.lyrics,
       required this.url});
 
-  factory ProSong.fromJson(Map<String, dynamic> json) {
+  factory ProSong.fromJson(Map<String, dynamic> json, String? path) {
     return ProSong(
       id: json['id'],
       title: json['title'],
-      artist: json['artist'],
-      album: json['album'],
+      artist: json['artist'] ?? 'Unknown',
+      album: json['album'] ?? 'Unknown',
       imgItems: json['imgItems'],
-      year: json['year'],
-      track: json['track'],
-      genre: json['genre'],
+      year: json['year']?.toString(),
+      track: json['track']?.toString(),
+      genre: json['genre']?.toString(),
       lyrics: json['lyrics'],
-      url: json['url'],
+      url: json['url'] ?? path,
     );
   }
 
@@ -170,8 +170,8 @@ class SearchSong implements BaseSong {
     proSong = ProSong(
       id: id,
       title: name,
-      artist: singers,
-      album: albums,
+      artist: singers?.last['name'],
+      album: albums?.last['name'],
       lyrics: [lyricUrl],
       url: null,
       imgItems: imgItems,

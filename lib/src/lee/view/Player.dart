@@ -23,6 +23,7 @@ class _PlayerState extends State<Player>
     with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
   ProSong? current_song;
   int mode_click = 0;
+  int idx = 0;
   List<IconData> modleIcon = [
     Icons.width_normal,
     Icons.repeat_rounded,
@@ -113,7 +114,7 @@ class _PlayerState extends State<Player>
               playIcon = is_playing ? Icons.pause : Icons.play_arrow;
               mode_click = dat['mode'];
               crrentModleIcon = modleIcon[mode_click];
-              var idx = dat['idx'];
+              idx = dat['idx'];
               playSpeed = dat['speed'];
               current_song = Songlist.getInstance().proPlaySongList[idx];
               setState(() {});
@@ -269,7 +270,7 @@ class _PlayerState extends State<Player>
                         // 播放或暂停
                         if (!is_playing) {
                           playIcon = Icons.pause;
-                          await play(idx: BigInt.from(0));
+                          await play(idx: BigInt.from(idx));
                           await seek(tm: currentPross);
                           await setSpeed(v: playSpeed);
                           setTimer();

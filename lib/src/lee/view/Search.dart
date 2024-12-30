@@ -58,8 +58,17 @@ class _SearchState extends State<Search> {
                                       searchController.text, 1, 10);
                                   //proSongList = miGu.proSongList;
                                   setState(() {
-                                    proSongs =
-                                        miGu.getWidget(context, (i, v) {});
+                                    proSongs = CheckBoxList(
+                                        searchSelected: miGu.proSongList,
+                                        callback: (idx, v) {
+                                          if (v) {
+                                            miGu.proSongList[idx].getPlaySong();
+                                          } else {
+                                            miGu.proSongList[idx].removeSong();
+                                          }
+                                        });
+                                    // proSongs =
+                                    //     miGu.getWidget(context, (i, v) {});
                                   });
                                 },
                                 icon: Icon(

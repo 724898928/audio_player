@@ -30,7 +30,7 @@ class _MyState extends State<My> {
             allowedExtensions: ['mp3', 'wav', 'ogg', 'm4a', 'acc', 'midi'],
           );
           if (result != null) {
-            songs.proPlaySongList.clear();
+            // songs.proPlaySongList.clear();
             List<String> songList = result.files.map((path) {
               var fileMetadata = getSongMetadata(filePath: path.path!)?.trim();
               if (null != fileMetadata || fileMetadata!.isNotEmpty) {

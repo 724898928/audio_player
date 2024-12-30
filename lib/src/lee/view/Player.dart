@@ -8,6 +8,7 @@ import 'package:audio_player/src/rust/music_service.dart';
 import 'package:flutter/material.dart';
 
 import '../component/DDownButton.dart';
+import '../model/Song.dart';
 
 final GlobalKey<_PlayerState> _key = GlobalKey<_PlayerState>();
 
@@ -20,8 +21,7 @@ class Player extends StatefulWidget {
 
 class _PlayerState extends State<Player>
     with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
-  String song_context = "";
-  String? singer;
+  ProSong? current_song;
   int mode_click = 0;
   List<IconData> modleIcon = [
     Icons.width_normal,
@@ -113,7 +113,9 @@ class _PlayerState extends State<Player>
               playIcon = is_playing ? Icons.pause : Icons.play_arrow;
               mode_click = dat['mode'];
               crrentModleIcon = modleIcon[mode_click];
+              var idx = dat['idx'];
               playSpeed = dat['speed'];
+              current_song = Songlist.getInstance().proPlaySongList[idx];
               setState(() {});
             }
             // else {
@@ -127,9 +129,9 @@ class _PlayerState extends State<Player>
   Widget build(BuildContext context) {
     super.build(context);
     final sl = ModalRoute.of(context)?.settings.arguments as Songlist;
-    if (sl.proPlaySongList.isNotEmpty) {
-      singer = sl.proPlaySongList.first.toString();
-    }
+    // if (sl.proPlaySongList.isNotEmpty) {
+    //   singer = sl.proPlaySongList.first.toString();
+    // }
     return Scaffold(
       appBar: AppBar(
         title: Text('简约音乐播放器'),
@@ -153,7 +155,7 @@ class _PlayerState extends State<Player>
                   ),
                   SizedBox(height: 20),
                   Text(
-                    '歌曲名称',
+                    '${current_song?.title}',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -161,15 +163,14 @@ class _PlayerState extends State<Player>
                   ),
                   SizedBox(height: 8),
                   Text(
-                    //  '歌手名称',
-                    singer ?? "歌手名称00000",
+                    '${current_song?.artist}',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey,
                     ),
                   ),
                   SizedBox(height: 20),
-                  Text(song_context)
+                  Text('${current_song?.lyrics}')
                 ],
               ),
             ),

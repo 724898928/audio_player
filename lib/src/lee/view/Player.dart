@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:audio_player/src/lee/common/PlayerIcons.dart';
 import 'package:audio_player/src/lee/common/Utils.dart';
 import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:audio_player/src/rust/api/simple.dart';
@@ -25,10 +26,10 @@ class _PlayerState extends State<Player>
   int mode_click = 0;
   int idx = 0;
   List<IconData> modleIcon = [
-    Icons.width_normal,
+    PlayerIcons.orderPlay,
     Icons.repeat_rounded,
     Icons.repeat_one,
-    Icons.open_in_full_rounded
+    PlayerIcons.randomPlay
   ];
   IconData crrentModleIcon = Icons.looks_one_rounded;
 
@@ -156,7 +157,7 @@ class _PlayerState extends State<Player>
                   ),
                   SizedBox(height: 20),
                   Text(
-                    '${current_song?.title}',
+                    '${current_song?.title ?? ""}',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -164,14 +165,14 @@ class _PlayerState extends State<Player>
                   ),
                   SizedBox(height: 8),
                   Text(
-                    '${current_song?.artist}',
+                    '${current_song?.artist ?? ""}',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey,
                     ),
                   ),
                   SizedBox(height: 20),
-                  Text('${current_song?.lyrics}')
+                  Text('${current_song?.lyrics ?? ""}')
                 ],
               ),
             ),
@@ -253,8 +254,10 @@ class _PlayerState extends State<Player>
                     iconSize: 48,
                     onPressed: () async {
                       // 上一首
-                      await previousSong();
-                      await setSpeed(v: playSpeed);
+                      if (Songlist.getInstance().proPlaySongList.isNotEmpty) {
+                        await previousSong();
+                        await setSpeed(v: playSpeed);
+                      }
                     },
                   ),
                   SizedBox(width: 20),
@@ -267,19 +270,21 @@ class _PlayerState extends State<Player>
                       iconSize: 40,
                       color: Colors.white,
                       onPressed: () async {
-                        // 播放或暂停
-                        if (!is_playing) {
-                          playIcon = Icons.pause;
-                          await play(idx: BigInt.from(idx));
-                          await seek(tm: currentPross);
-                          await setSpeed(v: playSpeed);
-                          setTimer();
-                        } else {
-                          await pause();
-                          playIcon = Icons.play_arrow;
+                        if (Songlist.getInstance().proPlaySongList.isNotEmpty) {
+                          // 播放或暂停
+                          if (!is_playing) {
+                            playIcon = Icons.pause;
+                            await play(idx: BigInt.from(idx));
+                            await seek(tm: currentPross);
+                            await setSpeed(v: playSpeed);
+                            setTimer();
+                          } else {
+                            await pause();
+                            playIcon = Icons.play_arrow;
+                          }
+                          setState(() {});
+                          is_playing = !is_playing;
                         }
-                        setState(() {});
-                        is_playing = !is_playing;
                       },
                     ),
                   ),
@@ -291,9 +296,11 @@ class _PlayerState extends State<Player>
                     iconSize: 48,
                     onPressed: () async {
                       // 下一首
-                      await setSpeed(v: playSpeed);
-                      await nextSong();
-                      print("nextSong");
+                      if (Songlist.getInstance().proPlaySongList.isNotEmpty) {
+                        await setSpeed(v: playSpeed);
+                        await nextSong();
+                        print("nextSong");
+                      }
                     },
                   ),
                   SizedBox(width: 30),

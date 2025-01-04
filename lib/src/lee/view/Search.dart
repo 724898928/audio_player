@@ -1,10 +1,11 @@
 import 'package:audio_player/src/lee/component/DDownButton.dart';
 import 'package:audio_player/src/lee/model/SongList.dart';
-import 'package:audio_player/src/lee/model/platformTools.dart';
+import 'package:audio_player/src/lee/model/MiGu.dart';
 import 'package:flutter/material.dart';
 
 import '../common/Utils.dart';
 import '../component/CheckBoxList.dart';
+import '../model/BasePlatform.dart';
 import '../model/Song.dart';
 
 class Search extends StatefulWidget {
@@ -16,11 +17,20 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   var searchController = TextEditingController();
-  var platformTools = MiGu.getInstance();
+  BasePlatform platformTools = MiGu.getInstance();
   Widget container = Container();
   Widget? proSongs;
   bool selectAll = false;
   late List<SearchSong> proSongList;
+  late List<BasePlatform> platformList = [
+    MiGu.getInstance(),
+  ];
+
+  List<Map<String, dynamic>> labels = [
+    {'label': "Source1", 'value': 1},
+    {'label': "Source2", 'value': 2},
+    // {'label': "Source1", 'value': 1},
+  ];
 
   @override
   void initState() {
@@ -73,7 +83,7 @@ class _SearchState extends State<Search> {
                                 },
                                 icon: Icon(
                                   Icons.search,
-                                  weight: 2,
+                                  weight: 1,
                                 )),
                           ),
                           Expanded(
@@ -88,8 +98,14 @@ class _SearchState extends State<Search> {
                             )),
                           ),
                           Expanded(
-                              flex: 1,
-                              child: DDbutton(labels: [], onChange: (i) {}))
+                              flex: 2,
+                              child: DDbutton(
+                                  labels: labels,
+                                  menuWidth: 100,
+                                  onChange: (i) {
+                                    platformTools = platformList[i];
+                                    setState(() {});
+                                  }))
                         ],
                       ),
                     ),

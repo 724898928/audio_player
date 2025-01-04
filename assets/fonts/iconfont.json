@@ -1,0 +1,30 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "11510865",
+      "name": "循环",
+      "font_class": "loop",
+      "unicode": "e688",
+      "unicode_decimal": 59016
+    },
+    {
+      "icon_id": "19975799",
+      "name": "RandomPlay",
+      "font_class": "RandomPlay",
+      "unicode": "e752",
+      "unicode_decimal": 59218
+    },
+    {
+      "icon_id": "40551765",
+      "name": "order_play",
+      "font_class": "order_play",
+      "unicode": "e7eb",
+      "unicode_decimal": 59371
+    }
+  ]
+}

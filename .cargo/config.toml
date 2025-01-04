@@ -1,6 +1,0 @@
-[env]
-OPENSSL_DIR = {value="A:\\programFiles\\AndroidSDK\\openssl\\openssl_arm64_v8a"}
-OPENSSL_LIB_DIR = {value="A:\\programFiles\\AndroidSDK\\openssl\\openssl_arm64_v8a\\lib"}
-OPENSSL_INCLUDE_DIR = {value="A:\\programFiles\\AndroidSDK\\openssl\\openssl_arm64_v8a\\include"}
-#LIBCLANG_PATH = { value = "A:\\programFiles\\LLVM\\bin" }
-#FFMPEG_DIR = { value = "D:\\flutter_pro\\ffmpeg-4.3\\ffmpeg_install"}

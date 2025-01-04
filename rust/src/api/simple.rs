@@ -67,7 +67,7 @@ pub fn seek(tm:f64, _sink: StreamSink<String>){
 
 #[flutter_rust_bridge::frb(sync)]
 pub fn get_pos(sink: StreamSink<String>){
-    print!("flutter_rust_bridge get_pos ");
+   // print!("flutter_rust_bridge get_pos ");
     let mut player = Player_instance.lock().unwrap();
     player.get_pos(sink).expect("get_pos failed!");
 }

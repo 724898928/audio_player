@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 
 class DDbutton extends StatefulWidget {
-  DDbutton(
-      {super.key,
-      required this.labels,
-      this.dropdownValue = 1.0,
-      required this.onChange});
-  final ValueChanged<double?> onChange;
+  DDbutton({
+    super.key,
+    required this.labels,
+    this.dropdownValue = 1.0,
+    required this.onChange,
+    this.menuWidth,
+  });
+  final ValueChanged<dynamic?> onChange;
   final List<Map<String, dynamic>> labels;
-  double? dropdownValue;
+  dynamic? dropdownValue;
+  double? menuWidth;
 
   @override
   State<DDbutton> createState() => _DDbuttonState();
@@ -18,8 +21,8 @@ class _DDbuttonState extends State<DDbutton> {
   // double? dropdownValue = 1.0;
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<double>(
-      menuWidth: 65,
+    return DropdownButton<dynamic>(
+      menuWidth: widget.menuWidth,
       padding: EdgeInsets.all(0),
       value: widget.dropdownValue,
       onChanged: (val) {
@@ -29,7 +32,7 @@ class _DDbuttonState extends State<DDbutton> {
       },
       style: const TextStyle(color: Colors.blueAccent),
       items: widget.labels.map((a) {
-        return DropdownMenuItem<double>(
+        return DropdownMenuItem<dynamic>(
             alignment: Alignment.center,
             value: a['value'],
             child: Text(a['label']));

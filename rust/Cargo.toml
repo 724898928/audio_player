@@ -5,7 +5,7 @@ edition = "2021"
 
 [lib]
 name = "rust_lib_audio_player"
-crate-type = ["cdylib", "staticlib"]
+crate-type = ["cdylib"]
 path ="src/lib.rs"
 
 [[example]]
@@ -31,7 +31,7 @@ serde_json = "^1"
 lazy_static = "1.5.0"
 reqwest = {version = "^0.12", features = ["blocking","json"]}
 rand = "0.8.5"
-dart-sys = "^4"
+dart-sys = "4.1.5"
 chrono = "^0.4"
 ## 使用ffmpeg-next 要配置 ffmpeg-4.3 交叉编译后的环境 和 llvm 以及 MinGW64环境
 #ffmpeg-next = {version = "^7", features = ["format"]}

@@ -4,17 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../component/CheckBoxList.dart';
+import 'BasePlatform.dart';
 import 'Song.dart';
 
-abstract class PlatformTools {
-  dynamic doSearch();
-  Future<dynamic> doGetSongs(String songName, int pageNo, int pageSize);
-  String getPlatformUrl();
-  String setPlatformUrl();
-  Widget getWidget(BuildContext ctx, Function(int, dynamic) callback);
-}
-
-class MiGu implements PlatformTools {
+class MiGu implements BasePlatform {
   MiGu._init();
 
   static MiGu _singleton = MiGu._init();

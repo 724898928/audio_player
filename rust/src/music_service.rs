@@ -166,12 +166,12 @@ impl Player {
                     PlayerCommand::Seek(t) => {
                         if let Some(s) = &mut sink {
                             let offset = total_duration.read().unwrap().mul_f64(t);
-                            println!("seek input t:{:#?},  offset:{:#?}", t, offset);
+                         //   println!("seek input t:{:#?},  offset:{:#?}", t, offset);
                             s.try_seek(offset).unwrap();
                         }
                     }
                     PlayerCommand::Position => {
-                        print!("PlayerCommand::Position get_pos ");
+                      //  print!("PlayerCommand::Position get_pos ");
                         if let Ok(mut guard) = flutter_sink2.try_lock() {
                             if let Some(f_s) = &mut *guard{
                                 if let Some(s) = &mut sink {
@@ -296,7 +296,7 @@ impl Player {
     }
 
     fn play_online<'a>(url: &str, sink: &mut Sink, total_duration: &mut TDuration, is_playing: &mut bool) {
-        println!("play_online for url {}", url);
+       // println!("play_online for url {}", url);
         if let Ok(resp) = reqwest::blocking::get(url) {
             if let Ok(bytes) = resp.bytes() {
                 let cursor = Cursor::new(bytes);
@@ -333,10 +333,10 @@ impl Player {
                 *current_track = rand::random::<usize>() % playlist.len();
             }
         }
-        println!(
-            "next_track command :{:#?}, idx:{}, playlist:{:#?}",
-            play_mode, &current_track, &playlist
-        );
+        // println!(
+        //     "next_track command :{:#?}, idx:{}, playlist:{:#?}",
+        //     play_mode, &current_track, &playlist
+        // );
         Self::play_track(
             handle,
             sink,
@@ -372,10 +372,10 @@ impl Player {
                 *current_track = rand::random::<usize>() % playlist.len();
             }
         }
-        println!(
-            "previous_track command :{:#?}, idx:{}, playlist:{:#?}",
-            play_mode, &current_track, &playlist
-        );
+        // println!(
+        //     "previous_track command :{:#?}, idx:{}, playlist:{:#?}",
+        //     play_mode, &current_track, &playlist
+        // );
         Self::play_track(
             handle,
             sink,
@@ -452,7 +452,7 @@ impl Player {
     }
 
     pub fn get_pos(&mut self, sink: StreamSink<String>) -> Result<()> {
-        print!("command_sender get_pos ");
+      //  print!("command_sender get_pos ");
         self.flutter_sink.clear_poison();
         self.flutter_sink.try_lock().map(|mut x|{
             *x = Some(sink)

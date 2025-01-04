@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../rust/api/simple.dart';
-import '../component/ChangeNotifierProvider.dart';
 import '../model/Song.dart';
 import '../model/SongList.dart';
 

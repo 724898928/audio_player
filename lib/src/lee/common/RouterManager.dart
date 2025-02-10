@@ -3,12 +3,12 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 
 import '../view/Search.dart';
-import '../view/My.dart';
+import '../view/SettingsPage.dart';
 
 class RouterManager {
   static String playerPath = '/player';
   static String searchPath = '/home';
-  static String myPath = '/my';
+  static String myPath = '/Settings';
   static String dynamicPath = '/dynamic';
   static String dynamicDetailPath = '$dynamicPath/:id';
   static FluroRouter? router;
@@ -19,7 +19,7 @@ class RouterManager {
     }
   }
 
-  static final homeMyListWidget = [Search(), My(), Player()];
+  static final homeMyListWidget = [Search(), SettingsWidget(), Player()];
   static final homeHandler = Handler(
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
     return homeMyListWidget[0];

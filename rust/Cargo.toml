@@ -5,7 +5,7 @@ edition = "2021"
 
 [lib]
 name = "rust_lib_audio_player"
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "staticlib"]
 path ="src/lib.rs"
 
 [[example]]
@@ -36,6 +36,8 @@ chrono = "^0.4"
 ## 使用ffmpeg-next 要配置 ffmpeg-4.3 交叉编译后的环境 和 llvm 以及 MinGW64环境
 #ffmpeg-next = {version = "^7", features = ["format"]}
 id3 = "^1"
+# jni = "^0.21"
+# ndk = "0.9.0"
 
 [profile.release]
 strip=true

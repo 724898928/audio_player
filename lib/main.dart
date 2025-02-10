@@ -1,18 +1,26 @@
+import 'dart:io';
+
 import 'package:audio_player/src/lee/component/ChangeNotifierProvider.dart';
 import 'package:audio_player/src/lee/component/CustomBottomNavigationBar.dart';
-import 'package:audio_player/src/lee/model/Song.dart';
 import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_player/src/rust/frb_generated.dart';
 import 'src/lee/common/EventBus.dart';
 import 'src/lee/common/RouterManager.dart';
+import 'package:window_manager/window_manager.dart';
 
 // 定义一个top-level (全局)变量, 页面引入该文件后可以直接使用Bus
 EventBus eventBus = EventBus();
 Future<void> main() async {
+  RouterManager.initRouter();
   WidgetsFlutterBinding.ensureInitialized();
   await RustLib.init();
-  RouterManager.initRouter();
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    await windowManager.ensureInitialized();
+    WindowOptions windowOptions =
+        WindowOptions(minimumSize: Size(470, 825)); // 设置最小宽度和高度
+    windowManager.waitUntilReadyToShow(windowOptions);
+  }
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     theme: ThemeData(primaryColor: Colors.blueAccent),
@@ -49,9 +57,9 @@ class _MyWidgetState extends State<MyWidget> {
         data: Songlist.getInstance(),
         child: Builder(builder: (context) {
           return Scaffold(
-            appBar: AppBar(
-              title: const Text('flutter_rust_bridge'),
-            ),
+            // appBar: AppBar(
+            //     //    title: const Text('flutter_rust_bridge'),
+            //     ),
             body: _widgetOptions[_selectedIndex],
             bottomNavigationBar: CustomBottomNavigationBar(
                 selectedIndex: _selectedIndex,

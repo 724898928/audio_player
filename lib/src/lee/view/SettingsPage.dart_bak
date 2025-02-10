@@ -1,0 +1,189 @@
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
+class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  String _nickname = "用户昵称";
+  String _bio = "个人简介";
+  ThemeMode _themeMode = ThemeMode.system;
+  bool _notificationsEnabled = true;
+  String _audioQuality = '标准';
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      // 处理图片上传逻辑
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('个人设置'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.save),
+            onPressed: () {
+              // 保存设置到后端
+            },
+          ),
+        ],
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          _buildProfileSection(),
+          const SizedBox(height: 24),
+          _buildAccountSection(),
+          const SizedBox(height: 24),
+          _buildPlaybackSection(),
+          const SizedBox(height: 24),
+          _buildNotificationSection(),
+          const SizedBox(height: 24),
+          _buildThemeSection(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProfileSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('个人资料', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 12),
+        Center(
+          child: GestureDetector(
+            onTap: _pickImage,
+            child: CircleAvatar(
+              radius: 40,
+              backgroundImage: const AssetImage('assets/default_avatar.png'),
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.black.withOpacity(0.4),
+                ),
+                child: const Icon(Icons.camera_alt, color: Colors.white),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        TextFormField(
+          initialValue: _nickname,
+          decoration: const InputDecoration(labelText: '昵称'),
+          onChanged: (value) => setState(() => _nickname = value),
+        ),
+        const SizedBox(height: 8),
+        TextFormField(
+          initialValue: _bio,
+          decoration: const InputDecoration(labelText: '简介'),
+          maxLines: 3,
+          onChanged: (value) => setState(() => _bio = value),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAccountSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('账户设置', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        _buildSettingItem('绑定邮箱', Icons.email, onTap: () {}),
+        _buildSettingItem('绑定手机', Icons.phone, onTap: () {}),
+        _buildSettingItem('修改密码', Icons.lock, onTap: () {}),
+        _buildSettingItem('第三方账号', Icons.link, onTap: () {}),
+      ],
+    );
+  }
+
+  Widget _buildPlaybackSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('播放设置', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        ListTile(
+          title: const Text('音质选择'),
+          trailing: DropdownButton<String>(
+            value: _audioQuality,
+            items: ['标准', '高品质', '无损']
+                .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                .toList(),
+            onChanged: (value) => setState(() => _audioQuality = value!),
+          ),
+        ),
+        const ListTile(
+          title: Text('播放模式'),
+          subtitle: Text('顺序播放'),
+        ),
+        const ListTile(
+          title: Text('下载设置'),
+          subtitle: Text('下载路径：/storage/emulated/0/Music'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNotificationSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('通知设置', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        SwitchListTile(
+          title: const Text('新歌提醒'),
+          value: _notificationsEnabled,
+          onChanged: (value) => setState(() => _notificationsEnabled = value),
+        ),
+        const ListTile(
+          title: Text('推送时间段'),
+          subtitle: Text('08:00 - 22:00'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildThemeSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('主题与外观', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        RadioListTile<ThemeMode>(
+          title: const Text('浅色主题'),
+          value: ThemeMode.light,
+          groupValue: _themeMode,
+          onChanged: (value) => setState(() => _themeMode = value!),
+        ),
+        RadioListTile<ThemeMode>(
+          title: const Text('深色主题'),
+          value: ThemeMode.dark,
+          groupValue: _themeMode,
+          onChanged: (value) => setState(() => _themeMode = value!),
+        ),
+        RadioListTile<ThemeMode>(
+          title: const Text('系统默认'),
+          value: ThemeMode.system,
+          groupValue: _themeMode,
+          onChanged: (value) => setState(() => _themeMode = value!),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSettingItem(String title, IconData icon, {VoidCallback? onTap}) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(title),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: onTap,
+    );
+  }
+}

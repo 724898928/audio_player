@@ -16,21 +16,24 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-  var searchController = TextEditingController();
   BasePlatform platformTools = MiGu.getInstance();
   Widget container = Container();
   Widget? proSongs;
   bool selectAll = false;
-  late List<SearchSong> proSongList;
+  late MiGu miGu;
   late List<BasePlatform> platformList = [
     MiGu.getInstance(),
   ];
-
+  final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> labels = [
     {'label': "Source1", 'value': 1},
     {'label': "Source2", 'value': 2},
     // {'label': "Source1", 'value': 1},
   ];
+  List<SearchSong> _searchResults = [];
+  List<String> _searchHistory = ["流行音乐", "古典钢琴", "周杰伦"];
+  List<String> _hotSearches = ["排行榜", "新歌速递", "经典老歌", "电子音乐"];
+  bool _isSearching = false;
 
   @override
   void initState() {
@@ -38,9 +41,217 @@ class _SearchState extends State<Search> {
   }
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _performSearch() async {
+    // 模拟搜索请求
+    var words = _searchController.text;
+    miGu = await platformTools.doGetSongs(_searchController.text, 1, 10);
+
+    setState(() {
+      _searchResults = miGu.proSongList;
+      if (!_searchHistory.contains(_searchController.text)) {
+        _searchHistory.insert(0, _searchController.text);
+      }
+    });
+  }
+
+  void _handleSearchInput(String value) {
+    setState(() {
+      _isSearching = value.isNotEmpty;
+      if (value.isEmpty) {
+        _searchResults.clear();
+      }
+    });
+  }
+
+  Widget _buildSearchBar() {
+    return TextField(
+      controller: _searchController,
+      autofocus: true,
+      decoration: InputDecoration(
+        hintText: "搜索歌曲、歌手、专辑...",
+        border: InputBorder.none,
+        suffixIcon: IconButton(
+          icon: const Icon(Icons.search),
+          onPressed: _performSearch,
+        ),
+      ),
+      onChanged: (value) => _handleSearchInput(value),
+      onSubmitted: (value) => _performSearch(),
+    );
+  }
+
+  void _clearSearch() {
+    _searchController.clear();
+    setState(() {
+      _searchResults.clear();
+      _isSearching = false;
+    });
+  }
+
+  Widget _buildResultItem(SearchSong song) {
+    return ListTile(
+      leading: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Image.network(
+          song.imgItems?.first["img"]!,
+          width: 50,
+          height: 50,
+          fit: BoxFit.cover,
+        ),
+      ),
+      title: Text(song.name!),
+      subtitle: Text("${song.proSong?.artist} · ${song.proSong?.album ?? ""}"),
+      trailing: Container(
+        width: 100,
+        child: Row(
+          children: [
+            CheckBoxWidget(
+              isCheck: song.selected ?? false,
+              callback: (v) {
+                song.selected = !song.selected!;
+                print("song.proSong  song.proSong:${song.proSong}");
+                if (song.selected!) song.getPlaySong();
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.play_circle_outline),
+              onPressed: () => _playSong(song),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.blueGrey,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTagList(List<String> tags) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: tags.map((tag) => _buildTagItem(tag)).toList(),
+    );
+  }
+
+  Widget _buildTagItem(String text) {
+    return GestureDetector(
+      onTap: () => _onTagSelected(text),
+      child: Chip(
+        label: Text(text),
+        backgroundColor: Colors.blue[50],
+        shape: StadiumBorder(
+          side: BorderSide(color: Colors.blue.shade100),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchResults() {
+    return ListView.separated(
+      padding: const EdgeInsets.all(16),
+      itemCount: _searchResults.length,
+      separatorBuilder: (context, index) => const Divider(height: 24),
+      itemBuilder: (context, index) {
+        final item = _searchResults[index];
+        return _buildResultItem(item);
+      },
+    );
+  }
+
+  Widget _buildHistoryItem(String text) {
+    return ListTile(
+      leading: const Icon(Icons.history, color: Colors.grey),
+      title: Text(text),
+      trailing: IconButton(
+        icon: const Icon(Icons.close, size: 18),
+        onPressed: () => _removeHistoryItem(text),
+      ),
+      onTap: () => _onHistorySelected(text),
+    );
+  }
+
+  Widget _buildHistoryList() {
+    return Column(
+      children:
+          _searchHistory.map((history) => _buildHistoryItem(history)).toList(),
+    );
+  }
+
+  void _onTagSelected(String tag) {
+    _searchController.text = tag;
+    _performSearch();
+  }
+
+  void _onHistorySelected(String text) {
+    _searchController.text = text;
+    _performSearch();
+  }
+
+  void _removeHistoryItem(String text) {
+    setState(() => _searchHistory.remove(text));
+  }
+
+  void _playSong(SearchSong song) {
+    // 播放音乐实现
+  }
+  Widget _buildBodyContent() {
+    if (_searchResults.isNotEmpty) {
+      return _buildSearchResults();
+    }
+    if (_isSearching) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        _buildSectionTitle("热门搜索"),
+        _buildTagList(_hotSearches),
+        const SizedBox(height: 24),
+        _buildSectionTitle("搜索历史"),
+        _buildHistoryList(),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: _buildSearchBar(),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: _clearSearch,
+          )
+        ],
+      ),
+      body: _buildBodyContent(),
+    );
+  }
+
+  /** 
+  @override
   Widget build(BuildContext context) {
     print("build");
-    return Row(
+    return 
+     Row(
       children: [
         // lift the search bar
         Expanded(
@@ -157,10 +368,5 @@ class _SearchState extends State<Search> {
       ],
     );
   }
-
-  @override
-  void dispose() {
-    searchController.dispose();
-    super.dispose();
-  }
+  */
 }

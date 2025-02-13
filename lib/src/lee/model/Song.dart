@@ -20,17 +20,18 @@ class ProSong implements BaseSong {
   final String? track;
   final String? genre;
 
-  ProSong(
-      {required this.id,
-      required this.title,
-      required this.artist,
-      required this.album,
-      required this.imgItems,
-      required this.year,
-      required this.track,
-      required this.genre,
-      required this.lyrics,
-      required this.url});
+  ProSong({
+    required this.id,
+    required this.title,
+    required this.artist,
+    required this.album,
+    required this.imgItems,
+    required this.year,
+    required this.track,
+    required this.genre,
+    required this.lyrics,
+    required this.url,
+  });
 
   factory ProSong.fromJson(Map<String, dynamic> json, String? path) {
     return ProSong(
@@ -51,9 +52,24 @@ class ProSong implements BaseSong {
     this.url = url;
   }
 
+  Map<String, dynamic> toMap() {
+    return {
+      'id': this.id ?? "",
+      'title': this.title ?? "",
+      'artist': this.artist ?? "",
+      'album': this.album ?? "",
+      'imgItems': this.imgItems ?? "",
+      'year': this.year ?? "",
+      'track': this.track ?? "",
+      'genre': this.genre ?? "",
+      'lyrics': this.lyrics ?? "",
+      'url': this.url ?? "",
+    };
+  }
+
   @override
   String toString() {
-    return super.toString();
+    return toMap().toString();
   }
 
   @override

@@ -3,6 +3,30 @@ import 'package:flutter/material.dart';
 
 import '../model/Song.dart';
 
+class CheckBoxWidget extends StatefulWidget {
+  CheckBoxWidget({super.key, required this.isCheck, required this.callback});
+  bool isCheck;
+  ValueChanged callback;
+  @override
+  State<CheckBoxWidget> createState() => _CheckBoxWidgetState();
+}
+
+class _CheckBoxWidgetState extends State<CheckBoxWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Checkbox(
+        value: widget.isCheck,
+        onChanged: (v) {
+          if (null != widget.callback) {
+            setState(() {
+              widget.isCheck = !widget.isCheck;
+              widget.callback.call(v);
+            });
+          }
+        });
+  }
+}
+
 class CheckBoxList extends StatefulWidget {
   CheckBoxList(
       {super.key, required this.searchSelected, required this.callback});

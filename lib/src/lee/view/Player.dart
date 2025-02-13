@@ -47,6 +47,8 @@ class _PlayerState extends State<Player>
 
   Timer? _timer;
 
+  NetworkImage? imgWidgets = null;
+
   List<Map<String, dynamic>> labels = [
     {'label': 'x4', 'value': 4.0},
     {'label': 'x3', 'value': 3.0},
@@ -118,6 +120,7 @@ class _PlayerState extends State<Player>
               idx = dat['idx'];
               playSpeed = dat['speed'];
               current_song = Songlist.getInstance().proPlaySongList[idx];
+              imgWidgets = NetworkImage(current_song?.imgItems?.first['img']);
               setState(() {});
             }
             // else {
@@ -130,10 +133,7 @@ class _PlayerState extends State<Player>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final sl = ModalRoute.of(context)?.settings.arguments as Songlist;
-    // if (sl.proPlaySongList.isNotEmpty) {
-    //   singer = sl.proPlaySongList.first.toString();
-    // }
+    //final sl = ModalRoute.of(context)?.settings.arguments as Songlist;
     return Scaffold(
       appBar: AppBar(
         title: Text('简约音乐播放器'),
@@ -152,7 +152,7 @@ class _PlayerState extends State<Player>
                 children: [
                   CircleAvatar(
                     radius: 80,
-                    backgroundImage:
+                    backgroundImage: imgWidgets ??
                         AssetImage('assets/album_cover.jpg'), // 替换为你的专辑封面图片路径
                   ),
                   SizedBox(height: 20),

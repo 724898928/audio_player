@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:audio_player/src/lee/common/PlayerIcons.dart';
 import 'package:audio_player/src/lee/common/Utils.dart';
@@ -135,221 +136,260 @@ class _PlayerState extends State<Player>
     super.build(context);
     //final sl = ModalRoute.of(context)?.settings.arguments as Songlist;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('简约音乐播放器'),
-        centerTitle: true,
-        backgroundColor: Colors.blueAccent,
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // 顶部音乐信息
-          Expanded(
-            flex: 8,
-            child: Container(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    radius: 80,
-                    backgroundImage: imgWidgets ??
-                        AssetImage('assets/album_cover.jpg'), // 替换为你的专辑封面图片路径
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    '${current_song?.title ?? ""}',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    '${current_song?.artist ?? ""}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Text('${current_song?.lyrics ?? ""}')
-                ],
-              ),
-            ),
-          ),
-          // 播放进度条
-          Expanded(
-              flex: 2,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Column(
-                  children: [
-                    Slider(
-                      // overlayColor: WidgetStatePropertyAll(Colors.blueAccent),
-                      thumbColor: Colors.blueAccent,
-                      value: currentPross,
-                      // 当前播放进度（可以绑定实际数据）
-                      min: 0.0,
-                      max: 1.0,
-                      // 音乐总时长
-                      onChanged: (value) {
-                        currentPross = value;
-                        print("current_pross :$currentPross");
-                        seek(tm: currentPross);
-                        setState(() {});
-                        // 实现进度调整
-                      },
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // 当前播放时间
-                          Text(
-                            '$current_d',
-                            style: TextStyle(color: Colors.grey),
+        appBar: AppBar(
+          title: Text('简约音乐播放器'),
+          centerTitle: true,
+          backgroundColor: Colors.blueAccent,
+        ),
+        body: Stack(
+          children: [
+            // 背景模糊化
+            _buildBlurBackground(),
+            // 主内容
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // 顶部音乐信息
+                Expanded(
+                  flex: 8,
+                  child: Container(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 80,
+                          backgroundImage: imgWidgets ??
+                              AssetImage(
+                                  'assets/album_cover.jpg'), // 替换为你的专辑封面图片路径
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          '${current_song?.title ?? ""}',
+                          style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          '${current_song?.artist ?? ""}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
                           ),
-                          // 总时长
-                          Text(
-                            '$total_d',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          '${current_song?.lyrics ?? ""}',
+                          style: TextStyle(fontSize: 18, color: Colors.grey),
+                        )
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              )),
-
-          // 播放控制按钮
-          Expanded(
-            flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IconButton(
-                    padding: EdgeInsets.all(0),
-                    alignment: Alignment.center,
-                    icon: Icon(Icons.playlist_play),
-                    iconSize: 30,
-                    onPressed: () async {
-                      // 打开播放列表
-                      await Utils.showListDialog(
-                          context, Songlist.getInstance().proPlaySongList,
-                          (i) async {
-                        await play(idx: i);
-                      });
-                    },
-                  ),
-                  SizedBox(width: 30),
-                  IconButton(
-                    padding: EdgeInsets.all(0),
-                    alignment: Alignment.center,
-                    icon: Icon(Icons.skip_previous),
-                    iconSize: 48,
-                    onPressed: () async {
-                      // 上一首
-                      if (Songlist.getInstance().proPlaySongList.isNotEmpty) {
-                        await previousSong();
-                        await setSpeed(v: playSpeed);
-                      }
-                    },
-                  ),
-                  SizedBox(width: 20),
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.blueAccent,
-                    child: IconButton(
+                // 播放进度条
+                Expanded(
+                    flex: 1,
+                    child: Container(
                       padding: EdgeInsets.all(0),
-                      icon: Icon(playIcon),
-                      iconSize: 40,
-                      color: Colors.white,
-                      onPressed: () async {
-                        if (Songlist.getInstance().proPlaySongList.isNotEmpty) {
-                          // 播放或暂停
-                          if (!is_playing) {
-                            playIcon = Icons.pause;
-                            await play(idx: BigInt.from(idx));
-                            await seek(tm: currentPross);
-                            await setSpeed(v: playSpeed);
-                            setTimer();
-                          } else {
-                            await pause();
-                            playIcon = Icons.play_arrow;
-                          }
-                          setState(() {});
-                          is_playing = !is_playing;
-                        }
-                      },
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Column(
+                          children: [
+                            Slider(
+                              // overlayColor: WidgetStatePropertyAll(Colors.blueAccent),
+                              thumbColor: Colors.blueAccent,
+                              value: currentPross,
+                              // 当前播放进度（可以绑定实际数据）
+                              min: 0.0,
+                              max: 1.0,
+                              // 音乐总时长
+                              onChanged: (value) {
+                                currentPross = value;
+                                print("current_pross :$currentPross");
+                                seek(tm: currentPross);
+                                setState(() {});
+                                // 实现进度调整
+                              },
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(left: 40, right: 40),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // 当前播放时间
+                                  Text(
+                                    '$current_d',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                  // 总时长
+                                  Text(
+                                    '$total_d',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )),
+
+                // 播放控制按钮
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          padding: EdgeInsets.all(0),
+                          alignment: Alignment.center,
+                          icon: Icon(Icons.playlist_play),
+                          iconSize: 30,
+                          onPressed: () async {
+                            // 打开播放列表
+                            await Utils.showListDialog(
+                                context, Songlist.getInstance().proPlaySongList,
+                                (i) async {
+                              await play(idx: i);
+                            });
+                          },
+                        ),
+                        SizedBox(width: 30),
+                        IconButton(
+                          padding: EdgeInsets.all(0),
+                          alignment: Alignment.center,
+                          icon: Icon(Icons.skip_previous),
+                          iconSize: 48,
+                          onPressed: () async {
+                            // 上一首
+                            if (Songlist.getInstance()
+                                .proPlaySongList
+                                .isNotEmpty) {
+                              await previousSong();
+                              await setSpeed(v: playSpeed);
+                            }
+                          },
+                        ),
+                        SizedBox(width: 20),
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Colors.blueAccent,
+                          child: IconButton(
+                            padding: EdgeInsets.all(0),
+                            icon: Icon(playIcon),
+                            iconSize: 40,
+                            color: Colors.white,
+                            onPressed: () async {
+                              if (Songlist.getInstance()
+                                  .proPlaySongList
+                                  .isNotEmpty) {
+                                // 播放或暂停
+                                if (!is_playing) {
+                                  playIcon = Icons.pause;
+                                  await play(idx: BigInt.from(idx));
+                                  await seek(tm: currentPross);
+                                  await setSpeed(v: playSpeed);
+                                  setTimer();
+                                } else {
+                                  await pause();
+                                  playIcon = Icons.play_arrow;
+                                }
+                                setState(() {});
+                                is_playing = !is_playing;
+                              }
+                            },
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                        IconButton(
+                          padding: EdgeInsets.all(0),
+                          alignment: Alignment.center,
+                          icon: Icon(Icons.skip_next),
+                          iconSize: 48,
+                          onPressed: () async {
+                            // 下一首
+                            if (Songlist.getInstance()
+                                .proPlaySongList
+                                .isNotEmpty) {
+                              await setSpeed(v: playSpeed);
+                              await nextSong();
+                              print("nextSong");
+                            }
+                          },
+                        ),
+                        SizedBox(width: 30),
+                        IconButton(
+                            alignment: Alignment.center,
+                            icon: Icon(crrentModleIcon),
+                            iconSize: 30,
+                            onPressed: () async {
+                              mode_click =
+                                  (mode_click + 1) % PlayMode.values.length;
+                              switch (mode_click) {
+                                case 0:
+                                  await setPlayMode(mode: PlayMode.normal);
+                                  break;
+                                case 1:
+                                  await setPlayMode(mode: PlayMode.loop);
+                                  break;
+                                case 2:
+                                  await setPlayMode(mode: PlayMode.singleLoop);
+                                  break;
+                                case 3:
+                                  await setPlayMode(mode: PlayMode.random);
+                                  break;
+                              }
+                              crrentModleIcon = modleIcon[mode_click];
+                              setState(() {});
+                            }),
+                        SizedBox(
+                          width: 30,
+                        ),
+                        DDbutton(
+                            labels: labels,
+                            dropdownValue: playSpeed,
+                            onChange: (v) async {
+                              if (null != v) {
+                                playSpeed = v;
+                                await setSpeed(v: v);
+                                print("DDbutton onChange value:$v");
+                              }
+                            })
+                      ],
                     ),
                   ),
-                  SizedBox(width: 20),
-                  IconButton(
-                    padding: EdgeInsets.all(0),
-                    alignment: Alignment.center,
-                    icon: Icon(Icons.skip_next),
-                    iconSize: 48,
-                    onPressed: () async {
-                      // 下一首
-                      if (Songlist.getInstance().proPlaySongList.isNotEmpty) {
-                        await setSpeed(v: playSpeed);
-                        await nextSong();
-                        print("nextSong");
-                      }
-                    },
-                  ),
-                  SizedBox(width: 30),
-                  IconButton(
-                      alignment: Alignment.center,
-                      icon: Icon(crrentModleIcon),
-                      iconSize: 30,
-                      onPressed: () async {
-                        mode_click = (mode_click + 1) % PlayMode.values.length;
-                        switch (mode_click) {
-                          case 0:
-                            await setPlayMode(mode: PlayMode.normal);
-                            break;
-                          case 1:
-                            await setPlayMode(mode: PlayMode.loop);
-                            break;
-                          case 2:
-                            await setPlayMode(mode: PlayMode.singleLoop);
-                            break;
-                          case 3:
-                            await setPlayMode(mode: PlayMode.random);
-                            break;
-                        }
-                        crrentModleIcon = modleIcon[mode_click];
-                        setState(() {});
-                      }),
-                  SizedBox(
-                    width: 30,
-                  ),
-                  DDbutton(
-                      labels: labels,
-                      dropdownValue: playSpeed,
-                      onChange: (v) async {
-                        if (null != v) {
-                          playSpeed = v;
-                          await setSpeed(v: v);
-                          print("DDbutton onChange value:$v");
-                        }
-                      })
-                ],
-              ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ));
   }
 
   @override
   bool get wantKeepAlive => true; // keepAlive
+
+  Widget _buildBlurBackground() {
+    return Stack(
+      children: [
+        Image.network(
+          'https://picsum.photos/800/800',
+          width: double.infinity,
+          height: double.infinity,
+          fit: BoxFit.cover,
+        ),
+        BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+          child: Container(
+            color: Colors.black.withOpacity(0.5),
+          ),
+        ),
+      ],
+    );
+  }
 }
 // Condition

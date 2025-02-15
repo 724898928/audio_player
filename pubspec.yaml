@@ -74,6 +74,9 @@ flutter:
     - assets/album_cover.jpg
     - assets/icon_png/order_play.png
     - assets/icon_png/RandomPlay.png
+    - assets/ad/ad1.PNG
+    - assets/ad/ad1.PNG
+    - assets/ad/ad1.PNG
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

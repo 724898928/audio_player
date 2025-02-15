@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../rust/api/simple.dart';
 import '../component/ChangeNotifierProvider.dart';
+import '../component/ElevatedButton2.dart';
 import '../model/Song.dart';
 import '../model/SongList.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -182,12 +183,23 @@ class _SettingsWidgetState extends State<SettingsWidget>
             flex: 5,
             child: Scaffold(
               appBar: TabBar(
+                  dividerColor: Colors.blue,
+                  labelColor: Colors.transparent,
+                  overlayColor: WidgetStateProperty.all(Colors.transparent),
                   controller: tabController,
                   tabs: features.map((e) {
-                    return ElevatedButton.icon(
-                        icon: Icon(e['icon']),
-                        label: Text(e['label']),
-                        onPressed: null);
+                    return ElevatedButton2(
+                        icon: Icon(e['icon']), label: Text(e['label']));
+                    // return ElevatedButton.icon(
+                    //   icon: Icon(e['icon']),
+                    //   label: Text(e['label']),
+                    //   onPressed: null,
+                    //   style: ElevatedButton.styleFrom(
+                    //       foregroundColor: Colors.blueAccent,
+                    //       padding: EdgeInsets.all(0),
+                    //       shape: BeveledRectangleBorder(
+                    //           borderRadius: BorderRadius.circular(5))),
+                    // );
                   }).toList()),
               body: TabBarView(
                   controller: tabController,

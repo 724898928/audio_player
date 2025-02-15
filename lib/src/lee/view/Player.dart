@@ -137,7 +137,7 @@ class _PlayerState extends State<Player>
     //final sl = ModalRoute.of(context)?.settings.arguments as Songlist;
     return Scaffold(
         appBar: AppBar(
-          title: Text('简约音乐播放器'),
+          title: Text('音乐播放器'),
           centerTitle: true,
           backgroundColor: Colors.blueAccent,
         ),

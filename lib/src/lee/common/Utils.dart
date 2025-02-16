@@ -18,12 +18,14 @@ class Utils {
   );
 
   static Future<dynamic> get(String url, Map<String, dynamic>? qp) async {
-    Uri uri = Uri(scheme: 'https', host: url, queryParameters: qp);
+    // Uri uri = Uri(scheme: 'https', host: url, queryParameters: qp);
     try {
-      var response = await dio.get(uri.toString());
+      print("https get uri: " + url.toString());
+      var response = await dio.get(url);
       print("response: " + response.toString());
       if (response.statusCode == 200) {
-        return jsonDecode(response.data);
+        return response.data;
+        // return jsonDecode(response.data);
       } else {
         print("Error: " + response.data);
         return response.data;

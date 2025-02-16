@@ -11,8 +11,18 @@ import 'package:flutter/material.dart';
 
 import '../component/DDownButton.dart';
 import '../model/Song.dart';
+import 'LyrWidget.dart';
 
 final GlobalKey<_PlayerState> _key = GlobalKey<_PlayerState>();
+
+enum OptionsType {
+  Slider,
+  Comm;
+
+  List<OptionsType> Values() {
+    return [Slider, Comm];
+  }
+}
 
 class Player extends StatefulWidget {
   Player({super.key});
@@ -40,13 +50,17 @@ class _PlayerState extends State<Player>
 
   IconData playIcon = Icons.play_arrow;
 
-  String? total_d = "";
+  Duration? total_d = null;
+
+  double? totalDouble = null;
 
   String? current_d = "";
 
   double playSpeed = 1.0;
 
   Timer? _timer;
+
+  late LyrWidget lyrWidget;
 
   NetworkImage? imgWidgets = null;
 
@@ -63,6 +77,7 @@ class _PlayerState extends State<Player>
   @override
   void initState() {
     super.initState();
+    lyrWidget = LyrWidget();
     setTimer();
     Songlist songList = Songlist.getInstance();
     print("_PlayerState songList:${songList.proPlaySongList}");
@@ -102,7 +117,7 @@ class _PlayerState extends State<Player>
     _timer ??
         Timer.periodic(Duration(milliseconds: 500), (timer) async {
           // 每 5 秒执行一次
-          await getPos().listen((v) {
+          await getPos().listen((v) async {
             // 处理返回的数据
             print("playerThreadRun  msg1:$v");
             if (mounted) {
@@ -110,10 +125,11 @@ class _PlayerState extends State<Player>
               // currentPross = dat['pos'] * dropdownValue;
               currentPross = dat['pos'];
               currentPross = currentPross > 1 ? 1 : currentPross;
-              total_d = Duration(seconds: dat['len']).toFormattedString();
-              current_d = Duration(
-                      seconds: (dat['len'].toDouble() * currentPross).toInt())
-                  .toFormattedString();
+              total_d = Duration(seconds: dat['len']);
+              totalDouble = dat['len'].toDouble();
+              var curttime = totalDouble! * currentPross;
+              current_d =
+                  Duration(seconds: curttime.toInt()).toFormattedString();
               is_playing = dat['playing'];
               playIcon = is_playing ? Icons.pause : Icons.play_arrow;
               mode_click = dat['mode'];
@@ -122,6 +138,8 @@ class _PlayerState extends State<Player>
               playSpeed = dat['speed'];
               current_song = Songlist.getInstance().proPlaySongList[idx];
               imgWidgets = NetworkImage(current_song?.imgItems?.first['img']);
+              await lyrWidget.update(current_song!.lyrics!.first,
+                  curttime.toInt(), OptionsType.Comm);
               setState(() {});
             }
             // else {
@@ -147,92 +165,96 @@ class _PlayerState extends State<Player>
             _buildBlurBackground(),
             // 主内容
             Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // 顶部音乐信息
                 Expanded(
-                  flex: 8,
+                  flex: 3,
                   child: Container(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(6.0),
                     child: Column(
                       children: [
                         CircleAvatar(
-                          radius: 80,
+                          radius: 75,
                           backgroundImage: imgWidgets ??
                               AssetImage(
                                   'assets/album_cover.jpg'), // 替换为你的专辑封面图片路径
                         ),
-                        SizedBox(height: 20),
+                        SizedBox(height: 10),
                         Text(
                           '${current_song?.title ?? ""}',
                           style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Colors.grey),
+                              color: Colors.white),
                         ),
                         SizedBox(height: 8),
                         Text(
                           '${current_song?.artist ?? ""}',
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.grey,
+                            color: Colors.white,
                           ),
                         ),
-                        SizedBox(height: 20),
-                        Text(
-                          '${current_song?.lyrics ?? ""}',
-                          style: TextStyle(fontSize: 18, color: Colors.grey),
-                        )
                       ],
                     ),
                   ),
                 ),
+                Expanded(
+                  flex: 4,
+                  child: Container(
+                    child: lyrWidget,
+                  ),
+                ),
+
                 // 播放进度条
                 Expanded(
                     flex: 1,
                     child: Container(
                       padding: EdgeInsets.all(0),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Column(
-                          children: [
-                            Slider(
-                              // overlayColor: WidgetStatePropertyAll(Colors.blueAccent),
-                              thumbColor: Colors.blueAccent,
-                              value: currentPross,
-                              // 当前播放进度（可以绑定实际数据）
-                              min: 0.0,
-                              max: 1.0,
-                              // 音乐总时长
-                              onChanged: (value) {
-                                currentPross = value;
-                                print("current_pross :$currentPross");
-                                seek(tm: currentPross);
-                                setState(() {});
-                                // 实现进度调整
-                              },
+                      child: Column(
+                        children: [
+                          Slider(
+                            // overlayColor: WidgetStatePropertyAll(Colors.blueAccent),
+                            thumbColor: Colors.blueAccent,
+                            value: currentPross,
+                            min: 0.0,
+                            max: 1.0,
+                            onChangeEnd: (value) async {
+                              await lyrWidget.update(
+                                  current_song!.lyrics!.first,
+                                  (totalDouble! * currentPross).toInt(),
+                                  OptionsType.Slider);
+                              print("current_pross :$value");
+                            },
+                            onChanged: (value) async {
+                              currentPross = value;
+
+                              await seek(tm: currentPross);
+
+                              setState(() {});
+                              // 实现进度调整
+                            },
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(left: 40, right: 40),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // 当前播放时间
+                                Text(
+                                  '$current_d',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                // 总时长
+                                Text(
+                                  '${total_d?.toFormattedString() ?? ""}',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ],
                             ),
-                            Container(
-                              padding: EdgeInsets.only(left: 40, right: 40),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  // 当前播放时间
-                                  Text(
-                                    '$current_d',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                  // 总时长
-                                  Text(
-                                    '$total_d',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     )),
 
@@ -240,7 +262,7 @@ class _PlayerState extends State<Player>
                 Expanded(
                   flex: 1,
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 5),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -249,6 +271,7 @@ class _PlayerState extends State<Player>
                           padding: EdgeInsets.all(0),
                           alignment: Alignment.center,
                           icon: Icon(Icons.playlist_play),
+                          color: Colors.white,
                           iconSize: 30,
                           onPressed: () async {
                             // 打开播放列表
@@ -259,11 +282,12 @@ class _PlayerState extends State<Player>
                             });
                           },
                         ),
-                        SizedBox(width: 30),
+                        SizedBox(width: 25),
                         IconButton(
                           padding: EdgeInsets.all(0),
                           alignment: Alignment.center,
                           icon: Icon(Icons.skip_previous),
+                          color: Colors.white,
                           iconSize: 48,
                           onPressed: () async {
                             // 上一首
@@ -275,14 +299,14 @@ class _PlayerState extends State<Player>
                             }
                           },
                         ),
-                        SizedBox(width: 20),
+                        SizedBox(width: 25),
                         CircleAvatar(
-                          radius: 30,
+                          radius: 25,
                           backgroundColor: Colors.blueAccent,
                           child: IconButton(
                             padding: EdgeInsets.all(0),
                             icon: Icon(playIcon),
-                            iconSize: 40,
+                            iconSize: 25,
                             color: Colors.white,
                             onPressed: () async {
                               if (Songlist.getInstance()
@@ -305,11 +329,12 @@ class _PlayerState extends State<Player>
                             },
                           ),
                         ),
-                        SizedBox(width: 20),
+                        SizedBox(width: 25),
                         IconButton(
                           padding: EdgeInsets.all(0),
                           alignment: Alignment.center,
                           icon: Icon(Icons.skip_next),
+                          color: Colors.white,
                           iconSize: 48,
                           onPressed: () async {
                             // 下一首
@@ -322,10 +347,11 @@ class _PlayerState extends State<Player>
                             }
                           },
                         ),
-                        SizedBox(width: 30),
+                        SizedBox(width: 25),
                         IconButton(
                             alignment: Alignment.center,
                             icon: Icon(crrentModleIcon),
+                            color: Colors.white,
                             iconSize: 30,
                             onPressed: () async {
                               mode_click =
@@ -348,7 +374,7 @@ class _PlayerState extends State<Player>
                               setState(() {});
                             }),
                         SizedBox(
-                          width: 30,
+                          width: 25,
                         ),
                         DDbutton(
                             labels: labels,
@@ -392,4 +418,3 @@ class _PlayerState extends State<Player>
     );
   }
 }
-// Condition

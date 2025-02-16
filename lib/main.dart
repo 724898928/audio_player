@@ -67,7 +67,7 @@ class _MyWidgetState extends State<MyWidget> {
                   BottomNavigationBarItem(
                       icon: Icon(Icons.search), label: "search"),
                   BottomNavigationBarItem(
-                      icon: Icon(Icons.account_circle), label: "My"),
+                      icon: Icon(Icons.settings), label: "Settings"),
                 ],
                 onTap: _onItemTapped),
             floatingActionButton: FloatingActionButton(

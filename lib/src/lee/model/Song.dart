@@ -1,6 +1,81 @@
 import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:flutter/material.dart';
 
+class Lyric {
+  final int time;
+  // final Duration time;
+  final String text;
+  final String? translation; // 双语歌词支持
+
+  Lyric({required this.time, required this.text, this.translation});
+  @override
+  String toString() {
+    return "time:$time, text:$text, translation:$translation";
+  }
+}
+
+class LyricParser {
+  static final RegExp _lrcRegex = RegExp(
+    r'^\[(\d+):(\d+)(?:\.(\d+))?\](.*?)(?:\/(.*))?$',
+    caseSensitive: false,
+    multiLine: true,
+  );
+
+  static List<Lyric> parse(String lrcContent) {
+    final List<Lyric> lyrics = [];
+    final lines = lrcContent.split('\n');
+
+    for (var line in lines) {
+      line = line.trim();
+      if (line.isEmpty) continue;
+
+      final match = _lrcRegex.firstMatch(line);
+      if (match != null) {
+        final minutes = int.parse(match.group(1)!);
+        final seconds = int.parse(match.group(2)!);
+        final milliseconds = int.parse(match.group(3)?.padRight(3, '0') ?? '0');
+
+        final totalDuration = Duration(
+          minutes: minutes,
+          seconds: seconds,
+          milliseconds: milliseconds,
+        );
+
+        final text = match.group(4)?.trim() ?? '';
+        final translation = match.group(5)?.trim();
+
+        lyrics.add(Lyric(
+          time: totalDuration.inSeconds,
+          text: text,
+          translation: translation,
+        ));
+      } else {
+        // 处理元数据（如 [ti:...]）
+        _parseMetadata(line);
+      }
+    }
+
+    // 按时间排序
+    lyrics.sort((a, b) => a.time.compareTo(b.time));
+    print("lyrics  :$lyrics");
+    return lyrics;
+  }
+
+  static void _parseMetadata(String line) {
+    if (line.startsWith('[') && line.contains(':')) {
+      final metadata = line.substring(1, line.indexOf(']'));
+      final splitIndex = metadata.indexOf(':');
+      if (splitIndex != -1) {
+        final key = metadata.substring(0, splitIndex).trim().toLowerCase();
+        final value = metadata.substring(splitIndex + 1).trim();
+
+        // 可存储到单独的 metadata map
+        print('Metadata: $key = $value');
+      }
+    }
+  }
+}
+
 abstract class BaseSong {
   dynamic decodeMate(dynamic);
   dynamic dealSongMate(dynamic);

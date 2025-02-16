@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
+import '../src/lee/model/Song.dart';
+
 void main() => runApp(MusicPlayerApp());
 
 class MusicPlayerApp extends StatelessWidget {
@@ -24,23 +26,44 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
   int _currentLyricIndex = 0;
   bool _isPlaying = true;
   double _progressValue = 0.3;
-
-  final List<Lyric> _lyrics = [
-    Lyric(time: '00:00', text: '开始演奏...'),
-    Lyric(time: '00:15', text: '这一路上走走停停'),
-    Lyric(time: '00:20', text: '顺着少年漂流的痕迹'),
-    Lyric(time: '00:25', text: '迈出车站的前一刻'),
-    Lyric(time: '00:30', text: '竟有些犹豫'),
-    Lyric(time: '00:35', text: '不禁笑这近乡情怯'),
-    Lyric(time: '00:40', text: '仍无可避免'),
-    Lyric(time: '00:45', text: '而长野的天'),
-    Lyric(time: '00:50', text: '依旧那么暖'),
-    Lyric(time: '00:55', text: '风吹起了从前'),
-  ];
+  final String lrc = "@migu music@ \n" +
+      "[00:00.20]漠河舞厅-张玉玉（原唱：柳爽） \n" +
+      "[00:01.48]作词：柳爽 \n" +
+      "[00:02.22]作曲：柳爽 \n" +
+      "[00:14.44]我从没有见过极光出现的村落 \n" +
+      "[00:20.26]也没有见过有人 在深夜放烟火 \n" +
+      "[00:27.46]晚星就像你的眼睛杀人又放火 \n" +
+      "[00:33.81]你什么都没有说 野风惊扰我 \n" +
+      "[00:41.06]三千里 偶然见过你 \n" +
+      "[00:47.51]花园里 有裙翩舞起 \n" +
+      "[00:54.16]灯光底 抖落了晨曦 \n" +
+      "[01:00.75]在1980的漠河舞厅 \n" +
+      "[01:08.13]如果有时间 \n" +
+      "[01:10.32]你会来看一看我吧 \n" +
+      "[01:13.68]看大雪如何衰老的 \n" +
+      "[01:16.82]我的眼睛如何融化 \n" +
+      "[01:20.35]如果你看见我的话 \n" +
+      "[01:23.65]请转过身去再惊讶 \n" +
+      "[01:27.74]我怕我的眼泪我的白发像羞耻的笑话 \n" +
+      "[01:52.42]我从没有见过极光出现的村落 \n" +
+      "[01:58.27]也没有见过有人 在深夜放烟火 \n" +
+      "[02:05.08]晚星就像你的眼睛杀人又放火 \n" +
+      "[02:11.59]你什么都不必说 野风惊扰我 \n" +
+      "[02:19.02]可是你 惹怒了神明 \n" +
+      "[02:25.03]让你去 还那么年轻 \n" +
+      "[02:32.38]都怪你 远山冷冰冰 \n" +
+      "[02:38.73]在一个人的漠河舞厅 \n" +
+      "[02:46.06]我从没有见过极光出现的村落 \n" +
+      "[02:52.26]也没有见过有人 在深夜放烟火 \n" +
+      "[02:59.23]晚星就像你的眼睛杀人又放火 \n" +
+      "[03:05.80]你什么都不必说 野风惊扰我 \n" +
+      "[03:14.67]";
+  late List<Lyric> _lyrics;
 
   @override
   void initState() {
     super.initState();
+    _lyrics = LyricParser.parse(lrc);
     _simulatePlayback();
   }
 
@@ -80,8 +103,8 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
             children: [
               _buildAppBar(),
               Expanded(child: _buildLyricsList()),
-              _buildProgressBar(),
-              _buildControlButtons(),
+              // _buildProgressBar(),
+              // _buildControlButtons(),
             ],
           ),
         ],
@@ -173,8 +196,8 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(_lyrics[_currentLyricIndex].time),
-                Text(_lyrics.last.time),
+                Text(_lyrics[_currentLyricIndex].time.toString()),
+                Text(_lyrics.last.time.toString()),
               ],
             ),
           ),
@@ -212,11 +235,4 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
       ),
     );
   }
-}
-
-class Lyric {
-  final String time;
-  final String text;
-
-  Lyric({required this.time, required this.text});
 }

@@ -4,7 +4,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../../rust/api/simple.dart';
-import '../component/ChangeNotifierProvider.dart';
 import '../component/ElevatedButton2.dart';
 import '../model/Song.dart';
 import '../model/SongList.dart';
@@ -19,12 +18,10 @@ class SettingsWidget extends StatefulWidget {
 
 typedef AsyncValueChanged = Future<void> Function(dynamic);
 
-class _SettingsWidgetState extends State<SettingsWidget>
-    with TickerProviderStateMixin {
+class _SettingsWidgetState extends State<SettingsWidget> {
   Songlist songs = Songlist.getInstance();
   late AsyncValueChanged event;
   Widget? currentWidget;
-  late TabController tabController;
   int _currentIndex = 0;
   final List<String> images = [
     'assets/ad/ad1.PNG', // 替换为实际的图片路径
@@ -77,7 +74,7 @@ class _SettingsWidgetState extends State<SettingsWidget>
       "label": "版权",
       "view": FeatureContext(
         child: const Card(
-          child: Text("收藏"),
+          child: Text("版权"),
         ),
       )
     },
@@ -87,34 +84,32 @@ class _SettingsWidgetState extends State<SettingsWidget>
   initState() {
     super.initState();
     currentWidget = features.first['view'];
-    tabController = TabController(length: features.length, vsync: this);
-    // event = (index) async {
-    //   print("index: $index");
-    //   currentWidget = features[index]['view'];
-    //   switch (index) {
-    //     case 0:
-    //       await scanLocalSongs();
-    //       break;
-    //     case 1:
-    //       break;
-    //     case 2:
-    //       break;
-    //     case 3:
-    //       break;
-    //   }
-    //   setState(() {});
-    // };
+    event = (index) async {
+      print("index: $index");
+      currentWidget = features[index]['view'];
+      switch (index) {
+        case 0:
+          await _scanLocalSongs();
+          break;
+        case 1:
+          break;
+        case 2:
+          break;
+        case 3:
+          break;
+      }
+      setState(() {});
+    };
   }
 
   @override
   void dispose() {
     super.dispose();
-    tabController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Songlist sl = ChangeNotifierProvider.of<Songlist>(context);
+    // Songlist sl = ChangeNotifierProvider.of<Songlist>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -179,111 +174,74 @@ class _SettingsWidgetState extends State<SettingsWidget>
                   ),
                 ),
               )),
+
+          // 按钮功能区
           Expanded(
-            flex: 5,
-            child: Scaffold(
-              appBar: TabBar(
-                  dividerColor: Colors.blue,
-                  labelColor: Colors.transparent,
-                  overlayColor: WidgetStateProperty.all(Colors.transparent),
-                  controller: tabController,
-                  tabs: features.map((e) {
-                    return ElevatedButton2(
-                        icon: Icon(e['icon']), label: Text(e['label']));
-                    // return ElevatedButton.icon(
-                    //   icon: Icon(e['icon']),
-                    //   label: Text(e['label']),
-                    //   onPressed: null,
-                    //   style: ElevatedButton.styleFrom(
-                    //       foregroundColor: Colors.blueAccent,
-                    //       padding: EdgeInsets.all(0),
-                    //       shape: BeveledRectangleBorder(
-                    //           borderRadius: BorderRadius.circular(5))),
-                    // );
-                  }).toList()),
-              body: TabBarView(
-                  controller: tabController,
-                  children: features.map<Widget>((e) {
-                    return e['view'] as Widget;
-                  }).toList()),
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Container(
+                padding: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blueAccent),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: iconsBut(event),
+                ),
+              ),
             ),
-          )
+          ),
 
-          // // 按钮功能区
-          // Expanded(
-          //   flex: 1,
-          //   child: Padding(
-          //     padding: const EdgeInsets.all(16.0),
-          //     child: Container(
-          //       padding: EdgeInsets.all(5),
-          //       decoration: BoxDecoration(
-          //         border: Border.all(color: Colors.blueAccent),
-          //         borderRadius: BorderRadius.circular(12),
-          //       ),
-          //       child: Row(
-          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //         children: iconsBut(event),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-
-          // // 说明区域
-          // Expanded(
-          //   flex: 4,
-          //   child: currentWidget!,
-          // ),
+          // 说明区域
+          Expanded(
+            flex: 4,
+            child: currentWidget!,
+          ),
         ],
       ),
     );
   }
 
-  // Future<void> scanLocalSongs() async {
-  //   FilePickerResult? result = await FilePicker.platform.pickFiles(
-  //     allowMultiple: true,
-  //     type: FileType.audio,
-  //     allowedExtensions: ['mp3', 'wav', 'ogg', 'm4a', 'acc', 'midi'],
-  //   );
-  //   if (result != null) {
-  //     // songs.proPlaySongList.clear();
-  //     List<String> songList = result.files.map((path) {
-  //       var fileMetadata = getSongMetadata(filePath: path.path!)?.trim();
-  //       if (null != fileMetadata || fileMetadata!.isNotEmpty) {
-  //         print("fileMetadata :$fileMetadata");
-  //         var metaJson = jsonDecode(fileMetadata);
-  //         songs.add(
-  //             ProSong.fromJson(metaJson as Map<String, dynamic>, path.path));
-  //         print("metaJson :$metaJson");
-  //       }
-  //       return path.path!;
-  //     }).toList();
-  //     print("songs :$songList");
+  Future<void> _scanLocalSongs() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+      type: FileType.audio,
+      allowedExtensions: ['mp3', 'wav', 'ogg', 'm4a', 'acc', 'midi'],
+    );
+    if (result != null) {
+      // songs.proPlaySongList.clear();
+      List<String> songList = result.files.map((path) {
+        var fileMetadata = getSongMetadata(filePath: path.path!)?.trim();
+        if (null != fileMetadata || fileMetadata!.isNotEmpty) {
+          print("fileMetadata :$fileMetadata");
+          var metaJson = jsonDecode(fileMetadata);
+          songs.add(
+              ProSong.fromJson(metaJson as Map<String, dynamic>, path.path));
+          print("metaJson :$metaJson");
+        }
+        return path.path!;
+      }).toList();
+      print("songs :$songList");
 
-  //     print("songs :$songs");
-  //   }
-  // }
+      print("songs :$songs");
+    }
+  }
 
-  // List<Widget> iconsBut(AsyncValueChanged event) {
-  //   return features.asMap().entries.map(
-  //     (feature) {
-  //       return GestureDetector(
-  //         child: Column(
-  //           children: [
-  //             IconButton(
-  //               focusColor: Colors.blueAccent,
-  //               icon: Icon(feature.value['icon']),
-  //               highlightColor: Colors.blue,
-  //               // color: Colors.blue,
-  //               onPressed: null,
-  //             ),
-  //             Text(feature.value['label']),
-  //           ],
-  //         ),
-  //         onTap: () async {
-  //           await event.call(feature.key);
-  //         },
-  //       );
-  //     },
-  //   ).toList();
-  // }
+  List<Widget> iconsBut(AsyncValueChanged event) {
+    return features.asMap().entries.map(
+      (feature) {
+        return GestureDetector(
+          child: ElevatedButton2(
+            icon: Icon(feature.value['icon']),
+            label: Text(feature.value['label']),
+          ),
+          onTap: () async {
+            await event.call(feature.key);
+          },
+        );
+      },
+    ).toList();
+  }
 }

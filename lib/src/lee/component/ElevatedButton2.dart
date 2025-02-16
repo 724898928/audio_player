@@ -17,7 +17,7 @@ class ElevatedButton2 extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.symmetric(vertical: 6, horizontal: 24),
+        padding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
         // 保持默认阴影和颜色
         elevation: 8,
         shadowColor: Colors.transparent,

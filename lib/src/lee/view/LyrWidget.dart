@@ -25,6 +25,7 @@ class _LyrWidgetState extends State<LyrWidget> {
   String? lrcUrl = null;
 
   late List<Lyric> _lyrics = [];
+  late double myHeight = 0;
 
   @override
   initState() {
@@ -97,11 +98,13 @@ class _LyrWidgetState extends State<LyrWidget> {
   }
 
   void _scrollToCurrentLyric() {
-    final double itemHeight = 60;
-    final double targetPosition = _currentLyricIndex * itemHeight;
+    final double itemHeight = 47;
 
+    final double targetPosition = _currentLyricIndex * itemHeight;
+    print(
+        " myHeight :$myHeight ,_currentLyricIndex:$_currentLyricIndex,targetPosition:$targetPosition");
     _scrollController.animateTo(
-      targetPosition - (MediaQuery.of(context).size.height / 2 - itemHeight),
+      targetPosition - (myHeight / 2 - 2 * itemHeight),
       duration: Duration(milliseconds: 500),
       curve: Curves.easeInOut,
     );
@@ -134,6 +137,10 @@ class _LyrWidgetState extends State<LyrWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildLyricsList();
+    // MediaQuery.of(context).size.height;
+    return LayoutBuilder(builder: (ctx, constraints) {
+      myHeight = constraints.maxHeight;
+      return _buildLyricsList();
+    });
   }
 }

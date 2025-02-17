@@ -1,16 +1,19 @@
+import 'dart:collection';
+
 import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:flutter/material.dart';
 
 class Lyric {
-  final int time;
-  // final Duration time;
+  // final int time;
   final String text;
   final String? translation; // 双语歌词支持
 
-  Lyric({required this.time, required this.text, this.translation});
+//  Lyric({required this.time, required this.text, this.translation});
+  Lyric({required this.text, this.translation});
   @override
   String toString() {
-    return "time:$time, text:$text, translation:$translation";
+    //  return "time:$time, text:$text, translation:$translation";
+    return "{text:$text, translation:$translation}";
   }
 }
 
@@ -21,8 +24,8 @@ class LyricParser {
     multiLine: true,
   );
 
-  static List<Lyric> parse(String lrcContent) {
-    final List<Lyric> lyrics = [];
+  static LinkedHashMap<int, List<Lyric>> parse(String lrcContent) {
+    final LinkedHashMap<int, List<Lyric>> linkedHashMap = LinkedHashMap();
     final lines = lrcContent.split('\n');
 
     for (var line in lines) {
@@ -43,22 +46,19 @@ class LyricParser {
 
         final text = match.group(4)?.trim() ?? '';
         final translation = match.group(5)?.trim();
-
-        lyrics.add(Lyric(
-          time: totalDuration.inSeconds,
+        var lyric = Lyric(
+          //  time: totalDuration.inSeconds,
           text: text,
           translation: translation,
-        ));
+        );
+        linkedHashMap.putIfAbsent(totalDuration.inSeconds, () => []).add(lyric);
       } else {
         // 处理元数据（如 [ti:...]）
         _parseMetadata(line);
       }
     }
-
-    // 按时间排序
-    lyrics.sort((a, b) => a.time.compareTo(b.time));
-    print("lyrics  :$lyrics");
-    return lyrics;
+    print("lyrics  :$linkedHashMap");
+    return linkedHashMap;
   }
 
   static void _parseMetadata(String line) {

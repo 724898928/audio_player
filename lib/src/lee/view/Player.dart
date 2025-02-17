@@ -138,8 +138,8 @@ class _PlayerState extends State<Player>
               playSpeed = dat['speed'];
               current_song = Songlist.getInstance().proPlaySongList[idx];
               imgWidgets = NetworkImage(current_song?.imgItems?.first['img']);
-              await lyrWidget.update(current_song!.lyrics!.first,
-                  curttime.toInt(), OptionsType.Comm);
+              await lyrWidget.update(
+                  current_song!.lyrics!.first, curttime.toInt());
               setState(() {});
             }
             // else {
@@ -223,8 +223,7 @@ class _PlayerState extends State<Player>
                             onChangeEnd: (value) async {
                               await lyrWidget.update(
                                   current_song!.lyrics!.first,
-                                  (totalDouble! * currentPross).toInt(),
-                                  OptionsType.Slider);
+                                  (totalDouble! * currentPross).toInt());
                               print("current_pross :$value");
                             },
                             onChanged: (value) async {

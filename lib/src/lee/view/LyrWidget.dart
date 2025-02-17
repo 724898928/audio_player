@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 
 import '../common/Utils.dart';
@@ -13,9 +15,8 @@ class LyrWidget extends StatefulWidget {
   Future<void> update(
     String url,
     int currentTime,
-    OptionsType type,
   ) async {
-    await lyrWidgetState.update(url, currentTime, type);
+    await lyrWidgetState.update(url, currentTime);
   }
 }
 
@@ -24,16 +25,12 @@ class _LyrWidgetState extends State<LyrWidget> {
   int _currentLyricIndex = 0;
   String? lrcUrl = null;
 
-  late List<Lyric> _lyrics = [];
+  late LinkedHashMap<int, List<Lyric>>? _lyrics = null;
   late double myHeight = 0;
 
   @override
   initState() {
     super.initState();
-    // if (null != lrc && lrc!.isNotEmpty) {
-    //   _lyrics = LyricParser.parse(lrc!);
-    //   _simulatePlayback();
-    // }
   }
 
   @override
@@ -45,7 +42,6 @@ class _LyrWidgetState extends State<LyrWidget> {
   Future<void> update(
     String url,
     int currentTime,
-    OptionsType type,
   ) async {
     print("update url: $url , currenttime: $currentTime");
     if (lrcUrl != url) {
@@ -58,25 +54,7 @@ class _LyrWidgetState extends State<LyrWidget> {
         setState(() {});
       });
     }
-    if (OptionsType.Slider == type) {
-      print("OptionsType.Slider");
-      _lyrics.asMap().entries.map((e) {
-        print("OptionsType.Slider e:$e, currentTime:$currentTime");
-        if (e.value == currentTime) {
-          _currentLyricIndex = e.key;
-          // _simulatePlayback();
-        }
-      }).toList();
-    }
-    // else {
-    if (currentTime == 0 && _currentLyricIndex == _lyrics.length - 1) {
-      _currentLyricIndex = 0;
-    }
-    if (_currentLyricIndex + 1 < _lyrics.length &&
-        _lyrics[_currentLyricIndex + 1].time == currentTime) {
-      _simulatePlayback();
-    }
-    // }
+    _simulatePlayback(currentTime);
   }
 
   Future<dynamic> getLrc(String url, ValueChanged callback) async {
@@ -85,24 +63,21 @@ class _LyrWidgetState extends State<LyrWidget> {
     });
   }
 
-  void _simulatePlayback() async {
-    if (_currentLyricIndex < _lyrics.length - 1) {
+  void _simulatePlayback(int currentTime) async {
+    if (null != _lyrics && _currentLyricIndex < _lyrics!.length - 1) {
+      var tmp = _lyrics!.keys.toList().indexOf(currentTime);
+      _currentLyricIndex = -1 == tmp ? _currentLyricIndex : tmp;
       if (mounted) {
         setState(() {
-          _currentLyricIndex++;
           _scrollToCurrentLyric();
         });
       }
     }
-    //}
   }
 
   void _scrollToCurrentLyric() {
     final double itemHeight = 47;
-
     final double targetPosition = _currentLyricIndex * itemHeight;
-    print(
-        " myHeight :$myHeight ,_currentLyricIndex:$_currentLyricIndex,targetPosition:$targetPosition");
     _scrollController.animateTo(
       targetPosition - (myHeight / 2 - 2 * itemHeight),
       duration: Duration(milliseconds: 500),
@@ -114,7 +89,7 @@ class _LyrWidgetState extends State<LyrWidget> {
     return ListView.builder(
       controller: _scrollController,
       padding: EdgeInsets.all(20),
-      itemCount: _lyrics.length,
+      itemCount: _lyrics?.length ?? 0,
       itemBuilder: (context, index) {
         final isCurrent = index == _currentLyricIndex;
         return Center(
@@ -127,7 +102,7 @@ class _LyrWidgetState extends State<LyrWidget> {
             ),
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 12),
-              child: Text(_lyrics[index].text),
+              child: Text(_lyrics?.values.elementAt(index).first.text ?? ""),
             ),
           ),
         );
@@ -137,7 +112,6 @@ class _LyrWidgetState extends State<LyrWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // MediaQuery.of(context).size.height;
     return LayoutBuilder(builder: (ctx, constraints) {
       myHeight = constraints.maxHeight;
       return _buildLyricsList();

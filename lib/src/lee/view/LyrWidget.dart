@@ -13,10 +13,14 @@ class LyrWidget extends StatefulWidget {
   State<LyrWidget> createState() => lyrWidgetState;
 
   Future<void> update(
-    String url,
+    String? url,
     int currentTime,
   ) async {
     await lyrWidgetState.update(url, currentTime);
+  }
+
+  Future<void> clear() async {
+    await lyrWidgetState.clear();
   }
 }
 
@@ -39,14 +43,22 @@ class _LyrWidgetState extends State<LyrWidget> {
     super.dispose();
   }
 
+  Future<void> clear() async {
+    setState(() {
+      _lyrics = null;
+      lrcUrl = null;
+      _currentLyricIndex = 0;
+    });
+  }
+
   Future<void> update(
-    String url,
+    String? url,
     int currentTime,
   ) async {
     print("update url: $url , currenttime: $currentTime");
     if (lrcUrl != url) {
       lrcUrl = url;
-      await getLrc(url, (res) {
+      await getLrc(url!, (res) {
         if (null != res) {
           print("update res: $res");
           _lyrics = LyricParser.parse(res);

@@ -224,7 +224,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         return path.path!;
       }).toList();
       print("songs :$songList");
-
+      //currentWidget = ;
       print("songs :$songs");
     }
   }
@@ -233,9 +233,15 @@ class _SettingsWidgetState extends State<SettingsWidget> {
     return features.asMap().entries.map(
       (feature) {
         return GestureDetector(
-          child: ElevatedButton2(
-            icon: Icon(feature.value['icon']),
-            label: Text(feature.value['label']),
+          child: Container(
+            decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 125, 153, 231),
+                // border: Border.all(color: Colors.blueAccent, width: 2),
+                borderRadius: BorderRadius.circular(10)),
+            child: ElevatedButton2(
+              icon: Icon(feature.value['icon']),
+              label: Text(feature.value['label']),
+            ),
           ),
           onTap: () async {
             await event.call(feature.key);

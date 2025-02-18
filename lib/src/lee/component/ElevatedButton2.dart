@@ -17,6 +17,7 @@ class ElevatedButton2 extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
         padding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
         // 保持默认阴影和颜色
         elevation: 8,

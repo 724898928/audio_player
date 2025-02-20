@@ -21,7 +21,7 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/java'
-        main.jniLibs.srcDirs = ['src/main/libs']
+        main.jniLibs.srcDirs = ['src/main/jniLibs']
 //        main {
 //      //      java.srcDirs += 'src/main/java'
 //            jniLibs.srcDirs = ['src/main/libs']
@@ -51,14 +51,10 @@ android {
             signingConfig = signingConfigs.debug
         }
     }
+
+    dependencies {
+        implementation 'com.android.support:support-annotations:28.0.0'
+    }
+
 }
 
-flutter {
-    source = "../.."
-}
-
-cargo {
-    module = "../../rust"
-    libname = "rust_lib_audio_player"
-    targets = ["arm64"]
-}

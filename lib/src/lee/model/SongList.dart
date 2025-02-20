@@ -1,6 +1,7 @@
 import 'package:audio_player/src/lee/model/Song.dart';
 import 'package:flutter/foundation.dart';
 
+// the list to play
 class Songlist extends ChangeNotifier {
   // 私有构造函数
 

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../rust/api/simple.dart';
 import '../component/ElevatedButton2.dart';
+import '../component/PayView.dart';
 import '../model/Song.dart';
 import '../model/SongList.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -23,82 +24,78 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   late AsyncValueChanged event;
   Widget? currentWidget;
   int _currentIndex = 0;
+  bool isWeixin = true;
   final List<String> images = [
     'assets/ad/ad1.PNG', // 替换为实际的图片路径
     'assets/ad/ad1.PNG',
     'assets/ad/ad1.PNG',
   ];
 
-  final List<Map<String, dynamic>> features = [
-    {
-      "icon": Icons.music_note,
-      "label": "扫描本地音乐",
-      "view": FeatureContext(
-          child: const Card(
-              child: Text(
-        "扫描",
-        style: TextStyle(fontSize: 14),
-      )))
-    },
-    {
-      "icon": Icons.money,
-      "label": "打赏",
-      "view": FeatureContext(
-        child: const Card(
-          child: Text("打赏"),
-        ),
-      )
-    },
-    {
-      "icon": Icons.star,
-      "label": "收藏",
-      "view": FeatureContext(
-        child: const Card(
-          child: Text("收藏"),
-        ),
-      )
-    },
-    {
-      "icon": Icons.info,
-      "label": "说明",
-      "view": FeatureContext(
-        child: const Card(
-          child: Text("说明:\n"
-              "本播放器是本着学习和自用的目的开发的，请勿用于商业目的，若要用于商业目的请联系本人。\n"
-              "本播放器是使用Flutter开发的UI界面，使用Rust开发的播放逻辑服务。"),
-        ),
-      )
-    },
-    {
-      "icon": Icons.copyright,
-      "label": "版权",
-      "view": FeatureContext(
-        child: const Card(
-          child: Text("版权"),
-        ),
-      )
-    },
-  ];
-
+  late List<Map<String, dynamic>> features;
+  late VoidCallback? callback;
   @override
   initState() {
     super.initState();
+    features = [
+      {"icon": Icons.money, "label": "打赏", "view": PayView()},
+      {
+        "icon": Icons.star,
+        "label": "收藏",
+        "view": FeatureContext(
+          child: const Card(
+            child: Text("收藏"),
+          ),
+        )
+      },
+      {
+        "icon": Icons.music_note,
+        "label": "添加本地",
+        "view": FeatureContext(
+            child: const Card(
+                child: Text(
+          "扫描",
+          style: TextStyle(fontSize: 14),
+        )))
+      },
+      {
+        "icon": Icons.info,
+        "label": "说明",
+        "view": FeatureContext(
+          child: const Card(
+            child: Text("说明:\n"
+                "本播放器是本着学习和自用的目的开发的，请勿用于商业目的，若要用于商业目的请联系本人。\n"
+                "本播放器是使用Flutter开发的UI界面，使用Rust开发的播放逻辑服务。"),
+          ),
+        )
+      },
+      {
+        "icon": Icons.copyright,
+        "label": "版权",
+        "view": FeatureContext(
+          child: const Card(
+            child: Text("版权"),
+          ),
+        )
+      },
+    ];
     currentWidget = features.first['view'];
     event = (index) async {
       print("index: $index");
-      currentWidget = features[index]['view'];
       switch (index) {
         case 0:
-          await _scanLocalSongs();
           break;
         case 1:
+          await shareYourMoney();
           break;
         case 2:
+          await _scanLocalSongs();
           break;
         case 3:
           break;
       }
-      setState(() {});
+      setState(() {
+        currentWidget = features[index]['view'];
+      });
     };
   }
 
@@ -205,6 +202,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   }
 
   Future<void> _scanLocalSongs() async {
+    List<ProSong> localSongs = [];
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.audio,
@@ -217,16 +215,30 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         if (null != fileMetadata || fileMetadata!.isNotEmpty) {
           print("fileMetadata :$fileMetadata");
           var metaJson = jsonDecode(fileMetadata);
-          songs.add(
+          localSongs.add(
               ProSong.fromJson(metaJson as Map<String, dynamic>, path.path));
+          // songs.add(
+          //     ProSong.fromJson(metaJson as Map<String, dynamic>, path.path));
           print("metaJson :$metaJson");
         }
         return path.path!;
       }).toList();
       print("songs :$songList");
-      //currentWidget = ;
-      print("songs :$songs");
+      currentWidget = await getlocalSongs(localSongs);
+      setState(() {});
     }
+  }
+
+  Future<Widget> getlocalSongs(List<ProSong> pSongs) async {
+    return ListView.builder(
+        itemCount: pSongs.length,
+        itemBuilder: (ctx, idx) {
+          return TextButton(
+              onPressed: () {
+                songs.add(pSongs[idx]);
+              },
+              child: Text('${pSongs[idx].title} - ${pSongs[idx].artist}'));
+        });
   }
 
   List<Widget> iconsBut(AsyncValueChanged event) {
@@ -235,9 +247,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         return GestureDetector(
           child: Container(
             decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 125, 153, 231),
-                // border: Border.all(color: Colors.blueAccent, width: 2),
-                borderRadius: BorderRadius.circular(10)),
+                color: Colors.blue, borderRadius: BorderRadius.circular(10)),
             child: ElevatedButton2(
               icon: Icon(feature.value['icon']),
               label: Text(feature.value['label']),
@@ -250,4 +260,6 @@ class _SettingsWidgetState extends State<SettingsWidget> {
       },
     ).toList();
   }
+
+  Future<void> shareYourMoney() async {}
 }

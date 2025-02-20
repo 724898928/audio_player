@@ -8,3 +8,10 @@ export AR=$ANDROID_NDK/toolchains/llvm/prebuilt/windows-x86_64/bin/llvm-ar
 export TARGET_CC=$CC
 export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=$CC
 export CARGO_TARGET_AARCH64_LINUX_ANDROID_AR=$AR
+
+# 安装 Rust 的 Android 目标支持
+rustup target add \
+  aarch64-linux-android \
+  armv7-linux-androideabi \
+  x86_64-linux-android \
+  i686-linux-android

@@ -24,7 +24,7 @@ class Kugou implements BasePlatform {
 
   @override
   String getPlatformUrl() {
-      this.searchUrl = "http://ioscdn.kugou.com/api/v3/search/song?keyword=关键字&page=1&pagesize=40&showtype=10&plat=2&version=7910&tag=1&correct=1&privilege=1&sver=5"
+    return this.searchUrl = "http://ioscdn.kugou.com/api/v3/search/song?keyword=关键字&page=1&pagesize=40&showtype=10&plat=2&version=7910&tag=1&correct=1&privilege=1&sver=5";
   }
 
   @override

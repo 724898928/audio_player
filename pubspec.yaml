@@ -77,6 +77,8 @@ flutter:
     - assets/ad/ad1.PNG
     - assets/ad/ad1.PNG
     - assets/ad/ad1.PNG
+    - assets/img/weixin.jpg
+    - assets/img/zhifubao.jpg
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

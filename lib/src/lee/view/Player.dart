@@ -119,7 +119,7 @@ class _PlayerState extends State<Player>
           // 每 5 秒执行一次
           await getPos().listen((v) async {
             // 处理返回的数据
-            //  print("playerThreadRun  msg1:$v");
+            print("playerThreadRun  msg1:$v");
             if (mounted) {
               var dat = jsonDecode(v);
               // currentPross = dat['pos'] * dropdownValue;
@@ -289,6 +289,9 @@ class _PlayerState extends State<Player>
                             });
                           },
                         ),
+                        // DropSliderValueIndicatorShape(
+
+                        // ),
                         SizedBox(width: 25),
                         IconButton(
                           padding: EdgeInsets.all(0),

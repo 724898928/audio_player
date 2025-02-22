@@ -29,7 +29,7 @@ class _FeatureContextState extends State<FeatureContext> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.only(right: 16.0, left: 16.0),
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(

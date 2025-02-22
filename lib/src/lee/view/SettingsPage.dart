@@ -1,14 +1,18 @@
 import 'dart:convert';
 import 'package:audio_player/src/lee/component/featureContext.dart';
+import 'package:audio_player/src/lee/view/WarnInfo.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
+import 'RightInfo.dart';
 import '../../rust/api/simple.dart';
 import '../component/ElevatedButton2.dart';
-import '../component/PayView.dart';
+import 'PayView.dart';
 import '../model/Song.dart';
 import '../model/SongList.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+
+import 'favourite.dart';
 
 class SettingsWidget extends StatefulWidget {
   const SettingsWidget({super.key});
@@ -41,11 +45,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
       {
         "icon": Icons.star,
         "label": "收藏",
-        "view": FeatureContext(
-          child: const Card(
-            child: Text("收藏"),
-          ),
-        )
+        "view": Favourite(),
       },
       {
         "icon": Icons.music_note,
@@ -57,35 +57,18 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           style: TextStyle(fontSize: 14),
         )))
       },
-      {
-        "icon": Icons.info,
-        "label": "说明",
-        "view": FeatureContext(
-          child: const Card(
-            child: Text("说明:\n"
-                "本播放器是本着学习和自用的目的开发的，请勿用于商业目的，若要用于商业目的请联系本人。\n"
-                "本播放器是使用Flutter开发的UI界面，使用Rust开发的播放逻辑服务。"),
-          ),
-        )
-      },
-      {
-        "icon": Icons.copyright,
-        "label": "版权",
-        "view": FeatureContext(
-          child: const Card(
-            child: Text("版权"),
-          ),
-        )
-      },
+      {"icon": Icons.info, "label": "说明", "view": WarnInfo()},
+      {"icon": Icons.copyright, "label": "版权", "view": RightInfo()},
     ];
     currentWidget = features.first['view'];
     event = (index) async {
       print("index: $index");
+      currentWidget = features[index]['view'];
       switch (index) {
         case 0:
+          await shareYourMoney();
           break;
         case 1:
-          await shareYourMoney();
           break;
         case 2:
           await _scanLocalSongs();
@@ -93,9 +76,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         case 3:
           break;
       }
-      setState(() {
-        currentWidget = features[index]['view'];
-      });
+      setState(() {});
     };
   }
 
@@ -115,7 +96,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           Expanded(
               flex: 2,
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.only(left: 16.0, right: 16.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Stack(
@@ -176,7 +157,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           Expanded(
             flex: 1,
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.only(
+                  right: 16.0, left: 16.0, top: 5, bottom: 5),
               child: Container(
                 padding: EdgeInsets.all(5),
                 decoration: BoxDecoration(
@@ -193,7 +175,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
 
           // 说明区域
           Expanded(
-            flex: 4,
+            flex: 6,
             child: currentWidget!,
           ),
         ],

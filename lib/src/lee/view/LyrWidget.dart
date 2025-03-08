@@ -44,8 +44,8 @@ class _LyrWidgetState extends State<LyrWidget> {
 
   Future<void> clear() async {
     setState(() {
-      playState.lyrics = null;
-      playState.currentlrcUrl = null;
+      playState.setLyrics = null;
+      playState.setCurrentlrcUrl = null;
       _currentLyricIndex = 0;
     });
   }
@@ -59,7 +59,7 @@ class _LyrWidgetState extends State<LyrWidget> {
       playState.setCurrentlrcUrl = url;
       await getLrc(url!, (res) {
         if (null != res) {
-          print("update res: $res");
+          // print("update res: $res");
           playState.setLyrics = LyricParser.parse(res);
         }
       });

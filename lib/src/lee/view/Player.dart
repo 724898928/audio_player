@@ -82,18 +82,23 @@ class _PlayerState extends State<Player>
 
   Future<void> setCurrentPlayState() async {
     isPlaying = playStatus.isPlaying;
+    if (idx != playStatus.currentIndex) {
+      await lyrWidget.clear();
+    }
     idx = playStatus.currentIndex;
+    current_song = songList.proPlaySongList[idx];
+    imgWidgets = null != current_song?.imgItems?.first['img']
+        ? NetworkImage(current_song?.imgItems?.first['img'])
+        : null;
+
     currentPross = playStatus.pross;
     playSpeed = playStatus.playSpeed;
     playTime = playStatus.playTime;
     mode_click = playStatus.playModeIndex;
     crrentModleIcon = modleIcon[mode_click];
-    current_song = songList.proPlaySongList[idx];
-    imgWidgets = null != current_song?.imgItems?.first['img']
-        ? NetworkImage(current_song?.imgItems?.first['img'])
-        : null;
     totalTime = playStatus.playTotalTime;
     playIcon = isPlaying ? Icons.pause : Icons.play_arrow;
+
     if (null != current_song!.lyrics && current_song!.lyrics!.isNotEmpty) {
       await lyrWidget.update(
           current_song!.lyrics?.first, playStatus.currentTime);
@@ -114,7 +119,6 @@ class _PlayerState extends State<Player>
     switch (state) {
       case AppLifecycleState.resumed:
         setTimer();
-        setState(() {});
         break;
       case AppLifecycleState.paused:
         break;

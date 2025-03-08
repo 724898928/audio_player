@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:audio_player/src/lee/common/PlayStatus.dart';
 import 'package:flutter/material.dart';
 
 import '../common/Utils.dart';
@@ -27,10 +28,8 @@ class LyrWidget extends StatefulWidget {
 class _LyrWidgetState extends State<LyrWidget> {
   final ScrollController _scrollController = ScrollController();
   int _currentLyricIndex = 0;
-  String? lrcUrl = null;
-
-  late LinkedHashMap<int, List<Lyric>>? _lyrics = null;
   late double myHeight = 0;
+  PlayStatus playState = PlayStatus.getInstance();
 
   @override
   initState() {
@@ -45,8 +44,8 @@ class _LyrWidgetState extends State<LyrWidget> {
 
   Future<void> clear() async {
     setState(() {
-      _lyrics = null;
-      lrcUrl = null;
+      playState.lyrics = null;
+      playState.currentlrcUrl = null;
       _currentLyricIndex = 0;
     });
   }
@@ -55,15 +54,14 @@ class _LyrWidgetState extends State<LyrWidget> {
     String? url,
     int currentTime,
   ) async {
-    print("update url: $url , currenttime: $currentTime");
-    if (lrcUrl != url) {
-      lrcUrl = url;
+    // print("_LyrWidgetState update url: $url , currenttime: $currentTime");
+    if (playState.currentlrcUrl != url) {
+      playState.setCurrentlrcUrl = url;
       await getLrc(url!, (res) {
         if (null != res) {
           print("update res: $res");
-          _lyrics = LyricParser.parse(res);
+          playState.setLyrics = LyricParser.parse(res);
         }
-        setState(() {});
       });
     }
     _simulatePlayback(currentTime);
@@ -76,8 +74,9 @@ class _LyrWidgetState extends State<LyrWidget> {
   }
 
   void _simulatePlayback(int currentTime) async {
-    if (null != _lyrics && _currentLyricIndex < _lyrics!.length - 1) {
-      var tmp = _lyrics!.keys.toList().indexOf(currentTime);
+    if (null != playState.lyrics &&
+        _currentLyricIndex < playState.lyrics!.length - 1) {
+      var tmp = playState.lyrics!.keys.toList().indexOf(currentTime);
       _currentLyricIndex = -1 == tmp ? _currentLyricIndex : tmp;
       if (mounted) {
         setState(() {
@@ -101,7 +100,7 @@ class _LyrWidgetState extends State<LyrWidget> {
     return ListView.builder(
       controller: _scrollController,
       padding: EdgeInsets.all(20),
-      itemCount: _lyrics?.length ?? 0,
+      itemCount: playState.lyrics?.length ?? 0,
       itemBuilder: (context, index) {
         final isCurrent = index == _currentLyricIndex;
         return Center(
@@ -114,7 +113,8 @@ class _LyrWidgetState extends State<LyrWidget> {
             ),
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 12),
-              child: Text(_lyrics?.values.elementAt(index).first.text ?? ""),
+              child: Text(
+                  playState.lyrics?.values.elementAt(index).first.text ?? ""),
             ),
           ),
         );

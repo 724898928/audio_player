@@ -9,6 +9,7 @@ import 'package:audio_player/src/rust/api/simple.dart';
 import 'package:audio_player/src/rust/music_service.dart';
 import 'package:flutter/material.dart';
 
+import '../common/PlayStatus.dart';
 import '../component/DDownButton.dart';
 import '../model/Song.dart';
 import 'LyrWidget.dart';
@@ -22,28 +23,31 @@ class Player extends StatefulWidget {
 
 class _PlayerState extends State<Player>
     with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
+  // 全局播放状态.
+  PlayStatus playStatus = PlayStatus.getInstance();
+  Songlist songList = Songlist.getInstance();
   ProSong? current_song;
   int mode_click = 0;
   int idx = 0;
-  List<IconData> modleIcon = [
-    PlayerIcons.orderPlay,
-    Icons.repeat_rounded,
-    Icons.repeat_one,
-    PlayerIcons.randomPlay
+  List<Map<String, dynamic>> modleIcon = [
+    {'icon': PlayerIcons.orderPlay, 'mode': PlayMode.normal},
+    {'icon': Icons.repeat_rounded, 'mode': PlayMode.loop},
+    {'icon': Icons.repeat_one, 'mode': PlayMode.singleLoop},
+    {'icon': PlayerIcons.randomPlay, 'mode': PlayMode.random}
   ];
-  IconData crrentModleIcon = Icons.looks_one_rounded;
+  late Map<String, dynamic> crrentModleIcon;
 
   double currentPross = 0.0;
 
-  bool is_playing = false;
+  bool isPlaying = false;
 
   IconData playIcon = Icons.play_arrow;
 
-  Duration? total_d = null;
+  Duration? totalTime = null;
 
   double? totalDouble = null;
 
-  String? current_d = "";
+  Duration? playTime = null;
 
   double playSpeed = 1.0;
 
@@ -65,14 +69,35 @@ class _PlayerState extends State<Player>
 
   @override
   void initState() {
-    super.initState();
+    crrentModleIcon = modleIcon[0];
     lyrWidget = LyrWidget();
-    setTimer();
-    Songlist songList = Songlist.getInstance();
-    print("_PlayerState songList:${songList.proPlaySongList}");
+    setCurrentPlayState();
     setPlaylist(
         songs: songList.proPlaySongList.map((e) => e.url ?? "").toList());
+    super.initState();
+    setTimer();
+    print("_PlayerState songList:${songList.proPlaySongList}");
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  Future<void> setCurrentPlayState() async {
+    isPlaying = playStatus.isPlaying;
+    idx = playStatus.currentIndex;
+    currentPross = playStatus.pross;
+    playSpeed = playStatus.playSpeed;
+    playTime = playStatus.playTime;
+    mode_click = playStatus.playModeIndex;
+    crrentModleIcon = modleIcon[mode_click];
+    current_song = songList.proPlaySongList[idx];
+    imgWidgets = null != current_song?.imgItems?.first['img']
+        ? NetworkImage(current_song?.imgItems?.first['img'])
+        : null;
+    totalTime = playStatus.playTotalTime;
+    playIcon = isPlaying ? Icons.pause : Icons.play_arrow;
+    if (null != current_song!.lyrics && current_song!.lyrics!.isNotEmpty) {
+      await lyrWidget.update(
+          current_song!.lyrics?.first, playStatus.currentTime);
+    }
   }
 
   @override
@@ -114,31 +139,22 @@ class _PlayerState extends State<Player>
               // currentPross = dat['pos'] * dropdownValue;
               currentPross = dat['pos'];
               currentPross = currentPross > 1 ? 1 : currentPross;
-              total_d = Duration(seconds: dat['len']);
               totalDouble = dat['len'].toDouble();
               var curttime = totalDouble! * currentPross;
-              current_d =
-                  Duration(seconds: curttime.toInt()).toFormattedString();
-              is_playing = dat['playing'];
-              playIcon = is_playing ? Icons.pause : Icons.play_arrow;
-              mode_click = dat['mode'];
-              crrentModleIcon = modleIcon[mode_click];
-              idx = dat['idx'];
-              playSpeed = dat['speed'];
-              current_song = Songlist.getInstance().proPlaySongList[idx];
-              imgWidgets = null != current_song?.imgItems?.first['img']
-                  ? NetworkImage(current_song?.imgItems?.first['img'])
-                  : null;
-              if (null != current_song!.lyrics &&
-                  current_song!.lyrics!.isNotEmpty) {
-                await lyrWidget.update(
-                    current_song!.lyrics?.first, curttime.toInt());
-              }
+              playTime = Duration(seconds: curttime.toInt());
+              playStatus.setValue(
+                  dat['playing'],
+                  currentPross,
+                  0.0,
+                  dat['idx'],
+                  dat['mode'],
+                  playTime,
+                  Duration(seconds: dat['len']),
+                  dat['speed'],
+                  curttime.toInt());
+              setCurrentPlayState();
               setState(() {});
             }
-            // else {
-            //   timer.cancel();
-            // }
           });
         });
   }
@@ -238,12 +254,12 @@ class _PlayerState extends State<Player>
                               children: [
                                 // 当前播放时间
                                 Text(
-                                  '$current_d',
+                                  '${playTime?.toFormattedString() ?? ""}',
                                   style: TextStyle(color: Colors.white),
                                 ),
                                 // 总时长
                                 Text(
-                                  '${total_d?.toFormattedString() ?? ""}',
+                                  '${totalTime?.toFormattedString() ?? ""}',
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ],
@@ -313,7 +329,7 @@ class _PlayerState extends State<Player>
                                   .proPlaySongList
                                   .isNotEmpty) {
                                 // 播放或暂停
-                                if (!is_playing) {
+                                if (!isPlaying) {
                                   playIcon = Icons.pause;
                                   await play(idx: BigInt.from(idx));
                                   await seek(tm: currentPross);
@@ -324,7 +340,7 @@ class _PlayerState extends State<Player>
                                   playIcon = Icons.play_arrow;
                                 }
                                 setState(() {});
-                                is_playing = !is_playing;
+                                isPlaying = !isPlaying;
                               }
                             },
                           ),
@@ -351,26 +367,14 @@ class _PlayerState extends State<Player>
                         SizedBox(width: 25),
                         IconButton(
                             alignment: Alignment.center,
-                            icon: Icon(crrentModleIcon),
+                            icon: Icon(crrentModleIcon['icon']),
                             color: Colors.white,
                             iconSize: 30,
                             onPressed: () async {
                               mode_click =
                                   (mode_click + 1) % PlayMode.values.length;
-                              switch (mode_click) {
-                                case 0:
-                                  await setPlayMode(mode: PlayMode.normal);
-                                  break;
-                                case 1:
-                                  await setPlayMode(mode: PlayMode.loop);
-                                  break;
-                                case 2:
-                                  await setPlayMode(mode: PlayMode.singleLoop);
-                                  break;
-                                case 3:
-                                  await setPlayMode(mode: PlayMode.random);
-                                  break;
-                              }
+                              await setPlayMode(
+                                  mode: modleIcon[mode_click]['mode']);
                               crrentModleIcon = modleIcon[mode_click];
                               setState(() {});
                             }),

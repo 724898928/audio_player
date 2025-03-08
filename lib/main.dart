@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:audio_player/src/lee/common/PlayStatus.dart';
 import 'package:audio_player/src/lee/component/ChangeNotifierProvider.dart';
 import 'package:audio_player/src/lee/component/CustomBottomNavigationBar.dart';
 import 'package:audio_player/src/lee/model/SongList.dart';
@@ -11,23 +12,22 @@ import 'package:window_manager/window_manager.dart';
 
 // 定义一个top-level (全局)变量, 页面引入该文件后可以直接使用Bus
 EventBus eventBus = EventBus();
+PlayStatus status = PlayStatus();
 Future<void> main() async {
   await RustLib.init();
   RouterManager.initRouter();
   WidgetsFlutterBinding.ensureInitialized();
-  // if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
   await windowManager.ensureInitialized();
   WindowOptions windowOptions = WindowOptions(
       minimumSize: Size(470, 825), maximumSize: Size(470, 830)); // 设置最小宽度和高度
-  windowManager.waitUntilReadyToShow(windowOptions);
-  // }
-
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    theme: ThemeData(primaryColor: Colors.blueAccent),
-    onGenerateRoute: RouterManager.router!.generator,
-    home: MyWidget(),
-  ));
+  await windowManager.waitUntilReadyToShow(windowOptions).then((value) async {
+    runApp(MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primaryColor: Colors.blueAccent),
+      onGenerateRoute: RouterManager.router!.generator,
+      home: MyWidget(),
+    ));
+  });
 }
 
 class MyWidget extends StatefulWidget {

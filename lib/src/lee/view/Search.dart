@@ -119,7 +119,11 @@ class _SearchState extends State<Search> {
               callback: (v) {
                 song.selected = !song.selected!;
                 print("song.proSong  song.proSong:${song.proSong}");
-                if (song.selected!) song.getPlaySong();
+                if (song.selected!) {
+                  song.getPlaySong();
+                } else {
+                  Songlist.getInstance().remove(song.proSong!);
+                }
               },
             ),
             IconButton(
@@ -216,7 +220,7 @@ class _SearchState extends State<Search> {
     song.selected = !song.selected!;
     if (song.selected!) {
       int idx = song.getPlaySong();
-      PlayStatus.getInstance().currentIndex = idx;
+      PlayStatus.getInstance().newPlayIdx = idx;
       await play(idx: BigInt.from(idx));
     }
   }

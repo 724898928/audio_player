@@ -57,6 +57,12 @@ class PlayStatus {
     this.currentIndex = index;
   }
 
+  set newPlayIdx(int index) {
+    this.currentIndex = index;
+    this.currentlrcUrl = null;
+    this.lyrics = null;
+  }
+
   toJson() {
     return {
       "isPlaying": isPlaying,

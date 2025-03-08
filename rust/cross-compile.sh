@@ -1,5 +1,8 @@
 #!/bin/bash
+export ANDROID_NDK=/a/programFiles/AndroidSDK/Android/Sdk/ndk/28.0.12674087
 
+export CC=${ANDROID_NDK}/toolchains/llvm/prebuilt/windows-x86_64/bin/aarch64-linux-android21-clang++
+export AR=$ANDROID_NDK/toolchains/llvm/prebuilt/windows-x86_64/bin/llvm-ar
 # 支持的 ABI 列表
 ABIS=("aarch64-linux-android" "armv7-linux-androideabi" "x86_64-linux-android" "i686-linux-android")
 

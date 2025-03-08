@@ -13,17 +13,6 @@ import '../component/DDownButton.dart';
 import '../model/Song.dart';
 import 'LyrWidget.dart';
 
-final GlobalKey<_PlayerState> _key = GlobalKey<_PlayerState>();
-
-enum OptionsType {
-  Slider,
-  Comm;
-
-  List<OptionsType> Values() {
-    return [Slider, Comm];
-  }
-}
-
 class Player extends StatefulWidget {
   Player({super.key});
 

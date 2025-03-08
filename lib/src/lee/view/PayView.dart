@@ -13,6 +13,7 @@ class PayView extends StatefulWidget {
   State<PayView> createState() => _PayViewState();
 }
 
+// 温馨提示：网页功能仅供娱乐，打赏金额将全部用于网站建设, 谢谢大家的支持.
 class _PayViewState extends State<PayView> {
   late VoidCallback? callback;
   bool isWeixin = true;

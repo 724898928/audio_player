@@ -12,15 +12,16 @@ import 'package:window_manager/window_manager.dart';
 // 定义一个top-level (全局)变量, 页面引入该文件后可以直接使用Bus
 EventBus eventBus = EventBus();
 Future<void> main() async {
+  await RustLib.init();
   RouterManager.initRouter();
   WidgetsFlutterBinding.ensureInitialized();
-  await RustLib.init();
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-    await windowManager.ensureInitialized();
-    WindowOptions windowOptions =
-        WindowOptions(minimumSize: Size(470, 825)); // 设置最小宽度和高度
-    windowManager.waitUntilReadyToShow(windowOptions);
-  }
+  // if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+  await windowManager.ensureInitialized();
+  WindowOptions windowOptions = WindowOptions(
+      minimumSize: Size(470, 825), maximumSize: Size(470, 830)); // 设置最小宽度和高度
+  windowManager.waitUntilReadyToShow(windowOptions);
+  // }
+
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     theme: ThemeData(primaryColor: Colors.blueAccent),

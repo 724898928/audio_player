@@ -14,11 +14,16 @@ import '../component/DDownButton.dart';
 import '../model/Song.dart';
 import 'LyrWidget.dart';
 
+GlobalKey<_PlayerState> _globalKey = GlobalKey();
+
 class Player extends StatefulWidget {
   Player({super.key});
-
   @override
   State<StatefulWidget> createState() => _PlayerState();
+
+  void playSong(int idx) {
+    _globalKey.currentState?.playSong(idx);
+  }
 }
 
 class _PlayerState extends State<Player>
@@ -28,7 +33,7 @@ class _PlayerState extends State<Player>
   Songlist songList = Songlist.getInstance();
   ProSong? current_song;
   int mode_click = 0;
-  int idx = 0;
+  int idx = -1;
   List<Map<String, dynamic>> modleIcon = [
     {'icon': PlayerIcons.orderPlay, 'mode': PlayMode.normal},
     {'icon': Icons.repeat_rounded, 'mode': PlayMode.loop},
@@ -66,42 +71,52 @@ class _PlayerState extends State<Player>
     {'label': 'x0.75', 'value': 0.75},
     {'label': 'x0.5', 'value': 0.5},
   ];
+  void playSong(int idx) {
+    this.idx = idx;
+    // setCurrentPlayState();
+    play(idx: BigInt.from(idx));
+  }
 
   @override
   void initState() {
     crrentModleIcon = modleIcon[0];
     lyrWidget = LyrWidget();
-    setCurrentPlayState();
-    setPlaylist(
-        songs: songList.proPlaySongList.map((e) => e.url ?? "").toList());
-    super.initState();
     setTimer();
+    setCurrentPlayState();
+    super.initState();
+
     print("_PlayerState songList:${songList.proPlaySongList}");
     WidgetsBinding.instance.addObserver(this);
   }
 
   Future<void> setCurrentPlayState() async {
     isPlaying = playStatus.isPlaying;
-    if (idx != playStatus.currentIndex) {
+    if (idx != playStatus.currentIndex && playStatus.currentIndex != -1) {
+      idx = playStatus.currentIndex;
       await lyrWidget.clear();
     }
-    idx = playStatus.currentIndex;
-    current_song = songList.proPlaySongList[idx];
-    imgWidgets = null != current_song?.imgItems?.first['img']
-        ? NetworkImage(current_song?.imgItems?.first['img'])
-        : null;
+    print(
+        "setCurrentPlayState idx:$idx, playStatus.currentIndex:${playStatus.currentIndex} ,songList.proPlaySongList.length:${songList.proPlaySongList.length}");
+    if (songList.proPlaySongList.isNotEmpty &&
+        idx > -1 &&
+        idx < songList.proPlaySongList.length) {
+      current_song = songList.proPlaySongList[idx];
+      imgWidgets = null != current_song?.imgItems?.first['img']
+          ? NetworkImage(current_song?.imgItems?.first['img'])
+          : null;
 
-    currentPross = playStatus.pross;
-    playSpeed = playStatus.playSpeed;
-    playTime = playStatus.playTime;
-    mode_click = playStatus.playModeIndex;
-    crrentModleIcon = modleIcon[mode_click];
-    totalTime = playStatus.playTotalTime;
-    playIcon = isPlaying ? Icons.pause : Icons.play_arrow;
+      currentPross = playStatus.pross;
+      playSpeed = playStatus.playSpeed;
+      playTime = playStatus.playTime;
+      mode_click = playStatus.playModeIndex;
+      crrentModleIcon = modleIcon[mode_click];
+      totalTime = playStatus.playTotalTime;
+      playIcon = isPlaying ? Icons.pause : Icons.play_arrow;
 
-    if (null != current_song!.lyrics && current_song!.lyrics!.isNotEmpty) {
-      await lyrWidget.update(
-          current_song!.lyrics?.first, playStatus.currentTime);
+      if (null != current_song!.lyrics && current_song!.lyrics!.isNotEmpty) {
+        await lyrWidget.update(
+            current_song!.lyrics?.first, playStatus.currentTime);
+      }
     }
   }
 

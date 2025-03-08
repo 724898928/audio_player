@@ -1,6 +1,10 @@
+import 'package:audio_player/src/lee/common/PlayStatus.dart';
+import 'package:audio_player/src/lee/common/RouterManager.dart';
 import 'package:audio_player/src/lee/component/DDownButton.dart';
 import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:audio_player/src/lee/model/MiGu.dart';
+import 'package:audio_player/src/lee/view/Player.dart';
+import 'package:audio_player/src/rust/api/simple.dart';
 import 'package:flutter/material.dart';
 
 import '../common/Utils.dart';
@@ -208,9 +212,15 @@ class _SearchState extends State<Search> {
     setState(() => _searchHistory.remove(text));
   }
 
-  void _playSong(SearchSong song) {
-    // 播放音乐实现
+  Future<void> _playSong(SearchSong song) async {
+    song.selected = !song.selected!;
+    if (song.selected!) {
+      int idx = song.getPlaySong();
+      PlayStatus.getInstance().currentIndex = idx;
+      await play(idx: BigInt.from(idx));
+    }
   }
+
   Widget _buildBodyContent() {
     if (_searchResults.isNotEmpty) {
       return _buildSearchResults();

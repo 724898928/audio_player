@@ -30,7 +30,14 @@ class _MusicSearchPageState extends State<MusicSearchPage> {
   bool _isSearching = false;
 
   @override
+  void initState() {
+    print("initState");
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print("build");
     return Scaffold(
       appBar: AppBar(
         title: _buildSearchBar(),

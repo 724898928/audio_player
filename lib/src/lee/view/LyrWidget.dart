@@ -43,11 +43,13 @@ class _LyrWidgetState extends State<LyrWidget> {
   }
 
   Future<void> clear() async {
-    setState(() {
-      playState.setLyrics = null;
-      playState.setCurrentlrcUrl = null;
-      _currentLyricIndex = 0;
-    });
+    if (mounted) {
+      setState(() {
+        playState.setLyrics = null;
+        playState.setCurrentlrcUrl = null;
+        _currentLyricIndex = 0;
+      });
+    }
   }
 
   Future<void> update(

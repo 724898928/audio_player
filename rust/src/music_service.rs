@@ -9,8 +9,8 @@ use rodio::{
 };
 
 lazy_static! {
-    pub static ref Player_instance: Arc<Mutex<Player>> =
-        Arc::new(Mutex::new(Player::new().unwrap()));
+    pub static ref Player_instance: Arc<RwLock<Player>> =
+        Arc::new(RwLock::new(Player::new().unwrap()));
 }
 
 impl<T> Debug for StreamSink<T> {
@@ -452,14 +452,10 @@ impl Player {
     }
 
     pub fn get_pos(&mut self, sink: StreamSink<String>) -> Result<()> {
-      //  print!("command_sender get_pos ");
         self.flutter_sink.clear_poison();
         self.flutter_sink.try_lock().map(|mut x|{
             *x = Some(sink)
         });
-        // if let Ok(sk) =  {
-        //    *sk = Some(sink);
-        // }
         self.command_sender.send(PlayerCommand::Position)?;
         Ok(())
     }

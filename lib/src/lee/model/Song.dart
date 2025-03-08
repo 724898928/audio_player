@@ -305,12 +305,12 @@ class SearchSong implements BaseSong {
         scopeOfcopyright: json['scopeOfcopyright']);
   }
 
-  void getPlaySong() {
+  int getPlaySong() {
     var playUrl =
         "https://app.pd.nf.migu.cn/MIGUM2.0/v1.0/content/sub/listenSong.do?toneFlag=E&netType=00&userId=15548614588710179085069&ua=Android_migu&version=5.1&copyrightId=${copyrightId}&contentId=${contentId}&resourceType=${resourceType}&channel=0";
     var song = Songlist.getInstance();
     proSong!.setUrl(playUrl);
-    song.add(proSong!);
+    return song.add(proSong!);
   }
 
   void removeSong() {

@@ -13,7 +13,7 @@ class PlayStatus {
   bool isPlaying = false;
   double pross = 0.0; // 当前播放进度
   double volume = 0.0; // 当前音量
-  int currentIndex = 0; // 当前播放音乐索引
+  int currentIndex = -1; // 当前播放音乐索引
   //List<String> playList = []; // 播放列表
   int playModeIndex = 0; // 当前播放模式索引
   Duration? playTime = null; // 当前播放时间
@@ -51,6 +51,10 @@ class PlayStatus {
 
   set setLyrics(LinkedHashMap<int, List<Lyric>>? lyrics) {
     this.lyrics = lyrics;
+  }
+
+  set setCurrentIndex(int index) {
+    this.currentIndex = index;
   }
 
   toJson() {

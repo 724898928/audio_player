@@ -1,4 +1,5 @@
 import 'package:audio_player/src/lee/model/Song.dart';
+import 'package:audio_player/src/rust/api/simple.dart';
 import 'package:flutter/foundation.dart';
 
 // the list to play
@@ -20,19 +21,27 @@ class Songlist extends ChangeNotifier {
   //final List<Map<Object, dynamic>> selectSongList = [];
   final List<ProSong> proPlaySongList = [];
 
-  void add(ProSong item) {
-    proPlaySongList.add(item);
-    notifyListeners();
+  int add(ProSong item) {
+    if (!proPlaySongList.contains(item)) {
+      proPlaySongList.add(item);
+      notifyListeners();
+      setPlaylist(songs: proPlaySongList.map((e) => e.url ?? "").toList());
+    }
+    return proPlaySongList.length - 1;
   }
 
   void addSongs(List<ProSong> item) {
-    proPlaySongList.addAll(item);
-    print("proPlaySongList :$proPlaySongList");
-    notifyListeners();
+    if (!proPlaySongList.contains(item)) {
+      proPlaySongList.addAll(item);
+      print("proPlaySongList :$proPlaySongList");
+      setPlaylist(songs: proPlaySongList.map((e) => e.url ?? "").toList());
+      notifyListeners();
+    }
   }
 
   void remove(ProSong item) {
     proPlaySongList.remove(item);
+    setPlaylist(songs: proPlaySongList.map((e) => e.url ?? "").toList());
     notifyListeners();
   }
 }

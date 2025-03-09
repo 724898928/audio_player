@@ -17,17 +17,24 @@ Future<void> main() async {
   await RustLib.init();
   RouterManager.initRouter();
   WidgetsFlutterBinding.ensureInitialized();
-  await windowManager.ensureInitialized();
-  WindowOptions windowOptions = WindowOptions(
-      minimumSize: Size(470, 825), maximumSize: Size(470, 830)); // 设置最小宽度和高度
-  await windowManager.waitUntilReadyToShow(windowOptions).then((value) async {
-    runApp(MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(primaryColor: Colors.blueAccent),
-      onGenerateRoute: RouterManager.router!.generator,
-      home: MyWidget(),
-    ));
-  });
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    await windowManager.ensureInitialized();
+    WindowOptions windowOptions = WindowOptions(
+        center: true,
+        minimumSize: Size(470, 825),
+        maximumSize: Size(470, 830),
+        backgroundColor: Colors.transparent); // 设置最小宽度和高度
+    await windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
+  }
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(primaryColor: Colors.blueAccent),
+    onGenerateRoute: RouterManager.router!.generator,
+    home: MyWidget(),
+  ));
 }
 
 class MyWidget extends StatefulWidget {

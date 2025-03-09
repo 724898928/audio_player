@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'package:audio_player/src/lee/component/featureContext.dart';
+import 'package:audio_player/src/lee/common/PlayStatus.dart';
+import 'package:audio_player/src/lee/view/SongsListView.dart';
 import 'package:audio_player/src/lee/view/WarnInfo.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +12,6 @@ import 'PayView.dart';
 import '../model/Song.dart';
 import '../model/SongList.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-
-import 'favourite.dart';
 
 class SettingsWidget extends StatefulWidget {
   const SettingsWidget({super.key});
@@ -34,29 +33,19 @@ class _SettingsWidgetState extends State<SettingsWidget> {
     'assets/ad/ad1.PNG',
     'assets/ad/ad1.PNG',
   ];
-
   late List<Map<String, dynamic>> features;
   late VoidCallback? callback;
+  //SongsListView sv = SongsListView();
   @override
   initState() {
-    super.initState();
     features = [
       {"icon": Icons.money, "label": "打赏", "view": PayView()},
       {
         "icon": Icons.star,
         "label": "收藏",
-        "view": Favourite(),
+        "view": SongsListView(),
       },
-      {
-        "icon": Icons.music_note,
-        "label": "添加本地",
-        "view": FeatureContext(
-            child: const Card(
-                child: Text(
-          "扫描",
-          style: TextStyle(fontSize: 14),
-        )))
-      },
+      {"icon": Icons.music_note, "label": "添加本地", "view": SongsListView()},
       {"icon": Icons.info, "label": "说明", "view": WarnInfo()},
       {"icon": Icons.copyright, "label": "版权", "view": RightInfo()},
     ];
@@ -69,6 +58,9 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           await shareYourMoney();
           break;
         case 1:
+          if (currentWidget is SongsListView) {
+            (currentWidget as SongsListView).updateView();
+          }
           break;
         case 2:
           await _scanLocalSongs();
@@ -78,6 +70,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
       }
       setState(() {});
     };
+    super.initState();
   }
 
   @override
@@ -184,31 +177,38 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   }
 
   Future<void> _scanLocalSongs() async {
-    List<ProSong> localSongs = [];
+    // List<ProSong> localSongs = [];
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.audio,
       allowedExtensions: ['mp3', 'wav', 'ogg', 'm4a', 'acc', 'midi'],
     );
     if (result != null) {
+      print("_scanLocalSongs result != null result :$result");
       // songs.proPlaySongList.clear();
       List<String> songList = result.files.map((path) {
         var fileMetadata = getSongMetadata(filePath: path.path!)?.trim();
         if (null != fileMetadata || fileMetadata!.isNotEmpty) {
           print("fileMetadata :$fileMetadata");
           var metaJson = jsonDecode(fileMetadata);
-          localSongs.add(
-              ProSong.fromJson(metaJson as Map<String, dynamic>, path.path));
-          // songs.add(
+          // localSongs.add(
           //     ProSong.fromJson(metaJson as Map<String, dynamic>, path.path));
+          songs.add(
+              ProSong.fromJson(metaJson as Map<String, dynamic>, path.path));
           print("metaJson :$metaJson");
         }
         return path.path!;
       }).toList();
       print("songs :$songList");
-      currentWidget = await getlocalSongs(localSongs);
-      setState(() {});
+      // currentWidget = await getlocalSongs(localSongs);
+    } else {
+      print("_scanLocalSongs result == null !");
     }
+    // if (currentWidget is SongsListView) {
+    //   (currentWidget as SongsListView).updateView();
+    // }
+    currentWidget = await getlocalSongs(songs.proPlaySongList);
+    // setState(() {});
   }
 
   Future<Widget> getlocalSongs(List<ProSong> pSongs) async {
@@ -216,8 +216,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         itemCount: pSongs.length,
         itemBuilder: (ctx, idx) {
           return TextButton(
-              onPressed: () {
-                songs.add(pSongs[idx]);
+              onPressed: () async {
+                // int id = songs.add(pSongs[idx]);
+                PlayStatus.getInstance().newPlayIdx = idx;
+                await play(idx: BigInt.from(idx));
               },
               child: Text('${pSongs[idx].title} - ${pSongs[idx].artist}'));
         });

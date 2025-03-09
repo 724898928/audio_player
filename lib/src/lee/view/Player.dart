@@ -14,16 +14,10 @@ import '../component/DDownButton.dart';
 import '../model/Song.dart';
 import 'LyrWidget.dart';
 
-GlobalKey<_PlayerState> _globalKey = GlobalKey();
-
 class Player extends StatefulWidget {
   Player({super.key});
   @override
   State<StatefulWidget> createState() => _PlayerState();
-
-  void playSong(int idx) {
-    _globalKey.currentState?.playSong(idx);
-  }
 }
 
 class _PlayerState extends State<Player>
@@ -71,11 +65,6 @@ class _PlayerState extends State<Player>
     {'label': 'x0.75', 'value': 0.75},
     {'label': 'x0.5', 'value': 0.5},
   ];
-  void playSong(int idx) {
-    this.idx = idx;
-    // setCurrentPlayState();
-    play(idx: BigInt.from(idx));
-  }
 
   @override
   void initState() {
@@ -152,7 +141,7 @@ class _PlayerState extends State<Player>
           // 每 5 秒执行一次
           await getPos().listen((v) async {
             // 处理返回的数据
-            print("playerThreadRun  msg1:$v");
+            //  print("playerThreadRun  msg1:$v");
             if (mounted) {
               var dat = jsonDecode(v);
               // currentPross = dat['pos'] * dropdownValue;

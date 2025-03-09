@@ -1,18 +1,23 @@
+# OpenSSL 基础配置
 [env]
-# OPENSSL_DIR = {value="A:\\programFiles\\AndroidSDK\\openssl\\openssl_arm64_v8a"}
-# OPENSSL_LIB_DIR = {value="A:\\programFiles\\AndroidSDK\\openssl\\openssl_arm64_v8a\\lib"}
-# OPENSSL_INCLUDE_DIR = {value="A:\\programFiles\\AndroidSDK\\openssl\\openssl_arm64_v8a\\include"}
+OPENSSL_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_arm64_v8a" }
+OPENSSL_LIB_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_arm64_v8a\\lib" }
+OPENSSL_INCLUDE_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_arm64_v8a\\include" }
 
-#LIBCLANG_PATH = { value = "A:\\programFiles\\LLVM\\bin" }
-#FFMPEG_DIR = { value = "D:\\flutter_pro\\ffmpeg-4.3\\ffmpeg_install"}
-#
-# [build]
-# target = "aarch64-linux-android"
-# # 还可以指定链接器类型和静态链接
-# # 不过有点诡异的是，静态链接后使用file检测出来是动态链接的，ldd检测到的则是静态链接的
-# #rustflags = ["-C", "linker-flavor=gcc", "-C", "target-feature=+crt-static"]
-# # rustflags = ["-C", "link-args=-fPIC"]
-#
-#  [target.aarch64-linux-android]
-#  ar = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\25.2.9519653\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\llvm-ar"
-#  linker ="A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\25.2.9519653\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\aarch64-linux-android33-clang++.cmd"
+[build]
+target = "aarch64-linux-android"
+# Android 工具链基础路径
+[target.aarch64-linux-android]
+ar = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\llvm-ar"
+cc = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang --target=aarch64-linux-android"
+as = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang --target=aarch64-linux-android"
+cxx = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\aarch64-linux-android23-clang++ --target=aarch64-linux-android"
+linker = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\aarch64-linux-android23-clang++.cmd"
+ld = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\ld"
+ranlib = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\llvm-ranlib"
+strip = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\llvm-strip"
+
+
+# 构建系统参考文档
+#[documentation]
+#android_cross_compile = "https://developer.android.com/ndk/guides/other_build_systems?hl=zh-cn"

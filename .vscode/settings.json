@@ -1,4 +1,5 @@
 {
     "java.configuration.updateBuildConfiguration": "interactive",
-    "gitConfigUser.selectedProfile": "pv_player_new"
+    "gitConfigUser.selectedProfile": "pv_player_new",
+    "android.sdkLocation": "A:\\programFiles\\AndroidSDK\\Android\\Sdk"
 }

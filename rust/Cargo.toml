@@ -2,6 +2,7 @@
 name = "rust_lib_audio_player"
 version = "0.1.0"
 edition = "2021"
+build = "build.rs"
 
 [lib]
 name = "rust_lib_audio_player"
@@ -31,17 +32,19 @@ serde_json = "^1"
 lazy_static = "1.5.0"
 reqwest = {version = "^0.12", features = ["blocking","json"]}
 rand = "^0.8"
-dart-sys = "4.1.5"
 chrono = "^0.4"
+id3 = "^1"
 ## 使用ffmpeg-next 要配置 ffmpeg-4.3 交叉编译后的环境 和 llvm 以及 MinGW64环境
 #ffmpeg-next = {version = "^7", features = ["format"]}
-id3 = "^1"
-# jni = "^0.21"
-# ndk = "0.9.0"
+
+[build-dependencies]
+config = "^0.15"
+serde = { version = "1.0", features = ["derive"] }
+dotenv = "^0.15"
 
 [profile.release]
-strip=true
-lto=true
-codegen-units=1
-opt-level='z'
-panic='abort'
+strip = true
+lto = true
+codegen-units = 1
+opt-level = 'z'
+panic = 'abort'

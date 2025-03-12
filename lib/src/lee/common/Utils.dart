@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:audio_player/src/lee/model/Song.dart';
 import 'package:audio_player/src/rust/api/simple.dart';
@@ -36,7 +37,12 @@ class Utils {
   }
 
   static Future<dynamic> hget(String url) async {
-    var requs = await httpGet(url: url);
+    var requs ;
+    if(Platform.isAndroid){
+
+    }else{
+      requs = await httpGet(url: url);
+    }
     //print("value :$requs");
     return jsonDecode(requs);
   }

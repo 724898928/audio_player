@@ -71,9 +71,9 @@ pub fn load_config() -> Result<Config, Box<dyn Error>> {
 }
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 初始化配置, 加载.env配置
-    dotenv().ok();
-   // let openssl_dir = env::var("OPENSSL_DIR").unwrap();
-   // load_config().map(|config|set_env_vars(&config)).unwrap();
+     dotenv().ok();
+   //let openssl_dir = env::var("OPENSSL_DIR").unwrap();
+  // load_config().map(|config|set_env_vars(&config)).unwrap();
     Ok(())
 }
 

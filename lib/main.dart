@@ -14,10 +14,11 @@ import 'package:window_manager/window_manager.dart';
 EventBus eventBus = EventBus();
 PlayStatus status = PlayStatus();
 Future<void> main() async {
-  await RustLib.init();
+
   RouterManager.initRouter();
   WidgetsFlutterBinding.ensureInitialized();
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    await RustLib.init();
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = WindowOptions(
         center: true,

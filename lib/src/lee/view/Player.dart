@@ -205,14 +205,15 @@ class _PlayerState extends State<Player>
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
                               color: Colors.white),
+                          overflow: TextOverflow.ellipsis,
                         ),
                         SizedBox(height: 8),
                         Text(
                           '${current_song?.artist ?? ""}',
                           style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                          ),
+                              fontSize: 16,
+                              color: Colors.white,
+                              overflow: TextOverflow.ellipsis),
                         ),
                       ],
                     ),

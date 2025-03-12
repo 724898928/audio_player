@@ -1,6 +1,6 @@
 plugins {
     id "com.android.application"
-    id "kotlin-android"
+    //id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
 }
@@ -15,10 +15,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+//    kotlinOptions {
+//        jvmTarget = JavaVersion.VERSION_1_8
+//    }
+    lintOptions {
+        checkReleaseBuilds false
     }
-
     sourceSets {
         main.java.srcDirs += 'src/main/java'
         main.jniLibs.srcDirs = ['src/main/jniLibs']
@@ -30,8 +32,10 @@ android {
 
     defaultConfig {
         ndk {
+            // https://blog.51cto.com/u_15639793/12278264
             // Filter for architectures supported by Flutter
-            abiFilters "arm64-v8a", "armeabi-v7a", "x86_64"
+            //  "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+            abiFilters "x86_64"
         }
         applicationId = "com.lee.audio_player"
         // You can update the following values to match your application needs.
@@ -45,17 +49,26 @@ android {
     }
 
     buildTypes {
+        debug {
+            ndk {
+                abiFilters "x86_64"
+//                abiFilters "armeabi-v7a", "x86"/*, "arm64-v8a"*/
+            }
+        }
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.debug
+            ndk{
+                abiFilters "x86_64"
+            }
         }
     }
 
-    dependencies {
-        compileOnly files("A:\\programFiles\\flutter\\flutter\\bin\\cache\\artifacts\\engine\\android-arm\\flutter.jar")
-    }
+}
 
+dependencies {
+    implementation 'androidx.annotation:annotation:1.7.1' // 使用最新版本
 }
 
 flutter {

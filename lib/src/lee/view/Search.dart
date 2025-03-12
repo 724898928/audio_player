@@ -21,6 +21,7 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   BasePlatform platformTools = MiGu.getInstance();
+  Songlist songlist = Songlist.getInstance();
   Widget container = Container();
   Widget? proSongs;
   bool selectAll = false;
@@ -219,7 +220,10 @@ class _SearchState extends State<Search> {
   Future<void> _playSong(SearchSong song) async {
     song.selected = !song.selected!;
     if (song.selected!) {
-      int idx = song.getPlaySong();
+      int idx = songlist.proPlaySongList.indexOf(song.proSong!);
+      if (idx < 0) {
+        idx = song.getPlaySong();
+      }
       PlayStatus.getInstance().newPlayIdx = idx;
       await play(idx: BigInt.from(idx));
     }

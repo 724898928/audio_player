@@ -1,3 +1,6 @@
+# 编译不同平台的openSSL
+
+
 # Rust 交叉工具链安装
 安装交叉编译组件
 
@@ -6,8 +9,11 @@
  armv7-linux-androideabi 对应 armeabi-v7a 
  i686-linux-android 对应 x86
 
-rustup target add aarch64-linux-android
-rustup target add armv7-linux-androideabi
+rustup target add \
+aarch64-linux-android \
+armv7-linux-androideabi \
+x86_64-linux-android \
+i686-linux-android 
 
 # 查看已安装 结尾带(Installed)
 rustup target list
@@ -16,12 +22,12 @@ rustup target list
 rustup toolchain list
 rustup target list
 
-# 安装编译工具
-cargo install cargo-ndk
 
 # 编译android库
-cargo build --target aarch64-linux-android --release
-cargo build --target armv7-linux-androideabi --release
+ argo build --target aarch64-linux-android --release
+ cargo build --target armv7-linux-androideabi --release
 
-
+# 安装编译工具
+cargo install cargo-ndk
+# 使用 cargo ndk 编译
 cargo ndk -t armeabi-v7a -t arm64-v8a build --release

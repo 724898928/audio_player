@@ -1,22 +1,22 @@
 # OpenSSL 基础配置
 [env]
-OPENSSL_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_arm64_v8a" }
-OPENSSL_LIB_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_arm64_v8a\\lib" }
-OPENSSL_INCLUDE_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_arm64_v8a\\include" }
+OPENSSL_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_x86_64" }
+OPENSSL_LIB_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_x86_64\\lib" }
+OPENSSL_INCLUDE_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_x86_64\\include" }
 
-[build]
-target = "aarch64-linux-android"
-# Android 工具链基础路径
-[target.aarch64-linux-android]
-ar = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\llvm-ar"
-cc = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang --target=aarch64-linux-android"
-as = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang --target=aarch64-linux-android"
-cxx = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\aarch64-linux-android23-clang++ --target=aarch64-linux-android"
-linker = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\aarch64-linux-android23-clang++.cmd"
-ld = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\ld"
-ranlib = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\llvm-ranlib"
-strip = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\llvm-strip"
-
+#[build]
+#target = "aarch64-linux-android"
+## Android 工具链基础路径
+#[target.aarch64-linux-android]
+#ar = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\llvm-ar"
+#cc = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang --target=aarch64-linux-android"
+#as = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang --target=aarch64-linux-android"
+#cxx = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\aarch64-linux-android23-clang++ --target=aarch64-linux-android"
+#linker = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\aarch64-linux-android23-clang++.cmd"
+#ld = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\ld"
+#ranlib = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\llvm-ranlib"
+#strip = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\llvm-strip"
+#
 
 # 构建系统参考文档
 #[documentation]

@@ -39,7 +39,7 @@ id3 = "^1"
 
 [build-dependencies]
 config = "^0.15"
-serde = { version = "1.0", features = ["derive"] }
+serde = { version = "^1", features = ["derive"] }
 dotenv = "^0.15"
 
 [profile.release]

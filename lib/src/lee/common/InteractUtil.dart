@@ -20,7 +20,17 @@ class InteractUtil {
     eventChannel.receiveBroadcastStream().listen(_onEvent, onError: _onError);
 
   }
+  // Stream<int> _batteryEvents() {
+  //   return _eventChannel.receiveBroadcastStream().map((event) => event as int);
+  //}
 
+// 在 UI 中监听事件流
+//   StreamBuilder<int>(
+//   stream: _batteryEvents(),
+//   builder: (context, snapshot) {
+//   return Text('Battery Event: ${snapshot.data}');
+//   },
+//  )
 
   static InteractUtil _getInstance() {
     _instance ??= InteractUtil._internal();
@@ -61,11 +71,14 @@ class InteractUtil {
     }
   }
 
-  Future<dynamic> androidExe(String url, dynamic map) async{
-    if(null == url || url!.isEmpty){
+  /**
+   * flutter call the method of android native
+   */
+  Future<dynamic> androidExe(String? method,dynamic arguments) async{
+    if(null == method || method!.isEmpty){
       return "";
     }
-    return await callNativeMethodChannel.invokeMethod(url, map);
+    return await callNativeMethodChannel.invokeMethod(method, arguments);
   }
 
 }

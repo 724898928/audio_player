@@ -5,9 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
+
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugins.Api;
@@ -21,13 +19,13 @@ public class MainActivity extends FlutterActivity{
     private FlutterEventPlugin eventPlugin;
     private FlutterMethodPlugin methodPlugin;
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"onCreate");
     }
 
     @Override
-    public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
+    public void configureFlutterEngine(FlutterEngine flutterEngine) {
         Log.d(TAG,"configureFlutterEngine");
         super.configureFlutterEngine(flutterEngine);
         eventPlugin = FlutterEventPlugin.registerWith(flutterEngine);
@@ -38,9 +36,8 @@ public class MainActivity extends FlutterActivity{
     private void extracted() {
         if (null != methodPlugin){
             handler = new Handler(Looper.myLooper()){
-                @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
-                public void handleMessage(@NonNull Message msg) {
+                public void handleMessage(Message msg) {
                     //super.handleMessage(msg);
                     Api api = Api.getApi(msg.what);
                     Log.d(TAG,"handleMessage Api=" + api.toString());

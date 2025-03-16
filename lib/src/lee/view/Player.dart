@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:audio_player/src/lee/common/InteractUtil.dart';
 import 'package:audio_player/src/lee/common/PlayerIcons.dart';
 import 'package:audio_player/src/lee/common/Utils.dart';
 import 'package:audio_player/src/lee/model/SongList.dart';
@@ -13,6 +14,7 @@ import '../common/PlayStatus.dart';
 import '../component/DDownButton.dart';
 import '../model/Song.dart';
 import 'LyrWidget.dart';
+import '../common/Utils.dart';
 
 class Player extends StatefulWidget {
   Player({super.key});
@@ -21,7 +23,7 @@ class Player extends StatefulWidget {
 }
 
 class _PlayerState extends State<Player>
-    with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
+    with WidgetsBindingObserver, AutomaticKeepAliveClientMixin implements InteractListener {
   // 全局播放状态.
   PlayStatus playStatus = PlayStatus.getInstance();
   Songlist songList = Songlist.getInstance();
@@ -139,7 +141,7 @@ class _PlayerState extends State<Player>
     _timer ??
         Timer.periodic(Duration(milliseconds: 500), (timer) async {
           // 每 5 秒执行一次
-          await getPos().listen((v) async {
+          await getPosition().listen((v) async {
             // 处理返回的数据
             //  print("playerThreadRun  msg1:$v");
             if (mounted) {
@@ -430,5 +432,15 @@ class _PlayerState extends State<Player>
         ),
       ],
     );
+  }
+
+  @override
+  void onError(Object error) {
+    // TODO: implement onError
+  }
+
+  @override
+  void onEvent(Object event) {
+
   }
 }

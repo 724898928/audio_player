@@ -2,9 +2,6 @@ package io.flutter.plugins;
 
 import android.os.Build;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-
 public enum Api {
     UpdateDeviceStatus(0),
     RetrieveDeviceStatus(1),
@@ -27,7 +24,6 @@ public enum Api {
         this.what = what;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public static Api getApi(int what) {
         for (Api api : Api.values()) {
            if (api.what == what){
@@ -37,7 +33,6 @@ public enum Api {
         return null;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public static Api getApi(String name) {
         for (Api api : Api.values()) {
             if (api.name().equals(name)){
@@ -47,7 +42,6 @@ public enum Api {
         return null;
     }
 
-    @NonNull
     @Override
     public String toString() {
         return "Api { name=" + this.name() + ", what= " + this.what + " }";

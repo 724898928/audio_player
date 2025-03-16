@@ -1,9 +1,5 @@
 package io.flutter.plugins;
 
-import android.os.Build;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import org.json.JSONObject;
 
@@ -38,19 +34,20 @@ public class FlutterMethodPlugin implements MethodChannel.MethodCallHandler, Cal
 
 
     @Override
-    public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        List<Object> para = call.arguments();
-        String serverUrl = (String) para.get(0);
-        JSONObject reqPara = (JSONObject) JSONUtil.wrap(para.get(1));
+    public void onMethodCall(MethodCall call, MethodChannel.Result result) {
+       List<Object> arguments = call.arguments();
+//        String serverUrl = (String) para.get(0);
+//        JSONObject reqPara = (JSONObject) JSONUtil.wrap(para.get(1));
         Object res = null;
-        Log.i("configureFlutterEngine onMethodCall come from flutter reqPara:", "serverUrl : " + serverUrl + " reqPara: " + reqPara.toString());
-         if (call.method.equals("call_native")) {
+        Log.i("configureFlutterEngine onMethodCall come from flutter reqPara:", "call.method: "+call.method+", arguments : " + arguments);
+         if (call.method.equals("search")) {
              result.success("这个是来自native的问候!");
          } else if (call.method.equals("get_device_state")) {
             res = "这个是来自native get_device_state的问候! res: ";
          } else if (call.method.equals("get_gps_info")) {
              res = "这个是来自native get_gps_info的问候!2303B400002 res: ";
          }
+        result.success(res);
     }
 
     public static FlutterMethodPlugin registerWith(FlutterEngine flutterEngine) {

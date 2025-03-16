@@ -7,6 +7,10 @@ import 'package:audio_player/src/rust/api/simple.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
+import 'InteractUtil.dart';
+
+Type  Future<dynamic> ValuChangeAsync() async;
+
 class Utils {
   static final dio = Dio(BaseOptions(
     contentType: Headers.formUrlEncodedContentType,
@@ -36,16 +40,7 @@ class Utils {
     }
   }
 
-  static Future<dynamic> hget(String url) async {
-    var requs ;
-    if(Platform.isAndroid){
 
-    }else{
-      requs = await httpGet(url: url);
-    }
-    //print("value :$requs");
-    return jsonDecode(requs);
-  }
 
   static Future<dynamic> download(String? url, String path) async {
     print("download url: $url, path :$path");
@@ -89,6 +84,26 @@ class Utils {
               itemCount: songs.length))
     ]);
   }
+
+  static Future<dynamic> hget(String url) async {
+    var requs ;
+    if(Platform.isAndroid){
+      InteractUtil.instance.androidExe("search", {"url": url});
+    } else {
+      requs = await httpGet(url: url);
+    }
+    //print("value :$requs");
+    return jsonDecode(requs);
+  }
+
+  static Future<Stream<dynamic>> getPosition( ValueChanged async callback) async{
+    if(Platform.isAndroid){
+       // InteractUtil.instance.addListener();
+    } else {
+     return await getPos().listen(callback);
+    }
+  }
+
 }
 
 extension DurationX on Duration {

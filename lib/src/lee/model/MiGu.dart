@@ -3,6 +3,7 @@ import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../common/PlayUtils.dart';
 import '../component/CheckBoxList.dart';
 import 'BasePlatform.dart';
 import 'Song.dart';
@@ -71,7 +72,7 @@ class MiGu implements BasePlatform {
     print("doGetSongs songName :$songName");
     this.proSongList.clear();
     setSearchUrl(songName, pageNo, pageSize);
-    Utils.hget(this.searchUrl).then((value) {
+    PlayUtils.hget(this.searchUrl).then((value) {
       //  print("value :$value \n");
       if (value != null) {
         var songs = value['songResultData']?['result'];

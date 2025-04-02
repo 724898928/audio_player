@@ -1,13 +1,7 @@
 package io.flutter.plugins;
 
-
-import org.json.JSONObject;
-
-import java.util.List;
-
-import io.flutter.Log;
+import android.util.Log;
 import io.flutter.embedding.engine.FlutterEngine;
-import io.flutter.plugin.common.JSONUtil;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -35,18 +29,16 @@ public class FlutterMethodPlugin implements MethodChannel.MethodCallHandler, Cal
 
     @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
-       List<Object> arguments = call.arguments();
-//        String serverUrl = (String) para.get(0);
-//        JSONObject reqPara = (JSONObject) JSONUtil.wrap(para.get(1));
+        Log.d(TAG, "onMethodCall call: "+call);
         Object res = null;
-        Log.i("configureFlutterEngine onMethodCall come from flutter reqPara:", "call.method: "+call.method+", arguments : " + arguments);
-         if (call.method.equals("search")) {
-             result.success("这个是来自native的问候!");
-         } else if (call.method.equals("get_device_state")) {
-            res = "这个是来自native get_device_state的问候! res: ";
-         } else if (call.method.equals("get_gps_info")) {
-             res = "这个是来自native get_gps_info的问候!2303B400002 res: ";
-         }
+        Log.i(TAG,"configureFlutterEngine onMethodCall come from flutter reqPara: call.method: "+call.method+", arguments : "+call.arguments);
+//         if (call.method.equals("search")) {
+//             res = "这个是来自native的问候!";
+//         } else if (call.method.equals("get_device_state")) {
+//            res = "这个是来自native get_device_state的问候! res: ";
+//         } else if (call.method.equals("get_gps_info")) {
+//             res = "这个是来自native get_gps_info的问候!2303B400002 res: ";
+//         }
         result.success(res);
     }
 

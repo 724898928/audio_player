@@ -17,14 +17,15 @@ public class FlutterEventPlugin implements EventChannel.StreamHandler{
     @Override
     public void onListen(Object arguments, EventChannel.EventSink events) {
         this.eventSink = events;
-        for (int i = 0; i < 100; i++) {
-            this.eventSink.success("Event "+i);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        this.eventSink.success("Event ");
+//        for (int i = 0; i < 100; i++) {
+//            this.eventSink.success("Event "+i);
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     @Override

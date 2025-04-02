@@ -5,18 +5,26 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
 class InteractUtil {
+
   static const String CALL_ANDROID_CHANNEL = "com.lee/call_native";
+
   static const String CALL_FLUTTER_CHANNEL = "com.lee/call_flutter";
+
   static const EventChannel eventChannel = EventChannel(CALL_FLUTTER_CHANNEL);
+
   static const MethodChannel callNativeMethodChannel = MethodChannel(CALL_ANDROID_CHANNEL);
+
   static InteractUtil _instance = InteractUtil._internal();
+
   List<InteractListener> listenerList = [];
+
   factory InteractUtil() => _getInstance();
 
-   static InteractUtil get instance => InteractUtil._getInstance();
+   static InteractUtil get instance => InteractUtil._internal();
 
 
   InteractUtil._internal() {
+    print("InteractUtil._internal ");
     eventChannel.receiveBroadcastStream().listen(_onEvent, onError: _onError);
 
   }
@@ -33,7 +41,7 @@ class InteractUtil {
 //  )
 
   static InteractUtil _getInstance() {
-    _instance ??= InteractUtil._internal();
+    _instance ?? InteractUtil._internal();
     return _instance;
   }
 
@@ -75,9 +83,11 @@ class InteractUtil {
    * flutter call the method of android native
    */
   Future<dynamic> androidExe(String? method,dynamic arguments) async{
-    if(null == method || method!.isEmpty){
+
+    if(null == method || method.isEmpty){
       return "";
     }
+   // print("androidExe method :$method ,arguments:$arguments");
     return await callNativeMethodChannel.invokeMethod(method, arguments);
   }
 

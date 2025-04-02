@@ -15,8 +15,11 @@ public class MusicService extends Service {
     private FlutterEngine mEngine;
 
     static {
+        Log.i(TAG, "System.loadLibrar: ");
+        System.loadLibrary("c++_shared");  // 加载.so文件
+        System.loadLibrary("ssl");  // 加载.so文件
+       // System.loadLibrary("crypto");  // 加载.so文件
         System.loadLibrary("rust_lib_audio_player");  // 加载.so文件
-       // System.loadLibrary("ssl");  // 加载.so文件
     }
     // 声明native方法
    // public native int add(int a, int b);
@@ -24,7 +27,7 @@ public class MusicService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        Log.d(TAG, "MusicService onCreate ");
     }
 
     @Override

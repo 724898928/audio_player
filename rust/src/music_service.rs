@@ -80,7 +80,7 @@ impl Player {
             let (_stream, handle) = OutputStream::try_default().unwrap();
             let mut sink = None::<Sink>;
             let mut current_track = 0;
-            let mut play_mode = PlayMode::Normal;
+            let mut play_mode = PlayMode::Loop;
             let mut play_speed: f32 = 1.0;
             let mut is_playing = false;
             // let mut total_duration = TDuration::ZERO;

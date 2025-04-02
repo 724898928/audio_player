@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:audio_player/src/lee/common/PlayStatus.dart';
+import 'package:audio_player/src/lee/common/PlayUtils.dart';
 import 'package:audio_player/src/lee/view/SongsListView.dart';
 import 'package:audio_player/src/lee/view/WarnInfo.dart';
 import 'package:file_picker/file_picker.dart';
@@ -169,7 +170,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           // 说明区域
           Expanded(
             flex: 6,
-            child: currentWidget!,
+            child: currentWidget??Container(),
           ),
         ],
       ),
@@ -187,7 +188,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
       print("_scanLocalSongs result != null result :$result");
       // songs.proPlaySongList.clear();
       List<String> songList = result.files.map((path) {
-        var fileMetadata = getSongMetadata(filePath: path.path!)?.trim();
+        var fileMetadata = PlayUtils.songMetadata(filePath: path.path!)?.trim();
         if (null != fileMetadata || fileMetadata!.isNotEmpty) {
           print("fileMetadata :$fileMetadata");
           var metaJson = jsonDecode(fileMetadata);

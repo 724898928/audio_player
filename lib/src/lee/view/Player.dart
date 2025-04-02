@@ -14,7 +14,7 @@ import '../common/PlayStatus.dart';
 import '../component/DDownButton.dart';
 import '../model/Song.dart';
 import 'LyrWidget.dart';
-import '../common/Utils.dart';
+import '../common/PlayUtils.dart';
 
 class Player extends StatefulWidget {
   Player({super.key});
@@ -141,7 +141,7 @@ class _PlayerState extends State<Player>
     _timer ??
         Timer.periodic(Duration(milliseconds: 500), (timer) async {
           // 每 5 秒执行一次
-          await getPosition().listen((v) async {
+          await PlayUtils.getPosition(callback: (v) async {
             // 处理返回的数据
             //  print("playerThreadRun  msg1:$v");
             if (mounted) {
@@ -234,6 +234,7 @@ class _PlayerState extends State<Player>
                     child: Container(
                       padding: EdgeInsets.all(0),
                       child: Column(
+
                         children: [
                           Slider(
                             // overlayColor: WidgetStatePropertyAll(Colors.blueAccent),
@@ -252,7 +253,7 @@ class _PlayerState extends State<Player>
                             onChanged: (value) async {
                               currentPross = value;
 
-                              await seek(tm: currentPross);
+                              await PlayUtils.toSeek(tm: currentPross);
 
                               setState(() {});
                               // 实现进度调整
@@ -286,8 +287,8 @@ class _PlayerState extends State<Player>
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         IconButton(
                           padding: EdgeInsets.all(0),
@@ -301,14 +302,10 @@ class _PlayerState extends State<Player>
                                 context, Songlist.getInstance().proPlaySongList,
                                 (i) async {
                               await lyrWidget.clear();
-                              await play(idx: i);
+                              await PlayUtils.toPlay(idx: i);
                             });
                           },
                         ),
-                        // DropSliderValueIndicatorShape(
-
-                        // ),
-                        SizedBox(width: 25),
                         IconButton(
                           padding: EdgeInsets.all(0),
                           alignment: Alignment.center,
@@ -321,12 +318,12 @@ class _PlayerState extends State<Player>
                                 .proPlaySongList
                                 .isNotEmpty) {
                               await lyrWidget.clear();
-                              await previousSong();
-                              await setSpeed(v: playSpeed);
+                              await PlayUtils.toPrevious();
+                              await PlayUtils.toSpeed(s: playSpeed);
                             }
                           },
                         ),
-                        SizedBox(width: 25),
+
                         CircleAvatar(
                           radius: 25,
                           backgroundColor: Colors.blueAccent,
@@ -342,13 +339,15 @@ class _PlayerState extends State<Player>
                                 // 播放或暂停
                                 if (!isPlaying) {
                                   playIcon = Icons.pause;
-                                  await play(idx: BigInt.from(idx));
-                                  await seek(tm: currentPross);
-                                  await setSpeed(v: playSpeed);
+                                  await PlayUtils.toPlay(idx: BigInt.from(idx));
+                                  await PlayUtils.toSeek(tm: currentPross);
+                                  await PlayUtils.toSpeed(s: playSpeed);
                                   setTimer();
                                 } else {
-                                  await pause();
-                                  playIcon = Icons.play_arrow;
+                                  await PlayUtils.toPause(callback: (v) async{
+                                    playIcon = Icons.play_arrow;
+                                  });
+
                                 }
                                 setState(() {});
                                 isPlaying = !isPlaying;
@@ -356,7 +355,7 @@ class _PlayerState extends State<Player>
                             },
                           ),
                         ),
-                        SizedBox(width: 25),
+
                         IconButton(
                           padding: EdgeInsets.all(0),
                           alignment: Alignment.center,
@@ -369,13 +368,13 @@ class _PlayerState extends State<Player>
                                 .proPlaySongList
                                 .isNotEmpty) {
                               await lyrWidget.clear();
-                              await setSpeed(v: playSpeed);
-                              await nextSong();
+                              await PlayUtils.toSpeed(s: playSpeed);
+                              await PlayUtils.toNext();
                               print("nextSong");
                             }
                           },
                         ),
-                        SizedBox(width: 25),
+
                         IconButton(
                             alignment: Alignment.center,
                             icon: Icon(crrentModleIcon['icon']),
@@ -384,21 +383,19 @@ class _PlayerState extends State<Player>
                             onPressed: () async {
                               mode_click =
                                   (mode_click + 1) % PlayMode.values.length;
-                              await setPlayMode(
+                              await PlayUtils.toPlayMode(
                                   mode: modleIcon[mode_click]['mode']);
                               crrentModleIcon = modleIcon[mode_click];
                               setState(() {});
                             }),
-                        SizedBox(
-                          width: 25,
-                        ),
+
                         DDbutton(
                             labels: labels,
                             dropdownValue: playSpeed,
                             onChange: (v) async {
                               if (null != v) {
                                 playSpeed = v;
-                                await setSpeed(v: v);
+                                await PlayUtils.toSpeed(s: v);
                                 print("DDbutton onChange value:$v");
                               }
                             })
@@ -441,6 +438,6 @@ class _PlayerState extends State<Player>
 
   @override
   void onEvent(Object event) {
-
+    print("onEvent event:$event");
   }
 }

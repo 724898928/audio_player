@@ -469,10 +469,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "dart-sys"
-version = "4.1.5"
+name = "dart-sys-fork"
+version = "4.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "57967e4b200d767d091b961d6ab42cc7d0cc14fe9e052e75d0d3cf9eb732d895"
+checksum = "933dafff26172b719bb9695dd3715a1e7792f62dcdc8a5d4c740db7e0fedee8b"
 dependencies = [
  "cc",
 ]
@@ -605,9 +605,9 @@ dependencies = [
 
 [[package]]
 name = "flutter_rust_bridge"
-version = "2.9.0"
+version = "2.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2f8c0dee6249225e815dcff3f3a39b98d9f66fdb3c392a432715b646bfa4da02"
+checksum = "93b95a1b4f20b8c037535bcda990abf0ae2bd94c93e27ebbbe00633322bc1561"
 dependencies = [
  "allo-isolate",
  "android_logger",
@@ -616,7 +616,7 @@ dependencies = [
  "bytemuck",
  "byteorder",
  "console_error_panic_hook",
- "dart-sys",
+ "dart-sys-fork",
  "delegate-attr",
  "flutter_rust_bridge_macros",
  "futures",
@@ -634,9 +634,9 @@ dependencies = [
 
 [[package]]
 name = "flutter_rust_bridge_macros"
-version = "2.9.0"
+version = "2.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8e88d604908d9eccb4ca9c26640ce41033165cbef041460e704ae28bd5208bce"
+checksum = "fafd532ccfcce8ef23e858fe07303ff572e8b302be6ec0b0f38ca6eb319206dc"
 dependencies = [
  "hex",
  "md-5",
@@ -1884,11 +1884,13 @@ dependencies = [
 name = "rust_lib_audio_player"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "chrono",
  "config",
  "dotenv",
  "flutter_rust_bridge",
  "id3",
+ "jni",
  "lazy_static",
  "rand",
  "reqwest",

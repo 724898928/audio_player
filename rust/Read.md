@@ -31,3 +31,6 @@ rustup target list
 cargo install cargo-ndk
 # 使用 cargo ndk 编译
 cargo ndk -t armeabi-v7a -t arm64-v8a build --release
+
+# 如何将rust代码应用到android的实例代码
+https://github.com/suve/rust-on-android/

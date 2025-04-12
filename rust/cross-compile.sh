@@ -20,7 +20,7 @@
 #export LD=${TOOLCHAIN}/bin/ld
 #export RANLIB=${TOOLCHAIN}/bin/llvm-ranlib
 #export STRIP=${TOOLCHAIN}/bin/llvm-strip
-cargo install cargo-ndk
+#cargo install cargo-ndk
 # 支持的 ABI 列表
 #ABIS=("aarch64-linux-android" "armv7-linux-androideabi" "x86_64-linux-android" "i686-linux-android")
 ABIS=("aarch64-linux-android")
@@ -28,8 +28,23 @@ ABIS=("aarch64-linux-android")
 # 为每个 ABI 编译
 for abi in "${ABIS[@]}"; do
   echo "Building for $abi..."
- # cargo build --target $abi --release
- cargo ndk -t $abi build --release
+  export OPENSSL_DIR=/a/programFiles/AndroidSDK/openssl/openssl_arm64_v8a
+  export OPENSSL_LIB_DIR=${OPENSSL_DIR}/lib
+  export OPENSSL_INCLUDE_DIR=${OPENSSL_DIR}/include
+  export PATH=${ANDROID_NDK}/toolchains/llvm/prebuilt/windows-x86_64/bin:$PATH
+  export TARGET=aarch64-linux-android
+  export ANDROID_NDK=/a/programFiles/AndroidSDK/Android/Sdk/ndk/29.0.13113456
+  export ANDROID_NDK_HOME=/a/programFiles/AndroidSDK/Android/Sdk/ndk/29.0.13113456
+  export TOOLCHAIN=${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/windows-x86_64
+  export AR=${TOOLCHAIN}/bin/llvm-ar
+  export CC="${TOOLCHAIN}/bin/clang --target=${TARGET}"
+  export AS=$CC
+  export CXX="${TOOLCHAIN}/bin/aarch64-linux-android23-clang++ --target=${TARGET}"
+  export LD=${TOOLCHAIN}/bin/ld
+  export RANLIB=${TOOLCHAIN}/bin/llvm-ranlib
+  export STRIP=${TOOLCHAIN}/bin/llvm-strip
+  cargo build --target $abi --release
+  #cargo ndk -t $abi build --release
 done
 
 # 复制 .so 文件到 Android 项目的 jniLibs

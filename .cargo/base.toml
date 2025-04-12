@@ -1,5 +1,5 @@
 [openssl]
-dir = "/a/programFiles/AndroidSDK/openssl/openssl_arm64_v8a"
+dir = "/a/programFiles/AndroidSDK/openssl/openssl_arm64"
 lib_dir = "${openssl.dir}/lib"
 include_dir = "${openssl.dir}/include"
 

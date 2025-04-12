@@ -10,17 +10,17 @@ triple = "aarch64-linux-android"
 
 # 工具链配置
 [toolchain]
-ar = "${android.ndk.toolchain}/bin/llvm-ar"
-cc = "${android.ndk.toolchain}/bin/clang --target=${target.triple}"
+ar = "${android.toolchain}/bin/llvm-ar"
+cc = "${android.toolchain}/bin/clang --target=${target.triple}"
 as = "${toolchain.cc}"
-cxx = "${android.ndk.toolchain}/bin/aarch64-linux-android23-clang++ --target=${target.triple}"
-ld = "${android.ndk.toolchain}/bin/ld"
-ranlib = "${android.ndk.toolchain}/bin/llvm-ranlib"
-strip = "${android.ndk.toolchain}/bin/llvm-strip"
+cxx = "${android.toolchain}/bin/aarch64-linux-android23-clang++ --target=${target.triple}"
+ld = "${android.toolchain}/bin/ld"
+ranlib = "${android.toolchain}/bin/llvm-ranlib"
+strip = "${android.toolchain}/bin/llvm-strip"
 
 # 编译参数
 [flags]
 common = [
-    "--sysroot=${android.ndk.path}/sysroot",
+    "--sysroot=${android.ndk_path}/sysroot",
     "-D__ANDROID_API__=23"
 ]

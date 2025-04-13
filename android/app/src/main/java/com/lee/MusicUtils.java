@@ -4,6 +4,8 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import io.flutter.plugins.Result;
+
 public class MusicUtils {
     private final static String TAG = MusicUtils.class.getSimpleName();
     enum PlayMode {
@@ -29,12 +31,15 @@ public class MusicUtils {
 //    protected static native String get_song_metadata(String file_path);
 //    protected static native String http_get(String url);
 //    protected static native  void init_app();
-    protected static native float add(int a, int b);
+    public static native int add(int a, int b, MusicUtils callback);
 
     static {
-        Log.i(TAG, "System.loadLibrar: ");
+        Log.i(TAG, "System.rust_lib_audio_player ");
         // System.loadLibrary("ssl");  // 加载.so文件
         // System.loadLibrary("crypto");  // 加载.so文件
         System.loadLibrary("rust_lib_audio_player");  // 加载.so文件
+    }
+    public void factCallback(int res) {
+        System.out.println("factCallback: res = " + res);
     }
 }

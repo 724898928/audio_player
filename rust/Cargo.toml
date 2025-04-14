@@ -2,7 +2,7 @@
 name = "rust_lib_audio_player"
 version = "0.1.0"
 edition = "2021"
-build = "build.rs"
+#build = "build.rs"
 
 [lib]
 name = "rust_lib_audio_player"
@@ -36,7 +36,7 @@ chrono = "^0.4"
 id3 = "^1"
 ## 使用ffmpeg-next 要配置 ffmpeg-4.3 交叉编译后的环境 和 llvm 以及 MinGW64环境
 #ffmpeg-next = {version = "^7", features = ["format"]}
-#[target.'cfg(target_os = "android")'.dependencies]
+[target.'cfg(target_os = "android")'.dependencies]
 anyhow = "1.0.97"
 jni = "0.21.1"
 

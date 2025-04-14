@@ -31,18 +31,26 @@ for key in ${!myMap[@]}; do
   export RANLIB=${TOOLCHAIN}/bin/llvm-ranlib
   export STRIP=${TOOLCHAIN}/bin/llvm-strip
   ###需要修改  rust target armv7-linux-androideabi => android target armv7a-linux-androideabi
-  cargo build --target ${ABIS[$key]} --release \
-    --config "target.${ABIS[$key]}.linker=\"$ANDROID_NDK/toolchains/llvm/prebuilt/windows-x86_64/bin/${ABIS[$key]}29-clang.cmd\"" \
-    --config "target.${ABIS[$key]}.rustflags=\"-l c++_shared\""
-  ABI_DIR=""
+  if [ $key == "arm" ];then
+    echo "*********** cargo build arm ********* "
+    cargo build --target ${ABIS[$key]} --release \
+      --config "target.${ABIS[$key]}.linker=\"$ANDROID_NDK/toolchains/llvm/prebuilt/windows-x86_64/bin/armv7a-linux-androideabi29-clang.cmd\"" \
+      --config "target.${ABIS[$key]}.rustflags=\"-l c++_shared\""
+  else
+    cargo build --target ${ABIS[$key]} --release \
+      --config "target.${ABIS[$key]}.linker=\"$ANDROID_NDK/toolchains/llvm/prebuilt/windows-x86_64/bin/${ABIS[$key]}29-clang.cmd\"" \
+      --config "target.${ABIS[$key]}.rustflags=\"-l c++_shared\""
+  fi
 
-  case $key in
-  "arm64") ABI_DIR="arm64-v8a" ;;
-  "arm") ABI_DIR="armeabi-v7a" ;;
-  "x86_64") ABI_DIR="x86_64" ;;
-  "x86") ABI_DIR="x86" ;;
-  esac
 
-  mkdir -p "$ANDROID_PROJECT_JNI_LIBS/$ABI_DIR"
-  cp "$TARGET_DIR/${ABIS[$key]}/${flag}/librust_lib_audio_player.so" "$ANDROID_PROJECT_JNI_LIBS/$ABI_DIR/"
+#  ABI_DIR=""
+#  case $key in
+#  "arm64") ABI_DIR="arm64-v8a" ;;
+#  "arm") ABI_DIR="armeabi-v7a" ;;
+#  "x86_64") ABI_DIR="x86_64" ;;
+#  "x86") ABI_DIR="x86" ;;
+#  esac
+
+  mkdir -p "$ANDROID_PROJECT_JNI_LIBS/${myMap[$key]}"
+  cp "$TARGET_DIR/${ABIS[$key]}/${flag}/librust_lib_audio_player.so" "$ANDROID_PROJECT_JNI_LIBS/${myMap[$key]}/"
 done

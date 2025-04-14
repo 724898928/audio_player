@@ -1,8 +1,9 @@
 use std::{
     fmt::Debug, io::{BufReader, Cursor}, sync::{mpsc, Arc, Mutex, RwLock}, thread, time::Duration as TDuration
 };
-
+#[cfg(not(target_os = "android"))]
 use crate::{api::Result, frb_generated::StreamSink};
+
 use lazy_static::lazy_static;
 use rodio::{
     Decoder, OutputStream, Sink, Source,
@@ -13,6 +14,7 @@ lazy_static! {
         Arc::new(RwLock::new(Player::new().unwrap()));
 }
 
+#[cfg(not(target_os = "android"))]
 impl<T> Debug for StreamSink<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("StreamSink").field("base", &self).finish()

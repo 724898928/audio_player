@@ -17,13 +17,13 @@ export PATH=${TOOLCHAIN}/bin:$PATH
 
 export AR=${TOOLCHAIN}/bin/llvm-ar
 export linker="${TOOLCHAIN}/bin/x86_64-linux-android29-clang.cmd --target=${TARGET}"
-export CC="${TOOLCHAIN}/bin/aarch64-linux-android29-clang++"
+export CC="${TOOLCHAIN}/bin/x86_64-linux-android29-clang++"
 # 一般配置 CC, AR 即可，如出现问题再将以下3条加上：
 export TARGET_CC=$CC
 export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=$CC
 export CARGO_TARGET_AARCH64_LINUX_ANDROID_AR=$AR
 export AS=$CC
-export CXX="${TOOLCHAIN}/bin/aarch64-linux-android29-clang++ --target=${TARGET}"
+export CXX="${TOOLCHAIN}/bin/x86_64-linux-android29-clang++ --target=${TARGET}"
 export LD=${TOOLCHAIN}/bin/ld
 export RANLIB=${TOOLCHAIN}/bin/llvm-ranlib
 export STRIP=${TOOLCHAIN}/bin/llvm-strip

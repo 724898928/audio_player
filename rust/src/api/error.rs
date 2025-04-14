@@ -2,8 +2,10 @@
 use std::sync::mpsc::SendError;
 
 use rodio;
-
+#[cfg(not(target_os = "android"))]
 use crate::music_service::PlayerCommand;
+#[cfg(target_os = "android")]
+use crate::android_service::PlayerCommand;
 
 #[derive(Debug)]
 pub enum PlayerError {

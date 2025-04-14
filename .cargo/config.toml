@@ -1,8 +1,8 @@
 # OpenSSL 基础配置
 [env]
-#OPENSSL_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_x86_64" }
-#OPENSSL_LIB_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_x86_64\\lib" }
-#OPENSSL_INCLUDE_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_x86_64\\include" }
+OPENSSL_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_x86_64" }
+OPENSSL_LIB_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_x86_64\\lib" }
+OPENSSL_INCLUDE_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_x86_64\\include" }
 
 #[build]
 #target = "aarch64-linux-android"

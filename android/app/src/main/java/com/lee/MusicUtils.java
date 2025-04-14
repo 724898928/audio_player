@@ -4,8 +4,6 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import io.flutter.plugins.Result;
-
 public class MusicUtils {
     private final static String TAG = MusicUtils.class.getSimpleName();
     enum PlayMode {
@@ -32,6 +30,11 @@ public class MusicUtils {
 //    protected static native String http_get(String url);
 //    protected static native  void init_app();
     public static native int add(int a, int b, MusicUtils callback);
+    public static native void set_playlist(ArrayList<String> songs);
+    public static native void play(int idx);
+
+    public static native String httpGet(String url);
+    public static native String hello(String name);
 
     static {
         Log.i(TAG, "System.rust_lib_audio_player ");
@@ -40,6 +43,9 @@ public class MusicUtils {
         System.loadLibrary("rust_lib_audio_player");  // 加载.so文件
     }
     public void factCallback(int res) {
+        System.out.println("factCallback: res = " + res);
+    }
+    public void httpGetCallback(String res) {
         System.out.println("factCallback: res = " + res);
     }
 }

@@ -1,4 +1,5 @@
 import 'package:audio_player/src/lee/common/PlayStatus.dart';
+import 'package:audio_player/src/lee/common/PlayUtils.dart';
 import 'package:audio_player/src/lee/common/RouterManager.dart';
 import 'package:audio_player/src/lee/component/DDownButton.dart';
 import 'package:audio_player/src/lee/model/SongList.dart';
@@ -225,7 +226,7 @@ class _SearchState extends State<Search> {
         idx = song.getPlaySong();
       }
       PlayStatus.getInstance().newPlayIdx = idx;
-      await play(idx: BigInt.from(idx));
+      await PlayUtils.toPlay(idx:  idx);
     }
   }
 

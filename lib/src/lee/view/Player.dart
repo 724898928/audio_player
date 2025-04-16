@@ -339,7 +339,7 @@ class _PlayerState extends State<Player>
                                 // 播放或暂停
                                 if (!isPlaying) {
                                   playIcon = Icons.pause;
-                                  await PlayUtils.toPlay(idx: BigInt.from(idx));
+                                  await PlayUtils.toPlay(idx:idx);
                                   await PlayUtils.toSeek(tm: currentPross);
                                   await PlayUtils.toSpeed(s: playSpeed);
                                   setTimer();

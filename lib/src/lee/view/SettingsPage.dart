@@ -220,7 +220,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               onPressed: () async {
                 // int id = songs.add(pSongs[idx]);
                 PlayStatus.getInstance().newPlayIdx = idx;
-                await play(idx: BigInt.from(idx));
+                await PlayUtils.toPlay(idx: idx);
               },
               child: Text('${pSongs[idx].title} - ${pSongs[idx].artist}'));
         });

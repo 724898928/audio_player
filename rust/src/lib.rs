@@ -11,7 +11,16 @@ pub mod frb_generated;
 #[path = "android.rs"]
 pub mod android;
 
+
 #[cfg(target_os = "android")]
 #[path = "android_service.rs"]
 pub mod android_service;
+
+#[macro_use]
+extern crate log;
+
+#[cfg(target_os = "android")]
+#[path = "android_service.rs"]
+extern crate android_logger;
+
 

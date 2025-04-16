@@ -32,6 +32,7 @@ reqwest = {version = "^0.12", features = ["blocking","json"]}
 rand = "^0.8"
 chrono = "^0.4"
 id3 = "^1"
+log = "0.4"  # 日志接口
 ## 使用ffmpeg-next 要配置 ffmpeg-4.3 交叉编译后的环境 和 llvm 以及 MinGW64环境
 #ffmpeg-next = {version = "^7", features = ["format"]}
 
@@ -41,11 +42,15 @@ flutter_rust_bridge = "=2.6.0"
 [target.'cfg(target_os = "android")'.dependencies]
 anyhow = "1.0.97"
 jni = "0.21.1"
+android_logger = "0.15.0"
 
 [build-dependencies]
 config = "^0.15"
 serde = { version = "^1", features = ["derive"] }
 dotenv = "^0.15"
+anyhow = "1.0.97"
+jni = "0.21.1"
+android_logger = "0.15.0"
 
 [profile.release]
 strip = true

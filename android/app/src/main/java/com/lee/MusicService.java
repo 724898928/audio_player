@@ -30,8 +30,8 @@ public class MusicService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "MusicService onCreate ");
-        int s = MusicUtils.add(1,1,new MusicUtils());
-        Log.i(TAG, " MusicUtils s:"+s);
+       // int s = MusicUtils.add(1,1,new MusicUtils());
+       // Log.i(TAG, " MusicUtils s:"+s);
     }
     // 供 Activity 调用的方法
     public void doTask(String input) {

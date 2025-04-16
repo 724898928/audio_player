@@ -55,14 +55,21 @@ public class FlutterMethodPlugin implements MethodChannel.MethodCallHandler, Cal
                e.printStackTrace();
             }
             res = a;
-        } else if (call.method.equals("set_playlist")) {
-            ArrayList<String> songs = (ArrayList<String>) call.arguments;
-            MusicUtils.set_playlist(songs);
-            res = "这个是来自native的问候! set_playlist";
-        } else if (call.method.equals("play")) {
-            int idx = (int) call.arguments;
-            MusicUtils.play(idx);
-            res = "这个是来自native的问候! play idx:" + idx;
+        } else if (call.method.equals("SetPlayList")) {
+            ArrayList<String> arguments =( ArrayList<String>) call.arguments;
+            Log.i(TAG, "来自flutter songs : " +arguments);
+            MusicUtils.setPlaylist(arguments.toArray());
+           // res = "这个是来自native的问候! SetPlayList";
+        } else if (call.method.equals("Play")) {
+            List<Object> para = call.arguments();
+            if (para.size() > 0){
+                int idx = (int) para.get(0);
+                MusicUtils.play(idx);
+                res = "这个是来自native的问候!  play idx:" + idx;
+            }else {
+                Log.i(TAG, "idx == null");
+            }
+
         }
         result.success(res);
     }

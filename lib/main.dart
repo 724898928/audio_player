@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:audio_player/src/lee/common/InteractUtil.dart';
+
 import 'package:audio_player/src/lee/common/PlayStatus.dart';
 import 'package:audio_player/src/lee/component/ChangeNotifierProvider.dart';
 import 'package:audio_player/src/lee/component/CustomBottomNavigationBar.dart';

@@ -45,6 +45,16 @@ impl PlayMode {
         }
     }
 
+   pub fn id2mode(id: i32) -> PlayMode{
+        match id {
+            0 => PlayMode::Normal,
+            1 => PlayMode::Loop,
+            2 => PlayMode::SingleLoop,
+            3 => PlayMode::Random,
+            _ => PlayMode::Normal
+        }
+    }
+
     fn values(&self) ->Vec<(u8, Self)>{
         vec![(0, PlayMode::Normal), (1, PlayMode::Loop), (2, PlayMode::SingleLoop), (3,PlayMode::Random)]
     }
@@ -424,7 +434,7 @@ impl Player {
         Ok(())
     }
     
-    pub fn get_total_len(&mut self) -> Result<TDuration> {
+    pub fn get_total_len(&self) -> Result<TDuration> {
         Ok(self.total_len.read().unwrap().clone())
     }
 

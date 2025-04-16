@@ -50,6 +50,7 @@ public class MainActivity extends FlutterActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MusicUtils.nativeInit();
         Log.d(TAG,"onCreate");
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent,connection, Context.BIND_AUTO_CREATE);

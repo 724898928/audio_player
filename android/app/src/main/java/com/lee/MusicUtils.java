@@ -2,9 +2,6 @@ package com.lee;
 
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MusicUtils {
     private final static String TAG = MusicUtils.class.getSimpleName();
     enum PlayMode {
@@ -34,6 +31,7 @@ public class MusicUtils {
     public static native String getSongMetadata(String filePath);
     public static native void nextSong();
     public static native void previousSong();
+    public static native void createRustThread();
 
     static {
         Log.i(TAG, "System.rust_lib_audio_player ");

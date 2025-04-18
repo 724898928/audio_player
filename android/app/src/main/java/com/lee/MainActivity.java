@@ -1,4 +1,5 @@
 package com.lee;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -27,17 +28,18 @@ public class MainActivity extends FlutterActivity{
 
     // 定义 ServiceConnection
     private ServiceConnection connection = new ServiceConnection(){
-
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.d("MainActivity", "Service 已绑定");
-            MusicService.LocalBinder binder = (MusicService.LocalBinder) service;
-            myService = binder.getService();
+            Log.d(TAG, "MainActivity onServiceConnected Service 已绑定");
+            myService = ((MusicService.LocalBinder) service).getService();
             isBound = true;
-            Log.d("MainActivity", "Service 已绑定");
-
             // 绑定成功后调用 Service 方法
-            myService.doTask("来自 Activity 的请求");
+           // myService.doTask("来自 Activity 的请求");
+            if (null != methodPlugin){
+                methodPlugin.setMusicService(myService);
+            }else{
+                Log.e(TAG, "onCreate: methodPlugin==null");
+            }
         }
 
         @Override
@@ -50,41 +52,43 @@ public class MainActivity extends FlutterActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MusicUtils.nativeInit();
-        Log.d(TAG,"onCreate");
+        Log.d(TAG,"MainActivity onCreate");
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent,connection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     public void configureFlutterEngine(FlutterEngine flutterEngine) {
-        Log.d(TAG,"configureFlutterEngine");
+        Log.d(TAG,"MainActivity configureFlutterEngine");
         super.configureFlutterEngine(flutterEngine);
-        eventPlugin = FlutterEventPlugin.registerWith(flutterEngine);
         methodPlugin = FlutterMethodPlugin.registerWith(flutterEngine);
-        extracted();
+        eventPlugin = FlutterEventPlugin.registerWith(flutterEngine);
+       // extracted();
     }
 
     private void extracted() {
-        if (null != methodPlugin){
-            handler = new Handler(Looper.myLooper()){
-                @Override
-                public void handleMessage(Message msg) {
-                    //super.handleMessage(msg);
-                    Api api = Api.getApi(msg.what);
-                    Log.d(TAG,"handleMessage Api=" + api.toString());
+        handler = new Handler(Looper.myLooper()){
+            @Override
+            public void handleMessage(Message msg) {
+                //super.handleMessage(msg);
+                Api api = Api.getApi(msg.what);
+                Log.d(TAG,"handleMessage Api=" + api.toString());
+                if (null != methodPlugin){
                     methodPlugin.invokeMethod(api.name(),msg.obj);
-//                    if (null != eventPlugin){
-//                        eventPlugin.eventSink.success(msg.obj);
-//                    }else {
-//                        Log.d(TAG,"eventChannel == null");
-//                    }
+                    if (null != eventPlugin){
+                        eventPlugin.eventSink.success(msg.obj);
+                    }else {
+                        Log.d(TAG,"eventChannel == null");
+                    }
+                }else {
+                    Log.d(TAG,"methodPlugin == null");
+                }
+                if (null != myService){
 
                 }
-            };
-        }else {
-            Log.d(TAG,"methodPlugin == null");
-        }
+            }
+        };
+
     }
 
     @Override
@@ -94,6 +98,19 @@ public class MainActivity extends FlutterActivity{
         if(isBound){
             unbindService(connection);
             isBound = false;
+        }
+    }
+
+    // UI 按钮点击示例
+    public void onPlayClicked(int index) {
+        if (isBound) {
+       //     myService.player.play(index);
+        }
+    }
+
+    public void onPauseClicked() {
+        if (isBound) {
+     //       myService.player.pause();
         }
     }
 }

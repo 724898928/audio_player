@@ -1,17 +1,17 @@
 # OpenSSL 基础配置
-[env]
-OPENSSL_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_x86_64" }
-OPENSSL_LIB_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_x86_64\\lib" }
-OPENSSL_INCLUDE_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_x86_64\\include" }
+#[env]
+#OPENSSL_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_x86_64" }
+#OPENSSL_LIB_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_x86_64\\lib" }
+#OPENSSL_INCLUDE_DIR = { value = "A:\\programFiles\\AndroidSDK\\openssl\\openssl_x86_64\\include" }
+##
+#[build]
+#target = "x86_64-linux-android"
+### Android 工具链基础路径
+#[target.x86_64-linux-android]
+#rustflags = "-l c++_shared"
+#ar = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\llvm-ar"
+#linker = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\x86_64-linux-android29-clang.cmd"
 #
-[build]
-target = "x86_64-linux-android"
-## Android 工具链基础路径
-[target.x86_64-linux-android]
-rustflags = "-l c++_shared"
-ar = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\llvm-ar"
-linker = "A:\\programFiles\\AndroidSDK\\Android\\Sdk\\ndk\\29.0.13113456\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\x86_64-linux-android29-clang.cmd"
-
 
 # 构建系统参考文档
 #[documentation]

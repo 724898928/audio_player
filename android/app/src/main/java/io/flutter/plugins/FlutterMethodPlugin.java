@@ -2,12 +2,12 @@ package io.flutter.plugins;
 
 import android.util.Log;
 
+import com.lee.MusicService;
 import com.lee.MusicUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.flutter.embedding.engine.FlutterEngine;
@@ -23,7 +23,12 @@ public class FlutterMethodPlugin implements MethodChannel.MethodCallHandler, Cal
 
     private static MethodChannel methodChannel;
 
+    private MusicService musicService;
     private FlutterMethodPlugin() {
+    }
+
+    public void setMusicService(MusicService musicService){
+        this.musicService = musicService;
     }
 
     // 调用Flutter端方法, 无返回值
@@ -35,6 +40,7 @@ public class FlutterMethodPlugin implements MethodChannel.MethodCallHandler, Cal
     public void invokeMethod(String method, Object o, MethodChannel.Result result) {
         methodChannel.invokeMethod(method, o, result);
     }
+
 
     @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
@@ -56,18 +62,26 @@ public class FlutterMethodPlugin implements MethodChannel.MethodCallHandler, Cal
             }
             res = a;
         } else if (call.method.equals("SetPlayList")) {
-            ArrayList<String> arguments =( ArrayList<String>) call.arguments;
+            List<String> arguments =(List<String>) call.arguments;
             Log.i(TAG, "来自flutter songs : " +arguments);
-            MusicUtils.setPlaylist(arguments.toArray());
+            if (null != musicService){
+                musicService.setPlaylist(arguments);
+            }else {
+                Log.e(TAG, "onMethodCall: musicService==null");
+            }
            // res = "这个是来自native的问候! SetPlayList";
         } else if (call.method.equals("Play")) {
             List<Object> para = call.arguments();
             if (para.size() > 0){
                 int idx = (int) para.get(0);
-                MusicUtils.play(idx);
-                res = "这个是来自native的问候!  play idx:" + idx;
+                if (null != musicService){
+                    musicService.play(idx);
+                }else {
+                    Log.e(TAG, "onMethodCall: musicService==null");
+                }
+            //    res = "这个是来自native的问候!  play idx:" + idx;
             }else {
-                Log.i(TAG, "idx == null");
+                Log.e(TAG, "idx == null");
             }
 
         }

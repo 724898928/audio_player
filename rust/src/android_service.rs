@@ -2,6 +2,7 @@ use std::{
     fmt::Debug, io::{BufReader, Cursor}, sync::{mpsc, Arc, Mutex, RwLock}, thread, time::Duration as TDuration
 };
 
+
 use lazy_static::lazy_static;
 use rodio::{
     Decoder, OutputStream, Sink, Source,
@@ -9,8 +10,7 @@ use rodio::{
 use crate::api::Result;
 
 lazy_static! {
-    pub static ref Player_instance: Arc<RwLock<Player>> =
-        Arc::new(RwLock::new(Player::new().unwrap()));
+    pub static ref Player_instance: Arc<RwLock<Player>> = Arc::new(RwLock::new(Player::new().unwrap()));
 }
 #[derive(Debug, Clone)]
 pub enum PlayerCommand {

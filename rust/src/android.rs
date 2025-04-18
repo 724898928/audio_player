@@ -1,14 +1,13 @@
 use anyhow::{Error, Result};
-use jni::{
-    objects::{JClass, JList, JObject, JObjectArray, JString, JValue},
-    sys::{jfloat, jint, jobject, jvalue,jobjectArray}, JNIEnv
-};
-use symphonia::core::formats::util;
+use jni::{objects::{JClass, JList, JObject, JObjectArray, JString, JValue}, sys::{jfloat, jint, jobject, jobjectArray, jvalue}, JNIEnv, JavaVM};
 use std::fmt::Display;
-use jni::sys::jstring;
+use std::thread;
+use std::time::Duration;
 use crate::{android_service::{PlayMode, Player_instance}, api::utils};
 use log::{Level, LevelFilter};
 use android_logger::{Config,FilterBuilder};
+use once_cell::sync::OnceCell;
+pub static GLOBAL_JVM: OnceCell<JavaVM> = OnceCell::new();
 
 // 初始化 Android 日志记录器
 fn init_android_logger(tag: &str) {
@@ -25,10 +24,13 @@ fn init_android_logger(tag: &str) {
 
 // JNI 入口函数示例
 #[no_mangle]
-pub extern "system" fn Java_com_lee_MusicUtils_nativeInit(
-    env: JNIEnv,
+pub extern "system" fn Java_com_lee_MusicUtils_nativeInit<'a>(
+   mut env: JNIEnv<'a>,
     _class: jni::objects::JClass,
 ) {
+    // 将传入的 JavaVM 指针转换为 Rust 对象并缓存起来
+    let java_vm = env.get_java_vm().unwrap();
+    GLOBAL_JVM.set(java_vm).expect("Failed to set GLOBAL_JVM");
     // 初始化日志记录器（标签设置为 "RustNative"）
     init_android_logger("RustNative");
     // 打印日志示例
@@ -84,7 +86,7 @@ pub extern "system" fn Java_com_lee_MusicUtils_setPlaylist<'a>(
     _class: JClass<'a>,
     input: JObjectArray<'a>,
 ){
-    // 将 Java String[] 转换为 Rust Vec<String>
+    //将 Java String[] 转换为 Rust Vec<String>
     let input_vec: Vec<String> = (0..env.get_array_length(&input).unwrap())
         .map(|i| {
             let jstr: JString = env
@@ -98,9 +100,10 @@ pub extern "system" fn Java_com_lee_MusicUtils_setPlaylist<'a>(
         .collect();
 
     info!("Java_com_lee_MusicUtils_setPlaylist input_vec:{:?}",input_vec);
-    if let Ok(mut player) =  Player_instance.try_write(){
-        player.set_playlist(input_vec).expect("Failed to set playlist");
-    }
+      // 获取 JavaVM 的引用，后续用来在线程中附加当前线程
+     if let Ok(mut player) =  Player_instance.try_write(){
+        // player.set_playlist(input_vec).expect("Failed to set playlist");
+     }
 }
 
 #[no_mangle]
@@ -110,7 +113,7 @@ pub extern "system" fn Java_com_lee_MusicUtils_play<'a>(
     idx: jint
 ){
     if let Ok(mut player) =  Player_instance.try_write(){
-        player.play(idx as usize).expect("Failed to play song");
+     //   player.play(idx as usize).expect("Failed to play song");
     }
 }
 
@@ -259,4 +262,39 @@ pub extern "C" fn free_string(s: *mut std::os::raw::c_char) {
         }
         std::ffi::CString::from_raw(s)
     };
+}
+
+
+
+#[no_mangle]
+pub extern "system" fn Java_com_lee_MusicUtils_createRustThread(
+    env: JNIEnv,
+    _class: JClass,
+) {
+    // 获取 JavaVM 的引用，后续用来在线程中附加当前线程
+    let java_vm = env.get_java_vm().unwrap();
+
+    // 在新线程中执行任务
+    thread::spawn(move || {
+        // 在新线程中附加当前线程到 JVM 以获得 JNIEnv
+        let env = java_vm.attach_current_thread().unwrap();
+
+        // 示例任务：打印信息并休眠一段时间
+        println!("Rust 线程已启动，在新线程中附加了 JNI 环境！");
+        info!("Rust 线程已启动，在新线程中附加了 JNI 环境！");
+        // 如果需要回调 Java 方法，则可通过 env 调用相应方法
+
+        // 模拟一段耗时任务
+        thread::sleep(Duration::from_secs(3));
+
+        // 示例：在线程中调用一个 Java 方法（如更新 UI 或通知）
+        // 这里仅做示例，如果需要调用 Java 方法，需要先查找到目标类和方法签名
+        // 例如：
+        // let class = env.find_class("com/example/myapp/SomeJavaClass").unwrap();
+        // let method_id = env.get_static_method_id(class, "onRustTaskFinished", "()V").unwrap();
+        // env.call_static_method(class, method_id, jni::signature::ReturnType::Void, &[]).unwrap();
+
+        println!("Rust 线程任务结束！");
+        info!("Rust 线程任务结束！");
+    });
 }

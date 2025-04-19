@@ -23,7 +23,7 @@ android {
     }
     sourceSets {
         main.java.srcDirs += 'src/main/java'
-        main.jniLibs.srcDirs = ['src/main/jniLibs']
+      //  main.jniLibs.srcDirs = ['src/main/jniLibs']
 //        main {
 //      //      java.srcDirs += 'src/main/java'
 //            jniLibs.srcDirs = ['src/main/libs']
@@ -76,6 +76,8 @@ dependencies {
     implementation "androidx.appcompat:appcompat:1.7.0"
     implementation "com.google.android.material:material:1.12.0"
     implementation "androidx.constraintlayout:constraintlayout:2.2.1"
+    implementation "com.squareup.okhttp3:okhttp:4.12.0"
+    implementation "com.squareup.okhttp3:okhttp-tls:4.12.0"
 }
 
 flutter {

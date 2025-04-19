@@ -2,8 +2,8 @@ package io.flutter.plugins;
 
 import android.util.Log;
 
+import com.lee.HttpUtils;
 import com.lee.MusicService;
-import com.lee.MusicUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,8 +46,6 @@ public class FlutterMethodPlugin implements MethodChannel.MethodCallHandler, Cal
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
         Log.d(TAG, "onMethodCall call: " + call);
         Object res = null;
-        String hello = MusicUtils.hello("lixin");
-        Log.i(TAG, "来自rust : " + hello);
         Log.i(TAG, "configureFlutterEngine onMethodCall come from flutter reqPara: call.method: " + call.method + ", arguments : " + call.arguments);
         if (call.method.equals("Search")) {
             String a = null;
@@ -56,7 +54,7 @@ public class FlutterMethodPlugin implements MethodChannel.MethodCallHandler, Cal
                 JSONObject reqPara = (JSONObject) JSONUtil.wrap(para.get(0));
                 String url = reqPara.getString("url");
                 Log.i(TAG, "configureFlutterEngine onMethodCall reqPara.getString url : " + url);
-                a = MusicUtils.httpGet(url);
+                a = HttpUtils.httpGet(url);
             } catch (JSONException e) {
                e.printStackTrace();
             }

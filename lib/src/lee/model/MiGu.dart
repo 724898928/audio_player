@@ -76,7 +76,7 @@ class MiGu implements BasePlatform {
       //  print("value :$value \n");
       if (value != null) {
         var songs = value['songResultData']?['result'];
-        print("songs :$songs \n");
+       // print("songs :$songs \n");
         if (songs != null) {
           songs.forEach((song) {
             var s = song as Map<String, dynamic>;

@@ -1,46 +1,40 @@
 package com.lee;
 
-import android.util.Log;
+import android.media.MediaMetadataRetriever;
+
+import java.io.File;
 
 public class MusicUtils {
     private final static String TAG = MusicUtils.class.getSimpleName();
-    enum PlayMode {
-        Normal,
-        Loop,
-        SingleLoop,
-        Random,
-    }
-    // 声明native方法
-//    protected static native void player_thread_run(ArrayList<String> songs, int idx);
+    public static String getSongMetadata(String filePath) throws Exception {
+        MediaMetadataRetriever mmr = null;
+        try {
+            mmr = new MediaMetadataRetriever();
+            File file = new File(filePath);
+            if (!file.exists()) {
+                return "{\"title\":\"\"}";
+            }
 
-    public static native void nativeInit();
-    public static native void pause();
-    public static native void stop();
-    public static native void setPlayMode(int modeId);
-    public static native void seek(float tm);
-    public static native void getPos();
-    public static native void setSpeed(float v);
-    public static native void setVolume(float v);
-    public static native int getTotalLen();
-    public static native int add(int a, int b, MusicUtils callback);
-    public static native void setPlaylist(Object[] songs);
-    public static native void play(int idx);
+            mmr.setDataSource(filePath);
 
-    public static native String httpGet(String url);
-    public static native String hello(String name);
-    public static native String getSongMetadata(String filePath);
-    public static native void nextSong();
-    public static native void previousSong();
-    public static native void createRustThread();
+            String title = getSafeString(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE));
+            String artist = getSafeString(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST));
+            String album = getSafeString(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM));
+            String year = getSafeString(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_YEAR));
+            String track = getSafeString(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER));
+            String genre = getSafeString(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE));
 
-    static {
-        Log.i(TAG, "System.rust_lib_audio_player ");
-        System.loadLibrary("rust_lib_audio_player");  // 加载.so文件
+            return String.format("{\"title\":\"%s\",\"artist\":\"%s\",\"album\":\"%s\",\"year\":\"%s\",\"track\":\"%s\",\"genre\":\"%s\"}",
+                    title, artist, album, year, track, genre);
+
+        } finally {
+            if (null != mmr){
+                mmr.release();
+            }
+        }
     }
-    public void factCallback(int res) {
-        System.out.println("factCallback: res = " + res);
-    }
-    public void httpGetCallback(String res) {
-        System.out.println("factCallback: res = " + res);
+
+    private static String getSafeString(String value) {
+        return value != null ? value : "";
     }
 }

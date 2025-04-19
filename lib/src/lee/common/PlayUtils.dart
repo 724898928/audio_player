@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:audio_player/src/lee/common/NativeApi.dart';
+import 'package:audio_player/src/lee/common/Utils.dart';
 
 import '../../rust/api/simple.dart';
 import '../../rust/music_service.dart';
@@ -14,17 +15,7 @@ class PlayUtils {
   static bool isChange = true;
 
   static Future<dynamic> hget(String url) async {
-    print("PlayUtils PlayUtils url: $url");
-    var requs;
-    if (Platform.isAndroid && isChange) {
-      print("hget do androidExe ");
-      requs = await InteractUtil.instance.androidExe("Search", [{"url": url}]);
-    } else {
-      print("hget do httpGet ");
-      requs = await httpGet(url: url);
-    }
-    print("hget value :$requs");
-    return null != requs ? jsonDecode(requs) : null;
+    return await Utils.get(url);
   }
 
   static Future<dynamic> getPosition({AsyncValueChanged? callback}) async {

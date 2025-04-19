@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'package:audio_player/src/lee/model/Song.dart';
+import 'package:dio/io.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
@@ -7,7 +10,16 @@ import 'package:dio/dio.dart';
 class Utils {
   static final dio = Dio(BaseOptions(
     contentType: Headers.formUrlEncodedContentType,
-  ));
+  ))..httpClientAdapter = IOHttpClientAdapter(
+    createHttpClient: (){
+      final HttpClient client = HttpClient(context: SecurityContext(withTrustedRoots: false));
+      client.badCertificateCallback = (cert,host,port )=>true;
+      return client;
+    },
+    validateCertificate: (cert,host,port){
+      return true;
+    }
+  );
 
   static final option = Options(
     headers: {
@@ -15,19 +27,20 @@ class Utils {
     },
   );
 
-  static Future<dynamic> get(String url, Map<String, dynamic>? qp) async {
+  static Future<dynamic> get(String url, {Map<String, dynamic>? qp}) async {
     // Uri uri = Uri(scheme: 'https', host: url, queryParameters: qp);
     try {
-      print("https get uri: " + url.toString());
+     // print("https get uri: " + url.toString());
       var response = await dio.get(url);
       print("response: " + response.toString());
-      if (response.statusCode == 200) {
-        return response.data;
-        // return jsonDecode(response.data);
-      } else {
-        print("Error: " + response.data);
-        return response.data;
-      }
+      return jsonDecode(response.toString());
+      // if (response.statusCode == 200) {
+      //   return response.data;
+      //   // return jsonDecode(response.data);
+      // } else {
+      //   print("Error: " + response.data);
+      //   return response.data;
+      // }
     } catch (e) {
       print(e);
     }

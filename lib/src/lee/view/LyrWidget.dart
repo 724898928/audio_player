@@ -70,7 +70,7 @@ class _LyrWidgetState extends State<LyrWidget> {
   }
 
   Future<dynamic> getLrc(String url, ValueChanged callback) async {
-    await Utils.get(url, null).then((res) {
+    await Utils.get(url).then((res) {
       callback.call(res);
     });
   }

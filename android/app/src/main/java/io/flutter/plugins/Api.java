@@ -1,7 +1,5 @@
 package io.flutter.plugins;
 
-import android.os.Build;
-
 public enum Api {
     Search(0);
     int what;
@@ -32,4 +30,5 @@ public enum Api {
     public String toString() {
         return "Api { name=" + this.name() + ", what= " + this.what + " }";
     }
+
 }

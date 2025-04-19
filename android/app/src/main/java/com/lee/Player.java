@@ -3,15 +3,17 @@ package com.lee;
 import android.media.MediaPlayer;
 import android.media.PlaybackParams;
 import android.os.Build;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.util.Log;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+
+// 参考
+// https://github.com/RustFisher/android-MediaPlayer/blob/master/appAudio/src/main/java/com/rustfisher/appaudio/fragment/PlayOnlineAudioFragment.java
 public class Player {
     private final String TAG = Player.class.getSimpleName();
 
@@ -23,11 +25,11 @@ public class Player {
     }
 
     // 后台线程 & Handler，用于串行执行所有命令
-    private final HandlerThread thread;
-    private final Handler handler;
+    // private final HandlerThread thread;
+    // private final Handler handler;
 
     // 媒体播放器
-    private final MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer;
 
     // 播放列表及状态
     private final List<String> playlist = new ArrayList<>();
@@ -37,113 +39,141 @@ public class Player {
     private float playSpeed = 1.0f;
     private float volume = 1.0f;
 
+    private boolean prepared = false;
+
     private Player() {
-        thread = new HandlerThread("PlayerThread");
-        thread.start();
-        handler = new Handler(thread.getLooper());
+        //  thread = new HandlerThread("PlayerThread");
+        //  thread.start();
+        //   handler = new Handler(thread.getLooper());
 
         mediaPlayer = new MediaPlayer();
         // 播放完毕自动切换逻辑
-        mediaPlayer.setOnCompletionListener(mp -> handler.post(this::onTrackComplete));
+        //  mediaPlayer.setOnCompletionListener(mp -> handler.post(this::onTrackComplete));
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                Log.d(TAG, "onPrepared");
+                prepared = true;
+            }
+        });
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                Log.d(TAG, "onCompletion: play sound.");
+                onTrackComplete();
+            }
+        });
+        mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
+                Log.d(TAG, "Play online sound onError: " + i + ", " + i1);
+                return true;
+            }
+        });
     }
 
     // 设置播放列表
     public void setPlaylist(List<String> list) {
         Log.i(TAG, "setPlaylist: ");
-        handler.post(() -> {
-            playlist.clear();
-            playlist.addAll(list);
-            currentIndex = 0;
-        });
+        // handler.post(() -> {
+        playlist.clear();
+        playlist.addAll(list);
+        currentIndex = 0;
+        //   });
     }
 
     // 播放指定下标
     public void play(int index) {
-        handler.post(() -> {
-            if (index >= 0 && index < playlist.size()) {
-                currentIndex = index;
-                playTrack(playlist.get(currentIndex));
-            }
-        });
+        //   handler.post(() -> {
+        if (index >= 0 && index < playlist.size()) {
+            currentIndex = index;
+            playTrack(playlist.get(currentIndex));
+        }
+        //   });
     }
 
     // 暂停
     public void pause() {
-        handler.post(() -> {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.pause();
-                isPlaying = false;
-            }
-        });
+        //  handler.post(() -> {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+            isPlaying = false;
+        }
+        //   });
     }
 
     // 恢复
     public void resume() {
-        handler.post(() -> {
-            if (!mediaPlayer.isPlaying()) {
-                mediaPlayer.start();
-                isPlaying = true;
-            }
-        });
+        //   handler.post(() -> {
+        if (!mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+            isPlaying = true;
+        }
+        //    });
     }
 
     // 停止并释放
     public void stop() {
-        handler.post(() -> {
-            mediaPlayer.stop();
-            mediaPlayer.reset();
-            isPlaying = false;
-        });
+        //  handler.post(() -> {
+        mediaPlayer.stop();
+        prepared = false;
+     //   mediaPlayer.prepareAsync();
+        mediaPlayer.reset();
+        isPlaying = false;
+        //  });
     }
 
     // 下一曲
     public void next() {
-        handler.post(() -> {
-            advanceIndex(true);
-            playTrack(playlist.get(currentIndex));
-        });
+        //  handler.post(() -> {
+        advanceIndex(true);
+        playTrack(playlist.get(currentIndex));
+        //  });
     }
 
     // 上一曲
     public void previous() {
-        handler.post(() -> {
-            advanceIndex(false);
-            playTrack(playlist.get(currentIndex));
-        });
+        //   handler.post(() -> {
+        advanceIndex(false);
+        playTrack(playlist.get(currentIndex));
+        //   });
     }
 
     // 跳转（秒）
-    public void seek(final int seconds) {
-        handler.post(() -> {
-            if (mediaPlayer.isPlaying() || isPlaying) {
-                mediaPlayer.seekTo(seconds * 1000);
-            }
-        });
+    public void seek(final double seconds) {
+        int pos = (int) (seconds * mediaPlayer.getDuration() * 1000);
+        //   handler.post(() -> {
+        if (mediaPlayer.isPlaying() || isPlaying) {
+            mediaPlayer.seekTo(pos);
+        }
+        //  });
     }
 
     // 设置播放速度（API ≥ 23）
     public void setSpeed(final float speed) {
-        handler.post(() -> {
-            playSpeed = speed;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mediaPlayer.isPlaying()) {
-                PlaybackParams params = mediaPlayer.getPlaybackParams();
-                params.setSpeed(playSpeed);
-                mediaPlayer.setPlaybackParams(params);
-            }
-        });
+        //  handler.post(() -> {
+        playSpeed = speed;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mediaPlayer.isPlaying()) {
+            PlaybackParams params = mediaPlayer.getPlaybackParams();
+            params.setSpeed(playSpeed);
+            mediaPlayer.setPlaybackParams(params);
+        }
+        // });
     }
 
     // 设置音量（左、右一致）
     public void setVolume(final float vol) {
-        handler.post(() -> {
-            volume = vol;
-            mediaPlayer.setVolume(volume, volume);
-        });
+        //handler.post(() -> {
+        volume = vol;
+        mediaPlayer.setVolume(volume, volume);
+        //  });
     }
 
     // 设置播放模式
     public void setPlayMode(PlayMode mode) {
-        handler.post(() -> playMode = mode);
+        //  handler.post(() ->
+        playMode = mode;
+        //  );
     }
 
     // 是否正在播放
@@ -154,16 +184,66 @@ public class Player {
     // —— 私有方法 —— //
 
     // 真正执行播放的逻辑
+    // 播放在线音频
     private void playTrack(String path) {
         try {
-            mediaPlayer.reset();
-            Log.i(TAG, "playTrack: path => "+path);
+            this.stop();
+            mediaPlayer = new MediaPlayer();
+            Log.i(TAG, "playTrack: path => " + path);
             mediaPlayer.setDataSource(path);
-            mediaPlayer.prepare();  // 同步准备，必要时可用 prepareAsync
-            mediaPlayer.start();
+            mediaPlayer.prepare();
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    mediaPlayer.start();
+                    prepared = false;
+                }
+            });
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    if (mp != null) {
+                        mp.release();
+                    }
+                    Log.d(TAG, "onCompletion: play sound.");
+                }
+            });
+            mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
+                    Log.d(TAG, "Play online sound onError: " + i + ", " + i1);
+                    return false;
+                }
+            });
             isPlaying = true;
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    // 播放本地音频文件
+    private void playAudioFile(final File file) {
+        Log.d(TAG, "playAudioFile: " + file.getAbsolutePath());
+        try {
+            mediaPlayer.setLooping(false);
+            mediaPlayer.setDataSource(file.getAbsolutePath());
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    mp.release();
+                }
+            });
+            mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
+                    Log.d(TAG, "Play local sound onError: " + i + ", " + i1);
+                    return true;
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "playAudioFile: ", e);
         }
     }
 
@@ -211,4 +291,28 @@ public class Player {
                 break;
         }
     }
+
+    public int totalLen() {
+        return mediaPlayer.getCurrentPosition();
+    }
+
+    public String getCurrentInfo() {
+        int pos = mediaPlayer.getCurrentPosition();
+        int total = mediaPlayer.getDuration();
+        double posion = 0.0;
+        if (pos != 0 && total != 0){
+            posion = (double) pos / (double) total;
+        }
+        String info = "{\"pos\":" + posion +
+                ",\"len\":" + mediaPlayer.getDuration() / 1000 +
+                ",\"playing\":" + isPlaying +
+                ",\"speed\":" + playSpeed +
+                ",\"mode\":" + playMode.getId() +
+                ",\"idx\":" + currentIndex +
+                "}";
+        Log.i(TAG, "getCurrentInfo pos => "+pos+" info =>  " + info);
+        return info;
+    }
+
+
 }

@@ -14,6 +14,7 @@
         android:enableOnBackInvokedCallback="true"
         android:allowBackup="true"
         android:supportsRtl="true"
+        android:requestLegacyExternalStorage="true"
         >
         <activity
             android:name="com.lee.MainActivity"

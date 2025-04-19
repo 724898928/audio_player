@@ -1,11 +1,19 @@
 package io.flutter.plugins;
 
+import com.lee.MusicService;
+
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.EventChannel;
 
 public class FlutterEventPlugin implements EventChannel.StreamHandler{
     private static String CALL_FLUTTER_CHANNEL = "com.lee/call_flutter";
     public EventChannel.EventSink eventSink;
+
+    private MusicService musicService;
+    public void setMusicService(MusicService musicService){
+        this.musicService = musicService;
+    }
+
     public static FlutterEventPlugin registerWith(FlutterEngine flutterEngine) {
         EventChannel eventChannel = new EventChannel(flutterEngine.getDartExecutor(), CALL_FLUTTER_CHANNEL);
         FlutterEventPlugin myFlutterEventPlugin = new FlutterEventPlugin();

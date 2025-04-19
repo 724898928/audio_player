@@ -16,6 +16,8 @@ public class MusicService extends Service {
 
     private Player player;
     private final IBinder binder = new LocalBinder();
+
+
     // Binder 子类，用于向 Activity 暴露 Service 实例
 
     public class LocalBinder extends Binder {
@@ -32,20 +34,52 @@ public class MusicService extends Service {
         Log.d(TAG, "MusicService onCreate ");
     }
     // 暴露给客户端的控制方法
-    public void setPlaylist(List<String> list) { player.setPlaylist(list); }
-    public void play(int idx) { player.play(idx); }
-    public void pause() { player.pause(); }
-    public void resume() { player.resume(); }
-    public void next() { player.next(); }
-    public void previous() { player.previous(); }
-    public void setMode(int mode) { player.setPlayMode(PlayMode.fromId(mode)); }
-    public void seek(int pos) { player.seek(pos); }
-    public void setSpeed(float speed) { player.setSpeed(speed); }
-    public void setVolume(float speed) { player.setVolume(speed); }
-    public boolean isPlaying() { return player.isPlaying(); }
+    public void setPlaylist(List<String> list) {
+        player.setPlaylist(list);
+    }
+    public void play(int idx) {
+        player.play(idx);
+    }
+    public void pause() {
+        player.pause();
+    }
+    public void resume() {
+        player.resume();
+    }
+    public void next() {
+        player.next();
+    }
+    public void previous() {
+        player.previous();
+    }
+    public void setMode(int mode) {
+        player.setPlayMode(PlayMode.fromId(mode));
+    }
+    public void seek(double pos) {
+        player.seek(pos);
+    }
+    public void stop() {
+        player.stop();
+    }
+    public void setSpeed(float speed) {
+        player.setSpeed(speed);
+    }
+    public void setVolume(float speed) {
+        player.setVolume(speed);
+    }
+    public boolean isPlaying() {
+        return player.isPlaying();
+    }
     // 供 Activity 调用的方法
     public void doTask(String input) {
         Log.d(TAG, "执行任务: " + input);
+    }
+
+    public String getCurrentInfo(){
+        return player.getCurrentInfo();
+    }
+    public int totalLen() {
+        return player.totalLen();
     }
     @Override
     public IBinder onBind(Intent intent) {

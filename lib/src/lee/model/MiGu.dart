@@ -72,7 +72,7 @@ class MiGu implements BasePlatform {
     print("doGetSongs songName :$songName");
     this.proSongList.clear();
     setSearchUrl(songName, pageNo, pageSize);
-    PlayUtils.hget(this.searchUrl).then((value) {
+    await PlayUtils.hget(this.searchUrl).then((value) {
       //  print("value :$value \n");
       if (value != null) {
         var songs = value['songResultData']?['result'];

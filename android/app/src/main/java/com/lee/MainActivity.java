@@ -40,6 +40,11 @@ public class MainActivity extends FlutterActivity{
             }else{
                 Log.e(TAG, "onCreate: methodPlugin==null");
             }
+            if (null != eventPlugin){
+                eventPlugin.setMusicService(myService);
+            }else{
+                Log.e(TAG, "onCreate: eventPlugin==null");
+            }
         }
 
         @Override

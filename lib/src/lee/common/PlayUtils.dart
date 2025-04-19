@@ -20,7 +20,9 @@ class PlayUtils {
 
   static Future<dynamic> getPosition({AsyncValueChanged? callback}) async {
     if (Platform.isAndroid && isChange) {
-      // InteractUtil.instance.addListener();
+      return await InteractUtil.instance.androidExe("GetCurrentInfo", []).then((v)async{
+        await callback?.call(v);
+      });
     } else {
       return await getPos().listen((v) async {
         await callback?.call(v);
@@ -43,7 +45,7 @@ class PlayUtils {
 
   static Future<dynamic> toNext({AsyncValueChanged? callback}) async {
     if (Platform.isAndroid && isChange) {
-      // InteractUtil.instance.addListener();
+      return await InteractUtil.instance.androidExe("Next", []);
     } else {
       return await nextSong().listen((v) async {
         await callback?.call(v);
@@ -53,7 +55,7 @@ class PlayUtils {
 
   static Future<dynamic> toPrevious({AsyncValueChanged? callback}) async {
     if (Platform.isAndroid && isChange) {
-      // InteractUtil.instance.addListener();
+      return await InteractUtil.instance.androidExe("Previous", []);
     } else {
       return await previousSong().listen((v) async {
         await callback?.call(v);
@@ -75,7 +77,7 @@ class PlayUtils {
 
   static Future<dynamic> toPause({AsyncValueChanged? callback}) async {
     if (Platform.isAndroid && isChange) {
-      // InteractUtil.instance.addListener();
+      return await InteractUtil.instance.androidExe("Pause", []);
     } else {
       return await pause().listen((v) async {
         await callback?.call(v);
@@ -85,7 +87,7 @@ class PlayUtils {
 
   static Future<dynamic> toStop(AsyncValueChanged callback) async {
     if (Platform.isAndroid && isChange) {
-      // InteractUtil.instance.addListener();
+      return await InteractUtil.instance.androidExe("Stop", []);
     } else {
       return await stop().listen((v) async {
         await callback?.call(v);
@@ -107,7 +109,7 @@ class PlayUtils {
   static Future<dynamic> toPlayMode(
       {required PlayMode mode, AsyncValueChanged? callback}) async {
     if (Platform.isAndroid && isChange) {
-      // InteractUtil.instance.addListener();
+      return await InteractUtil.instance.androidExe("PlayMode", [mode.index]);
     } else {
       return await setPlayMode(mode: mode).listen((v) async {
         await callback?.call(v);
@@ -118,7 +120,7 @@ class PlayUtils {
   static Future<dynamic> toSeek(
       {required double tm, AsyncValueChanged? callback}) async {
     if (Platform.isAndroid && isChange) {
-      // InteractUtil.instance.addListener();
+      return await InteractUtil.instance.androidExe("Seek", [tm]);
     } else {
       return await seek(tm: tm).listen((v) async {
         await callback?.call(v);
@@ -129,7 +131,7 @@ class PlayUtils {
   static Future<dynamic> toSpeed(
       {required double s, AsyncValueChanged? callback}) async {
     if (Platform.isAndroid && isChange) {
-      // InteractUtil.instance.addListener();
+      return await InteractUtil.instance.androidExe("Speed", []);
     } else {
       return await setSpeed(v: s).listen((v) async {
         await callback?.call(v);
@@ -140,7 +142,7 @@ class PlayUtils {
   static Future<dynamic> toVolume(
       {required double s, AsyncValueChanged? callback}) async {
     if (Platform.isAndroid && isChange) {
-      // InteractUtil.instance.addListener();
+      return await InteractUtil.instance.androidExe("Volume", []);
     } else {
       return await setVolume(v: s).listen((v) async {
         await callback?.call(v);
@@ -150,7 +152,7 @@ class PlayUtils {
 
   static Future<dynamic> totalLen() async {
     if (Platform.isAndroid && isChange) {
-      // InteractUtil.instance.addListener();
+      return await InteractUtil.instance.androidExe("TotalLen", []);
     } else {
       return await getTotalLen();
     }

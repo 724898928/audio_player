@@ -5,6 +5,7 @@ import 'package:audio_player/src/lee/model/Song.dart';
 import 'package:dio/io.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+//import 'package:flutter_media_metadata/flutter_media_metadata.dart';
 
 
 class Utils {
@@ -90,7 +91,14 @@ class Utils {
               itemCount: songs.length))
     ]);
   }
-
+  //
+  // Future<List<dynamic>> getSongsMetaData(List<String> songs) async {
+  //   var metas = songs.map((e) async {
+  //     final metadata = await MetadataRetriever.fromFile(File(e));
+  //     return metadata;
+  //   }).toList();
+  //   return metas;
+  // }
 
 }
 

@@ -104,7 +104,7 @@ abstract class InteractListener {
 void callback(){
   WidgetsFlutterBinding.ensureInitialized();
   ReceivePort receivePort = ReceivePort();
-  IsolateNameServer.registerPortWithName(receivePort.sendPort, "player ");
+  IsolateNameServer.registerPortWithName(receivePort.sendPort, "player");
   receivePort.listen((message) {
     switch (message){
       case "android":

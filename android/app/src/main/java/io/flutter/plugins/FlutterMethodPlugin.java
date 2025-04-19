@@ -2,16 +2,11 @@ package io.flutter.plugins;
 
 import android.util.Log;
 
-import com.lee.HttpUtils;
 import com.lee.MusicService;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 
 import io.flutter.embedding.engine.FlutterEngine;
-import io.flutter.plugin.common.JSONUtil;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -24,10 +19,11 @@ public class FlutterMethodPlugin implements MethodChannel.MethodCallHandler, Cal
     private static MethodChannel methodChannel;
 
     private MusicService musicService;
+
     private FlutterMethodPlugin() {
     }
 
-    public void setMusicService(MusicService musicService){
+    public void setMusicService(MusicService musicService) {
         this.musicService = musicService;
     }
 
@@ -47,41 +43,77 @@ public class FlutterMethodPlugin implements MethodChannel.MethodCallHandler, Cal
         Log.d(TAG, "onMethodCall call: " + call);
         Object res = null;
         Log.i(TAG, "configureFlutterEngine onMethodCall come from flutter reqPara: call.method: " + call.method + ", arguments : " + call.arguments);
-        if (call.method.equals("Search")) {
-            String a = null;
-            try {
-                List<Object> para = call.arguments();
-                JSONObject reqPara = (JSONObject) JSONUtil.wrap(para.get(0));
-                String url = reqPara.getString("url");
-                Log.i(TAG, "configureFlutterEngine onMethodCall reqPara.getString url : " + url);
-                a = HttpUtils.httpGet(url);
-            } catch (JSONException e) {
-               e.printStackTrace();
-            }
-            res = a;
-        } else if (call.method.equals("SetPlayList")) {
-            List<String> arguments =(List<String>) call.arguments;
-            Log.i(TAG, "来自flutter songs : " +arguments);
-            if (null != musicService){
-                musicService.setPlaylist(arguments);
-            }else {
-                Log.e(TAG, "onMethodCall: musicService==null");
-            }
-           // res = "这个是来自native的问候! SetPlayList";
-        } else if (call.method.equals("Play")) {
-            List<Object> para = call.arguments();
-            if (para.size() > 0){
-                int idx = (int) para.get(0);
-                if (null != musicService){
-                    musicService.play(idx);
-                }else {
+        if (null != musicService) {
+            if (call.method.equals("SetPlayList")) {
+                List<String> arguments = (List<String>) call.arguments;
+                Log.i(TAG, "来自flutter songs : " + arguments);
+                if (null != musicService) {
+                    musicService.setPlaylist(arguments);
+                } else {
                     Log.e(TAG, "onMethodCall: musicService==null");
                 }
-            //    res = "这个是来自native的问候!  play idx:" + idx;
-            }else {
-                Log.e(TAG, "idx == null");
-            }
+                // res = "这个是来自native的问候! SetPlayList";
+            } else if (call.method.equals("Play")) {
+                List<Object> para = call.arguments();
+                if (para.size() > 0) {
+                    int idx = (int) para.get(0);
+                    if (null != musicService) {
+                        musicService.play(idx);
+                    } else {
+                        Log.e(TAG, "onMethodCall: musicService==null");
+                    }
+                    //    res = "这个是来自native的问候!  play idx:" + idx;
+                } else {
+                    Log.e(TAG, "idx == null");
+                }
 
+            } else if (call.method.equals("GetCurrentInfo")) {
+                res = musicService.getCurrentInfo();
+            } else if (call.method.equals("Next")) {
+                musicService.next();
+            } else if (call.method.equals("Previous")) {
+                musicService.previous();
+            } else if (call.method.equals("Pause")) {
+                musicService.pause();
+            } else if (call.method.equals("Stop")) {
+                musicService.stop();
+            } else if (call.method.equals("PlayMode")) {
+                List<Object> para = call.arguments();
+                if (para.size() > 0) {
+                    int idx = (int) para.get(0);
+                    musicService.setMode(idx);
+                } else {
+                    Log.e(TAG, "PlayMode == null");
+                }
+            }else if (call.method.equals("Seek")) {
+                List<Object> para = call.arguments();
+                if (para.size() > 0) {
+                    double pross = (double) para.get(0);
+                    musicService.seek(pross);
+                } else {
+                    Log.e(TAG, "Seek == null");
+                }
+            }else if (call.method.equals("Speed")) {
+                List<Object> para = call.arguments();
+                if (para.size() > 0) {
+                    float pross = (float) para.get(0);
+                    musicService.setSpeed(pross);
+                } else {
+                    Log.e(TAG, "Speed == null");
+                }
+            }else if (call.method.equals("Volume")) {
+                List<Object> para = call.arguments();
+                if (para.size() > 0) {
+                    float pross = (float) para.get(0);
+                    musicService.setVolume(pross);
+                } else {
+                    Log.e(TAG, "Volume == null");
+                }
+            }else if (call.method.equals("TotalLen")) {
+                res = musicService.totalLen();
+            }
+        } else {
+            Log.e(TAG, "onMethodCall: musicService==null");
         }
         result.success(res);
     }

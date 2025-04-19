@@ -56,7 +56,6 @@ class _SearchState extends State<Search> {
     // 模拟搜索请求
     var words = _searchController.text;
     miGu = await platformTools.doGetSongs(_searchController.text, 1, 10);
-
     setState(() {
       _searchResults = miGu.proSongList;
       if (!_searchHistory.contains(_searchController.text)) {
@@ -179,8 +178,14 @@ class _SearchState extends State<Search> {
       itemCount: _searchResults.length,
       separatorBuilder: (context, index) => const Divider(height: 24),
       itemBuilder: (context, index) {
-        final item = _searchResults[index];
-        return _buildResultItem(item);
+        if(index <  _searchResults.length){
+          final item = _searchResults[index];
+          return _buildResultItem(item);
+        }else{
+          return Container();
+        }
+
+
       },
     );
   }

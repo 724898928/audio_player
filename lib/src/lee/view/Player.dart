@@ -143,11 +143,11 @@ class _PlayerState extends State<Player>
           // 每 5 秒执行一次
           await PlayUtils.getPosition(callback: (v) async {
             // 处理返回的数据
-            //  print("playerThreadRun  msg1:$v");
+              print("playerThreadRun  msg1:$v");
             if (mounted) {
               var dat = jsonDecode(v);
               // currentPross = dat['pos'] * dropdownValue;
-              currentPross = dat['pos'];
+              currentPross = dat['pos'].toDouble();
               currentPross = currentPross > 1 ? 1 : currentPross;
               totalDouble = dat['len'].toDouble();
               var curttime = totalDouble! * currentPross;

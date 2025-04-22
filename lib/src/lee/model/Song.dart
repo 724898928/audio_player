@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:audio_player/src/lee/common/Utils.dart';
 import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:flutter/material.dart';
 
@@ -18,57 +19,66 @@ class Lyric {
 }
 
 class LyricParser {
+
+  static String filterSpecialChars(String input) {
+    // 保留字母、数字、中文、空格及常用标点（根据需求调整）
+    RegExp regExp = RegExp(r'^\w\s\u4e00-\u9fa5，。！？、‘’“”《》【】（）');
+    return input.replaceAll(regExp, '');
+  }
+
   static final RegExp _lrcRegex = RegExp(
     r'^\[(\d+):(\d+)(?:\.(\d+))?\](.*?)(?:\/(.*))?$',
+  //  r'^\[(\d{2}):(\d{2})\.(\d{2})\](.*)$',
     caseSensitive: false,
     multiLine: true,
   );
 
   static LinkedHashMap<int, List<Lyric>> parse(String lrcContent) {
+    //lrcContent = filterSpecialChars(lrcContent);
+    print('parse lrcContent = $lrcContent');
     final LinkedHashMap<int, List<Lyric>> linkedHashMap = LinkedHashMap();
     final lines = lrcContent.split('\n');
-
     for (var line in lines) {
+      late Duration? cDuration = null;
+      late Lyric lyric;
       line = line.trim();
       if (line.isEmpty) continue;
-
       final match = _lrcRegex.firstMatch(line);
       if (match != null) {
-        final minutes = int.parse(match.group(1)!);
-        final seconds = int.parse(match.group(2)!);
-        final milliseconds = int.parse(match.group(3)?.padRight(3, '0') ?? '0');
-
-        final totalDuration = Duration(
-          minutes: minutes,
-          seconds: seconds,
-          milliseconds: milliseconds,
-        );
-
+        final minutes = int.parse(match.group(1)?? '0');
+        final seconds = int.parse(match.group(2) ?? '0');
+        final milliseconds = int.parse(match.group(3) ?? '0');
+        final time = (minutes * 60 + seconds) * 1000 + milliseconds * 10; // 转换为毫秒
+        cDuration = Duration(milliseconds: time);
+        print('LyricParser1 cDuration:${cDuration.toString()}  line = $line');
         final text = match.group(4)?.trim() ?? '';
-        final translation = match.group(5)?.trim();
-        var lyric = Lyric(
+         lyric = Lyric(
           //  time: totalDuration.inSeconds,
           text: text,
-          translation: translation,
+          translation:  match.group(5)?.trim(),
         );
-        linkedHashMap.putIfAbsent(totalDuration.inSeconds, () => []).add(lyric);
+
       } else {
+        print('LyricParser2 parse = $line');
         // 处理元数据（如 [ti:...]）
-        _parseMetadata(line);
+        // totalDuration = parseMetadata(line);
+        // lyric =  Lyric(text: line.split("]").last?.trim()??'');
       }
+      if(null!=cDuration)
+      linkedHashMap.putIfAbsent((cDuration.inMilliseconds / 500).toInt(), () => []).add(lyric);
     }
     print("lyrics  :$linkedHashMap");
+
     return linkedHashMap;
   }
 
-  static void _parseMetadata(String line) {
+  static void parseMetadata(String line) {
     if (line.startsWith('[') && line.contains(':')) {
       final metadata = line.substring(1, line.indexOf(']'));
       final splitIndex = metadata.indexOf(':');
       if (splitIndex != -1) {
         final key = metadata.substring(0, splitIndex).trim().toLowerCase();
         final value = metadata.substring(splitIndex + 1).trim();
-
         // 可存储到单独的 metadata map
         print('Metadata: $key = $value');
       }

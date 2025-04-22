@@ -10,7 +10,7 @@ import 'package:dio/dio.dart';
 
 class Utils {
   static final dio = Dio(BaseOptions(
-    contentType: Headers.formUrlEncodedContentType,
+    contentType: "application/x-www-form-urlencoded; charset=utf-8",
   ))..httpClientAdapter = IOHttpClientAdapter(
     createHttpClient: (){
       final HttpClient client = HttpClient(context: SecurityContext(withTrustedRoots: false));
@@ -24,24 +24,15 @@ class Utils {
 
   static final option = Options(
     headers: {
-      "contentType": "application/x-www-form-urlencoded", // set content-type
+      "contentType": "application/x-www-form-urlencoded; charset=utf-8", // set content-type
     },
   );
 
   static Future<dynamic> get(String url, {Map<String, dynamic>? qp}) async {
-    // Uri uri = Uri(scheme: 'https', host: url, queryParameters: qp);
     try {
-     // print("https get uri: " + url.toString());
       var response = await dio.get(url);
-      print("response: " + response.toString());
-      return jsonDecode(response.toString());
-      // if (response.statusCode == 200) {
-      //   return response.data;
-      //   // return jsonDecode(response.data);
-      // } else {
-      //   print("Error: " + response.data);
-      //   return response.data;
-      // }
+    //  print("response: " + response.toString());
+      return '$response';
     } catch (e) {
       print(e);
     }

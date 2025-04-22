@@ -22,7 +22,6 @@ class PlayStatus {
   double playSpeed = 1.0; // 当前播放速度
   LinkedHashMap<int, List<Lyric>>? lyrics = null;
   String? currentlrcUrl = null;
-  int currentTime = 0; // 当前播放时间 s单位 ,
   setValue(
     bool isPlaying,
     double pross,
@@ -32,7 +31,6 @@ class PlayStatus {
     Duration? playTime,
     Duration? playTotalTime,
     double playSpeed,
-    int currentTime,
   ) {
     this.isPlaying = isPlaying;
     this.pross = pross;
@@ -42,7 +40,6 @@ class PlayStatus {
     this.playTime = playTime;
     this.playTotalTime = playTotalTime;
     this.playSpeed = playSpeed;
-    this.currentTime = currentTime;
   }
 
   set setCurrentlrcUrl(String? url) {

@@ -14,10 +14,10 @@ class LyrWidget extends StatefulWidget {
   State<LyrWidget> createState() => lyrWidgetState;
 
   Future<void> update(
-    String? url,
-    int currentTime,
+  {String? url,
+    int? currentTime}
   ) async {
-    await lyrWidgetState.update(url, currentTime);
+    await lyrWidgetState.update(url:url, currentTime:currentTime);
   }
 
   Future<void> clear() async {
@@ -53,32 +53,25 @@ class _LyrWidgetState extends State<LyrWidget> {
   }
 
   Future<void> update(
-    String? url,
-    int currentTime,
+      {String? url,
+        int? currentTime}
   ) async {
-    // print("_LyrWidgetState update url: $url , currenttime: $currentTime");
+     print("_LyrWidgetState update url: $url , currenttime: $currentTime");
     if (playState.currentlrcUrl != url) {
       playState.setCurrentlrcUrl = url;
-      await getLrc(url!, (res) {
-        if (null != res) {
-          // print("update res: $res");
-          playState.setLyrics = LyricParser.parse(res);
-        }
-      });
+    var res = await Utils.get(url!);
+      playState.setLyrics = LyricParser.parse(res);
     }
-    _simulatePlayback(currentTime);
+    _simulatePlayback(currentTime: currentTime);
   }
 
-  Future<dynamic> getLrc(String url, ValueChanged callback) async {
-    await Utils.get(url).then((res) {
-      callback.call(res);
-    });
-  }
-
-  void _simulatePlayback(int currentTime) async {
+  void _simulatePlayback({int? currentTime}) async {
+    if(null == currentTime){
+      return ;
+    }
     if (null != playState.lyrics &&
         _currentLyricIndex < playState.lyrics!.length - 1) {
-      var tmp = playState.lyrics!.keys.toList().indexOf(currentTime);
+      var tmp = playState.lyrics!.keys.toList().indexOf(currentTime!);
       _currentLyricIndex = -1 == tmp ? _currentLyricIndex : tmp;
       if (mounted) {
         setState(() {

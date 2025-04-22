@@ -14,7 +14,7 @@ public class MusicService extends Service {
     private final static String TAG = MusicService.class.getSimpleName();
     private FlutterEngine mEngine;
 
-    private Player player;
+    private AudioPlayer player;
     private final IBinder binder = new LocalBinder();
 
 
@@ -30,7 +30,7 @@ public class MusicService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        player = Player.getInstance();
+        player = new AudioPlayer(this);
         Log.d(TAG, "MusicService onCreate ");
     }
     // 暴露给客户端的控制方法
@@ -55,13 +55,13 @@ public class MusicService extends Service {
     public void setMode(int mode) {
         player.setPlayMode(PlayMode.fromId(mode));
     }
-    public void seek(double pos) {
+    public void seek(long pos) {
         player.seek(pos);
     }
     public void stop() {
         player.stop();
     }
-    public void setSpeed(float speed) {
+    public void setSpeed(long speed) {
         player.setSpeed(speed);
     }
     public void setVolume(float speed) {
@@ -78,7 +78,7 @@ public class MusicService extends Service {
     public String getCurrentInfo(){
         return player.getCurrentInfo();
     }
-    public int totalLen() {
+    public long totalLen() {
         return player.totalLen();
     }
     @Override

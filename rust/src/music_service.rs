@@ -178,14 +178,14 @@ impl Player {
                             if let Some(f_s) = &mut *guard{
                                 if let Some(s) = &mut sink {
                                     if let Ok(t_d) = total_duration.read() {
-                                        let mut offset = s.get_pos().div_duration_f64(*t_d);
-                                        if offset.is_infinite() || offset.is_nan(){
-                                            offset = 0.0_f64;
-                                        }
+                                        let mut offset = s.get_pos().as_millis();
+                                        // if offset.is_infinite() || offset.is_nan(){
+                                        //     offset = 0.0_f64;
+                                        // }
                                         f_s.add(format!(
                                             "{{\"pos\":{:?},\"len\":{:?}, \"playing\":{:?}, \"speed\":{:?}, \"mode\":{:?},\"idx\":{:?}}}",
                                             offset,
-                                            &t_d.as_secs(),
+                                            &t_d.as_millis(),
                                             &is_playing,
                                             &play_speed,
                                             &play_mode.get_id(),

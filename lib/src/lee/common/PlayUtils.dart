@@ -15,7 +15,7 @@ class PlayUtils {
   static bool isChange = true;
 
   static Future<dynamic> hget(String url) async {
-    return await Utils.get(url);
+    return jsonDecode(await Utils.get(url));
   }
 
   static Future<dynamic> getPosition({AsyncValueChanged? callback}) async {

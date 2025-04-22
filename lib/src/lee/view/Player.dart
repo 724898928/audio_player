@@ -106,7 +106,7 @@ class _PlayerState extends State<Player>
 
       if (null != current_song!.lyrics && current_song!.lyrics!.isNotEmpty) {
         await lyrWidget.update(
-            current_song!.lyrics?.first, playStatus.currentTime);
+           url: current_song!.lyrics?.first,currentTime: ((playStatus.playTime?.inMilliseconds ?? 0 ) / 500).toInt());
       }
     }
   }
@@ -146,12 +146,10 @@ class _PlayerState extends State<Player>
               print("playerThreadRun  msg1:$v");
             if (mounted) {
               var dat = jsonDecode(v);
-              // currentPross = dat['pos'] * dropdownValue;
-              currentPross = dat['pos'].toDouble();
-              currentPross = currentPross > 1 ? 1 : currentPross;
+              int pos = dat['pos'];
               totalDouble = dat['len'].toDouble();
-              var curttime = totalDouble! * currentPross;
-              playTime = Duration(seconds: curttime.toInt());
+              currentPross = pos.toDouble() / totalDouble! ;
+              playTime = Duration(milliseconds: pos);
               playStatus.setValue(
                   dat['playing'],
                   currentPross,
@@ -159,9 +157,9 @@ class _PlayerState extends State<Player>
                   dat['idx'],
                   dat['mode'],
                   playTime,
-                  Duration(seconds: dat['len']),
+                  Duration(milliseconds: dat['len']),
                   dat['speed'],
-                  curttime.toInt());
+              );
               setCurrentPlayState();
               setState(() {});
             }
@@ -246,8 +244,8 @@ class _PlayerState extends State<Player>
                               if (null != current_song!.lyrics &&
                                   current_song!.lyrics!.isNotEmpty)
                                 await lyrWidget.update(
-                                    current_song!.lyrics?.first,
-                                    (totalDouble! * currentPross).toInt());
+                                   url:  current_song!.lyrics?.first,
+                                   currentTime: (totalDouble! * currentPross / 500) .toInt());
                               print("current_pross :$value");
                             },
                             onChanged: (value) async {

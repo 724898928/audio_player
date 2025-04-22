@@ -106,7 +106,7 @@ class _PlayerState extends State<Player>
 
       if (null != current_song!.lyrics && current_song!.lyrics!.isNotEmpty) {
         await lyrWidget.update(
-           url: current_song!.lyrics?.first,currentTime: ((playStatus.playTime?.inMilliseconds ?? 0 ) / 500).toInt());
+           url: current_song!.lyrics?.first, currentTime: (((totalDouble! * currentPross + 1000) ?? 0 ) / 500).ceil());
       }
     }
   }
@@ -148,7 +148,8 @@ class _PlayerState extends State<Player>
               var dat = jsonDecode(v);
               int pos = dat['pos'];
               totalDouble = dat['len'].toDouble();
-              currentPross = pos.toDouble() / totalDouble! ;
+              var temp = pos.toDouble() / totalDouble!;
+              currentPross =  temp < 1.0 ? temp : 1.0;
               playTime = Duration(milliseconds: pos);
               playStatus.setValue(
                   dat['playing'],
@@ -245,13 +246,13 @@ class _PlayerState extends State<Player>
                                   current_song!.lyrics!.isNotEmpty)
                                 await lyrWidget.update(
                                    url:  current_song!.lyrics?.first,
-                                   currentTime: (totalDouble! * currentPross / 500) .toInt());
+                                   currentTime: ((totalDouble! * currentPross + 1000)/ 500).ceil());
                               print("current_pross :$value");
                             },
                             onChanged: (value) async {
                               currentPross = value;
 
-                              await PlayUtils.toSeek(tm: currentPross);
+                              await PlayUtils.toSeek(tm: (currentPross * totalTime!.inMilliseconds).toInt());
 
                               setState(() {});
                               // 实现进度调整
@@ -338,7 +339,7 @@ class _PlayerState extends State<Player>
                                 if (!isPlaying) {
                                   playIcon = Icons.pause;
                                   await PlayUtils.toPlay(idx:idx);
-                                  await PlayUtils.toSeek(tm: currentPross);
+                                  await PlayUtils.toSeek(tm: (currentPross * totalTime!.inMilliseconds).toInt());
                                   await PlayUtils.toSpeed(s: playSpeed);
                                   setTimer();
                                 } else {
@@ -387,16 +388,16 @@ class _PlayerState extends State<Player>
                               setState(() {});
                             }),
 
-                        DDbutton(
-                            labels: labels,
-                            dropdownValue: playSpeed,
-                            onChange: (v) async {
-                              if (null != v) {
-                                playSpeed = v;
-                                await PlayUtils.toSpeed(s: v);
-                                print("DDbutton onChange value:$v");
-                              }
-                            })
+                        // DDbutton(
+                        //     labels: labels,
+                        //     dropdownValue: playSpeed,
+                        //     onChange: (v) async {
+                        //       if (null != v) {
+                        //         playSpeed = v;
+                        //         await PlayUtils.toSpeed(s: v);
+                        //         print("DDbutton onChange value:$v");
+                        //       }
+                        //     })
                       ],
                     ),
                   ),

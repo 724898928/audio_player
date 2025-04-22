@@ -98,6 +98,7 @@ public class MainActivity extends FlutterActivity{
 
     @Override
     protected void onDestroy() {
+        Log.d(TAG,"MainActivity onDestroy");
         super.onDestroy();
         // 解绑 service
         if(isBound){

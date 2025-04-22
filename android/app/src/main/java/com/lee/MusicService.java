@@ -61,7 +61,7 @@ public class MusicService extends Service {
     public void stop() {
         player.stop();
     }
-    public void setSpeed(long speed) {
+    public void setSpeed(float speed) {
         player.setSpeed(speed);
     }
     public void setVolume(float speed) {
@@ -111,5 +111,12 @@ public class MusicService extends Service {
    //     }
 
         return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "MusicService onDestroy: ");
+        player.releasePlayer();
+        super.onDestroy();
     }
 }

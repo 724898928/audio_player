@@ -167,9 +167,7 @@ impl Player {
                     }
                     PlayerCommand::Seek(t) => {
                         if let Some(s) = &mut sink {
-                            let offset = total_duration.read().unwrap().mul_f64(t);
-                         //   println!("seek input t:{:#?},  offset:{:#?}", t, offset);
-                            s.try_seek(offset).unwrap();
+                            s.try_seek(TDuration::from_secs_f64(t)).unwrap();
                         }
                     }
                     PlayerCommand::Position => {

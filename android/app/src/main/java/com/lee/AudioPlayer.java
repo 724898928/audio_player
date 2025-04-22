@@ -68,8 +68,8 @@ public class AudioPlayer {
                     case Player.STATE_READY:
                         updateNotification();
                         break;
-                    case Player.STATE_ENDED:
-                        releasePlayer();
+                   case Player.STATE_ENDED:
+                        next();
                         break;
                 }
             }
@@ -81,12 +81,15 @@ public class AudioPlayer {
     // 真正执行播放的逻辑
     private void playTrack(String audioUrl) {
         Log.i(TAG, "playTrack: audioUrl=>" + audioUrl);
-        player.clearMediaItems();
-        MediaItem mediaItem = MediaItem.fromUri(Uri.parse(audioUrl));
-        player.setMediaItem(mediaItem);
-        player.prepare();
-        player.play();
-        isPlaying = true;
+        if (null != player){
+            player.clearMediaItems();
+            MediaItem mediaItem = MediaItem.fromUri(Uri.parse(audioUrl));
+            player.setMediaItem(mediaItem);
+            player.prepare();
+            player.play();
+            isPlaying = true;
+        }
+
     }
 
     // 根据模式前进或后退索引
@@ -141,6 +144,7 @@ public class AudioPlayer {
 
     // 释放资源
     public void releasePlayer() {
+        Log.i(TAG, "AudioPlayer releasePlayer: ");
         if (player != null) {
             player.release();
             player = null;
@@ -179,7 +183,7 @@ public class AudioPlayer {
     }
 
     public void setPlayMode(PlayMode playMode) {
-        playMode = playMode;
+       this.playMode = playMode;
     }
 
     public void resume() {
@@ -197,28 +201,26 @@ public class AudioPlayer {
     }
 
     // 设置播放速度
-    public void setSpeed(long pos) {
+    public void setSpeed(float pos) {
         player.setPlaybackSpeed(pos);
     }
     public long totalLen() {
       return player.getDuration();
     }
     public String getCurrentInfo() {
-//        long pos = player.getCurrentPosition();
-//        long total = player.getDuration();
-//        double posion = 0.0;
-//        if (pos != 0 && total != 0){
-//            posion = (double) pos / (double) total;
-//        }
-        String info = "{\"pos\":" + player.getCurrentPosition() +
-                ",\"len\":" + player.getDuration()+
-                ",\"playing\":" + isPlaying +
-                ",\"speed\":" + playSpeed +
-                ",\"mode\":" + playMode.getId() +
-                ",\"idx\":" + currentIndex +
-                "}";
-        Log.i(TAG, "getCurrentInfo pos => "+ player.getCurrentPosition()+" info =>  " + info);
-        return info;
+        String info = null;
+        if (null != player){
+            info = "{\"pos\":" + player.getCurrentPosition() +
+                    ",\"len\":" + player.getDuration() +
+                    ",\"playing\":" + isPlaying +
+                    ",\"speed\":" + playSpeed +
+                    ",\"mode\":" + playMode.getId() +
+                    ",\"idx\":" + currentIndex +
+                    "}";
+            Log.i(TAG, "getCurrentInfo pos => "+ player.getCurrentPosition()+" info =>  " + info);
+
+        }
+           return info;
     }
 
 

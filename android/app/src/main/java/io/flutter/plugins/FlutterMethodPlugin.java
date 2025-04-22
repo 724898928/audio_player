@@ -88,7 +88,7 @@ public class FlutterMethodPlugin implements MethodChannel.MethodCallHandler, Cal
             }else if (call.method.equals("Seek")) {
                 List<Object> para = call.arguments();
                 if (para.size() > 0) {
-                    long pross = (long) para.get(0);
+                    long pross = Long.parseLong(""+para.get(0));
                     musicService.seek(pross);
                 } else {
                     Log.e(TAG, "Seek == null");
@@ -96,7 +96,7 @@ public class FlutterMethodPlugin implements MethodChannel.MethodCallHandler, Cal
             }else if (call.method.equals("Speed")) {
                 List<Object> para = call.arguments();
                 if (para.size() > 0) {
-                    long pross = (long) para.get(0);
+                    float pross = (float) para.get(0);
                     musicService.setSpeed(pross);
                 } else {
                     Log.e(TAG, "Speed == null");

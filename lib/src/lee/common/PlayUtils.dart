@@ -118,11 +118,11 @@ class PlayUtils {
   }
 
   static Future<dynamic> toSeek(
-      {required double tm, AsyncValueChanged? callback}) async {
+      {required int tm, AsyncValueChanged? callback}) async {
     if (Platform.isAndroid && isChange) {
       return await InteractUtil.instance.androidExe("Seek", [tm]);
     } else {
-      return await seek(tm: tm).listen((v) async {
+      return await seek(tm: tm.toDouble()).listen((v) async {
         await callback?.call(v);
       });
     }

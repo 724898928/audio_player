@@ -178,14 +178,12 @@ class _SearchState extends State<Search> {
       itemCount: _searchResults.length,
       separatorBuilder: (context, index) => const Divider(height: 24),
       itemBuilder: (context, index) {
-        if(index <  _searchResults.length){
+        if (index < _searchResults.length) {
           final item = _searchResults[index];
           return _buildResultItem(item);
-        }else{
+        } else {
           return Container();
         }
-
-
       },
     );
   }
@@ -230,8 +228,8 @@ class _SearchState extends State<Search> {
       if (idx < 0) {
         idx = song.getPlaySong();
       }
-      PlayStatus.getInstance().newPlayIdx = idx;
-      await PlayUtils.toPlay(idx:  idx);
+      // PlayStatus.getInstance().newPlayIdx = idx;
+      await PlayUtils.toPlay(idx: idx);
     }
   }
 

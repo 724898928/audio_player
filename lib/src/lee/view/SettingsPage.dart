@@ -170,7 +170,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           // 说明区域
           Expanded(
             flex: 6,
-            child: currentWidget??Container(),
+            child: currentWidget ?? Container(),
           ),
         ],
       ),
@@ -219,7 +219,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           return TextButton(
               onPressed: () async {
                 // int id = songs.add(pSongs[idx]);
-                PlayStatus.getInstance().newPlayIdx = idx;
+                // PlayStatus.getInstance().newPlayIdx = idx;
                 await PlayUtils.toPlay(idx: idx);
               },
               child: Text('${pSongs[idx].title} - ${pSongs[idx].artist}'));

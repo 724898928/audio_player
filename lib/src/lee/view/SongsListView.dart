@@ -1,6 +1,4 @@
-import 'package:audio_player/src/lee/common/PlayStatus.dart';
 import 'package:audio_player/src/lee/model/SongList.dart';
-import 'package:audio_player/src/rust/api/simple.dart';
 import 'package:flutter/material.dart';
 
 import '../common/PlayUtils.dart';
@@ -36,7 +34,7 @@ class _SongsListViewState extends State<SongsListView> {
             return TextButton(
                 onPressed: () async {
                   // int id = songs.add(pSongs[idx]);
-                  PlayStatus.getInstance().newPlayIdx = idx;
+                  //  PlayStatus.getInstance().newPlayIdx = idx;
                   await PlayUtils.toPlay(idx: idx);
                 },
                 child: Text(

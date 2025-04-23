@@ -28,7 +28,7 @@ public class AudioPlayer {
     private MediaSession mediaSession;
     // 播放列表及状态
     private final List<String> playlist = new ArrayList<>();
-    private int currentIndex = 0;
+    private int currentIndex = -1;
     private PlayMode playMode = PlayMode.LOOP;
     private boolean isPlaying = false;
     private float playSpeed = 1.0f;
@@ -210,8 +210,16 @@ public class AudioPlayer {
     public String getCurrentInfo() {
         String info = null;
         if (null != player){
-            info = "{\"pos\":" + player.getCurrentPosition() +
-                    ",\"len\":" + player.getDuration() +
+           // long pos = player.getCurrentPosition() + 1000;
+            long pos = player.getCurrentPosition();
+            long len = player.getDuration() ;
+            if (-1 == currentIndex){
+                pos = 0;
+                len = 0;
+            }
+
+            info = "{\"pos\":" + pos +
+                    ",\"len\":" + len +
                     ",\"playing\":" + isPlaying +
                     ",\"speed\":" + playSpeed +
                     ",\"mode\":" + playMode.getId() +

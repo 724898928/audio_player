@@ -1,11 +1,5 @@
-import 'dart:collection';
-
 import 'package:audio_player/src/lee/common/PlayStatus.dart';
 import 'package:flutter/material.dart';
-
-import '../common/Utils.dart';
-import '../model/Song.dart';
-import 'Player.dart';
 
 class LyrWidget extends StatefulWidget {
   LyrWidget({super.key});
@@ -13,11 +7,8 @@ class LyrWidget extends StatefulWidget {
   @override
   State<LyrWidget> createState() => lyrWidgetState;
 
-  Future<void> update(
-  {String? url,
-    int? currentTime}
-  ) async {
-    await lyrWidgetState.update(url:url, currentTime:currentTime);
+  Future<void> update() async {
+    await lyrWidgetState.update();
   }
 
   Future<void> clear() async {
@@ -47,27 +38,20 @@ class _LyrWidgetState extends State<LyrWidget> {
       setState(() {
         playState.setLyrics = null;
         playState.setCurrentlrcUrl = null;
-        _currentLyricIndex = 0;
+        _currentLyricIndex = -1;
       });
     }
   }
 
-  Future<void> update(
-      {String? url,
-        int? currentTime}
-  ) async {
-     print("_LyrWidgetState update url: $url , currenttime: $currentTime");
-    if (playState.currentlrcUrl != url) {
-      playState.setCurrentlrcUrl = url;
-    var res = await Utils.get(url!);
-      playState.setLyrics = LyricParser.parse(res);
-    }
-    _simulatePlayback(currentTime: currentTime);
+  Future<void> update() async {
+    print("update lyric widget");
+    _simulatePlayback(
+        currentTime: (playState.playTime!.inMilliseconds / 500).toInt());
   }
 
   void _simulatePlayback({int? currentTime}) async {
-    if(null == currentTime){
-      return ;
+    if (null == currentTime) {
+      return;
     }
     if (null != playState.lyrics &&
         _currentLyricIndex < playState.lyrics!.length - 1) {

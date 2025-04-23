@@ -9,7 +9,7 @@
     <application
         android:label="audio player"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/audio_player"
         android:usesCleartextTraffic="true"
         android:enableOnBackInvokedCallback="true"
         android:allowBackup="true"

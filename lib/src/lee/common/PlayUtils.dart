@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:audio_player/src/lee/common/NativeApi.dart';
 import 'package:audio_player/src/lee/common/Utils.dart';
 
 import '../../rust/api/simple.dart';
@@ -20,7 +19,8 @@ class PlayUtils {
 
   static Future<dynamic> getPosition({AsyncValueChanged? callback}) async {
     if (Platform.isAndroid && isChange) {
-      return await InteractUtil.instance.androidExe("GetCurrentInfo", []).then((v)async{
+      return await InteractUtil.instance
+          .androidExe("GetCurrentInfo", []).then((v) async {
         await callback?.call(v);
       });
     } else {
@@ -64,8 +64,7 @@ class PlayUtils {
   }
 
   static Future<dynamic> setList2Player(
-      {required List<String> songs,
-      AsyncValueChanged? callback}) async {
+      {required List<String> songs, AsyncValueChanged? callback}) async {
     if (Platform.isAndroid && isChange) {
       return await InteractUtil.instance.androidExe("SetPlayList", songs);
     } else {
@@ -100,7 +99,7 @@ class PlayUtils {
     if (Platform.isAndroid && isChange) {
       return await InteractUtil.instance.androidExe("Play", [idx]);
     } else {
-      return await play(idx:  BigInt.from(idx)).listen((v) async {
+      return await play(idx: BigInt.from(idx)).listen((v) async {
         await callback?.call(v);
       });
     }

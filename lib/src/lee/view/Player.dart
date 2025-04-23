@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:audio_player/src/lee/common/InteractUtil.dart';
@@ -18,12 +19,14 @@ import '../common/PlayUtils.dart';
 
 class Player extends StatefulWidget {
   Player({super.key});
+
   @override
   State<StatefulWidget> createState() => _PlayerState();
 }
 
 class _PlayerState extends State<Player>
-    with WidgetsBindingObserver, AutomaticKeepAliveClientMixin implements InteractListener {
+    with WidgetsBindingObserver, AutomaticKeepAliveClientMixin
+    implements InteractListener {
   // 全局播放状态.
   PlayStatus playStatus = PlayStatus.getInstance();
   Songlist songList = Songlist.getInstance();
@@ -52,8 +55,6 @@ class _PlayerState extends State<Player>
 
   double playSpeed = 1.0;
 
-  Timer? _timer;
-
   late LyrWidget lyrWidget;
 
   NetworkImage? imgWidgets = null;
@@ -75,12 +76,12 @@ class _PlayerState extends State<Player>
     setTimer();
     setCurrentPlayState();
     super.initState();
-
+    playStatus.callBack = setTimer;
     print("_PlayerState songList:${songList.proPlaySongList}");
     WidgetsBinding.instance.addObserver(this);
   }
 
-  Future<void> setCurrentPlayState() async {
+  Future<dynamic> setCurrentPlayState() async {
     isPlaying = playStatus.isPlaying;
     if (idx != playStatus.currentIndex && playStatus.currentIndex != -1) {
       idx = playStatus.currentIndex;
@@ -105,23 +106,20 @@ class _PlayerState extends State<Player>
       playIcon = isPlaying ? Icons.pause : Icons.play_arrow;
 
       if (null != current_song!.lyrics && current_song!.lyrics!.isNotEmpty) {
-        await lyrWidget.update(
-           url: current_song!.lyrics?.first, currentTime: (((totalDouble! * currentPross + 1000) ?? 0 ) / 500).ceil());
+        await lyrWidget.update();
       }
     }
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    print(
-        "didChangeAppLifecycleState _timer == null : ${null == _timer} state: $state");
+    print("didChangeAppLifecycleState  state: $state");
     switch (state) {
       case AppLifecycleState.resumed:
         setTimer();
@@ -138,34 +136,11 @@ class _PlayerState extends State<Player>
   }
 
   void setTimer() {
-    _timer ??
-        Timer.periodic(Duration(milliseconds: 500), (timer) async {
-          // 每 5 秒执行一次
-          await PlayUtils.getPosition(callback: (v) async {
-            // 处理返回的数据
-              print("playerThreadRun  msg1:$v");
-            if (mounted) {
-              var dat = jsonDecode(v);
-              int pos = dat['pos'];
-              totalDouble = dat['len'].toDouble();
-              var temp = pos.toDouble() / totalDouble!;
-              currentPross =  temp < 1.0 ? temp : 1.0;
-              playTime = Duration(milliseconds: pos);
-              playStatus.setValue(
-                  dat['playing'],
-                  currentPross,
-                  0.0,
-                  dat['idx'],
-                  dat['mode'],
-                  playTime,
-                  Duration(milliseconds: dat['len']),
-                  dat['speed'],
-              );
-              setCurrentPlayState();
-              setState(() {});
-            }
-          });
-        });
+    print("setTimer current_song:${current_song?.title}");
+    if (mounted) {
+      setCurrentPlayState();
+      setState(() {});
+    }
   }
 
   @override
@@ -233,7 +208,6 @@ class _PlayerState extends State<Player>
                     child: Container(
                       padding: EdgeInsets.all(0),
                       child: Column(
-
                         children: [
                           Slider(
                             // overlayColor: WidgetStatePropertyAll(Colors.blueAccent),
@@ -243,16 +217,17 @@ class _PlayerState extends State<Player>
                             max: 1.0,
                             onChangeEnd: (value) async {
                               if (null != current_song!.lyrics &&
-                                  current_song!.lyrics!.isNotEmpty)
-                                await lyrWidget.update(
-                                   url:  current_song!.lyrics?.first,
-                                   currentTime: ((totalDouble! * currentPross + 1000)/ 500).ceil());
+                                  current_song!.lyrics!.isNotEmpty) {
+                                await lyrWidget.update();
+                              }
                               print("current_pross :$value");
                             },
                             onChanged: (value) async {
                               currentPross = value;
 
-                              await PlayUtils.toSeek(tm: (currentPross * totalTime!.inMilliseconds).toInt());
+                              await PlayUtils.toSeek(
+                                  tm: (currentPross * totalTime!.inMilliseconds)
+                                      .toInt());
 
                               setState(() {});
                               // 实现进度调整
@@ -322,7 +297,6 @@ class _PlayerState extends State<Player>
                             }
                           },
                         ),
-
                         CircleAvatar(
                           radius: 25,
                           backgroundColor: Colors.blueAccent,
@@ -338,15 +312,17 @@ class _PlayerState extends State<Player>
                                 // 播放或暂停
                                 if (!isPlaying) {
                                   playIcon = Icons.pause;
-                                  await PlayUtils.toPlay(idx:idx);
-                                  await PlayUtils.toSeek(tm: (currentPross * totalTime!.inMilliseconds).toInt());
+                                  await PlayUtils.toPlay(idx: idx);
+                                  await PlayUtils.toSeek(
+                                      tm: (currentPross *
+                                              totalTime!.inMilliseconds)
+                                          .toInt());
                                   await PlayUtils.toSpeed(s: playSpeed);
                                   setTimer();
                                 } else {
-                                  await PlayUtils.toPause(callback: (v) async{
+                                  await PlayUtils.toPause(callback: (v) async {
                                     playIcon = Icons.play_arrow;
                                   });
-
                                 }
                                 setState(() {});
                                 isPlaying = !isPlaying;
@@ -354,7 +330,6 @@ class _PlayerState extends State<Player>
                             },
                           ),
                         ),
-
                         IconButton(
                           padding: EdgeInsets.all(0),
                           alignment: Alignment.center,
@@ -373,7 +348,6 @@ class _PlayerState extends State<Player>
                             }
                           },
                         ),
-
                         IconButton(
                             alignment: Alignment.center,
                             icon: Icon(crrentModleIcon['icon']),
@@ -387,17 +361,17 @@ class _PlayerState extends State<Player>
                               crrentModleIcon = modleIcon[mode_click];
                               setState(() {});
                             }),
-
-                        // DDbutton(
-                        //     labels: labels,
-                        //     dropdownValue: playSpeed,
-                        //     onChange: (v) async {
-                        //       if (null != v) {
-                        //         playSpeed = v;
-                        //         await PlayUtils.toSpeed(s: v);
-                        //         print("DDbutton onChange value:$v");
-                        //       }
-                        //     })
+                        if (!Platform.isAndroid)
+                          DDbutton(
+                              labels: labels,
+                              dropdownValue: playSpeed,
+                              onChange: (v) async {
+                                if (null != v) {
+                                  playSpeed = v;
+                                  await PlayUtils.toSpeed(s: v);
+                                  print("DDbutton onChange value:$v");
+                                }
+                              })
                       ],
                     ),
                   ),

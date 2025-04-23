@@ -85,7 +85,7 @@ class _PlayerState extends State<Player>
     isPlaying = playStatus.isPlaying;
     if (idx != playStatus.currentIndex && playStatus.currentIndex != -1) {
       idx = playStatus.currentIndex;
-      await lyrWidget.clear();
+      //  await lyrWidget.clear();
     }
     print(
         "setCurrentPlayState idx:$idx, playStatus.currentIndex:${playStatus.currentIndex} ,songList.proPlaySongList.length:${songList.proPlaySongList.length}");
@@ -275,7 +275,7 @@ class _PlayerState extends State<Player>
                             await Utils.showListDialog(
                                 context, Songlist.getInstance().proPlaySongList,
                                 (i) async {
-                              await lyrWidget.clear();
+                              // await lyrWidget.clear();
                               await PlayUtils.toPlay(idx: i);
                             });
                           },
@@ -291,7 +291,7 @@ class _PlayerState extends State<Player>
                             if (Songlist.getInstance()
                                 .proPlaySongList
                                 .isNotEmpty) {
-                              await lyrWidget.clear();
+                              // await lyrWidget.clear();
                               await PlayUtils.toPrevious();
                               await PlayUtils.toSpeed(s: playSpeed);
                             }
@@ -341,7 +341,7 @@ class _PlayerState extends State<Player>
                             if (Songlist.getInstance()
                                 .proPlaySongList
                                 .isNotEmpty) {
-                              await lyrWidget.clear();
+                              //  await lyrWidget.clear();
                               await PlayUtils.toSpeed(s: playSpeed);
                               await PlayUtils.toNext();
                               print("nextSong");

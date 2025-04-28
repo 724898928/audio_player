@@ -83,16 +83,11 @@ class _PlayerState extends State<Player>
 
   Future<dynamic> setCurrentPlayState() async {
     isPlaying = playStatus.isPlaying;
-    if (idx != playStatus.currentIndex && playStatus.currentIndex != -1) {
-      idx = playStatus.currentIndex;
-      //  await lyrWidget.clear();
-    }
+    idx = playStatus.currentIndex;
     print(
         "setCurrentPlayState idx:$idx, playStatus.currentIndex:${playStatus.currentIndex} ,songList.proPlaySongList.length:${songList.proPlaySongList.length}");
-    if (songList.proPlaySongList.isNotEmpty &&
-        idx > -1 &&
-        idx < songList.proPlaySongList.length) {
-      current_song = songList.proPlaySongList[idx];
+    if (songList.proPlaySongList.isNotEmpty &&  idx > -1 &&  idx < songList.proPlaySongList.length) {
+      current_song = playStatus.current_song;
       imgWidgets = null != current_song?.imgItems?.first['img']
           ? NetworkImage(current_song?.imgItems?.first['img'])
           : null;
@@ -104,13 +99,11 @@ class _PlayerState extends State<Player>
       crrentModleIcon = modleIcon[mode_click];
       totalTime = playStatus.playTotalTime;
       playIcon = isPlaying ? Icons.pause : Icons.play_arrow;
-
-      if (null != current_song!.lyrics && current_song!.lyrics!.isNotEmpty) {
-        await lyrWidget.update();
-      }
+      await lyrWidget.update();
     }
   }
 
+//
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -224,11 +217,12 @@ class _PlayerState extends State<Player>
                             },
                             onChanged: (value) async {
                               currentPross = value;
-
-                              await PlayUtils.toSeek(
-                                  tm: (currentPross * totalTime!.inMilliseconds)
-                                      .toInt());
-
+                              if(null != totalTime){
+                                await PlayUtils.toSeek(
+                                    tm: (currentPross *
+                                        totalTime!.inMilliseconds)
+                                        .toInt());
+                              }
                               setState(() {});
                               // 实现进度调整
                             },
@@ -275,7 +269,7 @@ class _PlayerState extends State<Player>
                             await Utils.showListDialog(
                                 context, Songlist.getInstance().proPlaySongList,
                                 (i) async {
-                              // await lyrWidget.clear();
+                               await playStatus.clearLyrics();
                               await PlayUtils.toPlay(idx: i);
                             });
                           },
@@ -291,7 +285,7 @@ class _PlayerState extends State<Player>
                             if (Songlist.getInstance()
                                 .proPlaySongList
                                 .isNotEmpty) {
-                              // await lyrWidget.clear();
+                              await PlayStatus.getInstance().clearLyrics();
                               await PlayUtils.toPrevious();
                               await PlayUtils.toSpeed(s: playSpeed);
                             }
@@ -312,11 +306,14 @@ class _PlayerState extends State<Player>
                                 // 播放或暂停
                                 if (!isPlaying) {
                                   playIcon = Icons.pause;
+                                  idx == -1 ? idx = 0 : idx = idx;
                                   await PlayUtils.toPlay(idx: idx);
-                                  await PlayUtils.toSeek(
-                                      tm: (currentPross *
-                                              totalTime!.inMilliseconds)
-                                          .toInt());
+                                  if(null != totalTime){
+                                    await PlayUtils.toSeek(
+                                        tm: (currentPross *
+                                            totalTime!.inMilliseconds)
+                                            .toInt());
+                                  }
                                   await PlayUtils.toSpeed(s: playSpeed);
                                   setTimer();
                                 } else {
@@ -341,7 +338,7 @@ class _PlayerState extends State<Player>
                             if (Songlist.getInstance()
                                 .proPlaySongList
                                 .isNotEmpty) {
-                              //  await lyrWidget.clear();
+                              await PlayStatus.getInstance().clearLyrics();
                               await PlayUtils.toSpeed(s: playSpeed);
                               await PlayUtils.toNext();
                               print("nextSong");

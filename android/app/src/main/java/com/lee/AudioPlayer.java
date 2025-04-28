@@ -15,6 +15,7 @@ import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.session.MediaSession;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -27,7 +28,7 @@ public class AudioPlayer {
     private ExoPlayer player;
     private MediaSession mediaSession;
     // 播放列表及状态
-    private final List<String> playlist = new ArrayList<>();
+    private final ArrayList<String> playlist = new ArrayList<>();
     private int currentIndex = -1;
     private PlayMode playMode = PlayMode.LOOP;
     private boolean isPlaying = false;
@@ -104,6 +105,7 @@ public class AudioPlayer {
                 } else {
                     currentIndex = (currentIndex - 1 + size) % size;
                 }
+                Log.i(TAG, "forward=> "+forward+" currentIndex: "+currentIndex + " playlist.size() =>"+size);
                 break;
             case SINGLE:
                 // 不变
@@ -166,11 +168,27 @@ public class AudioPlayer {
         // 创建 MediaStyle 通知
     }
 
-    public void setPlaylist(List<String> list) {
-        playlist.clear();
-        playlist.addAll(list);
-        currentIndex = 0;
+    public void addSongs(ArrayList<String> list){
+        if(null != playlist){
+            playlist.addAll(list);
+        }
     }
+
+    public void setPlaylist(ArrayList<String> list) {
+        if (!list.isEmpty() && null != playlist){
+            playlist.clear();
+            playlist.addAll(list);
+            Log.i(TAG, "setPlaylist: playlist => "+ Arrays.toString(playlist.toArray()));
+            currentIndex = 0;
+        }
+    }
+    public void clearPlaylist() {
+        if (null != playlist){
+            playlist.clear();
+            currentIndex = -1;
+        }
+    }
+
 
     public void next() {
         advanceIndex(true);

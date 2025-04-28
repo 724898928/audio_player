@@ -1,13 +1,9 @@
-import 'package:audio_player/src/lee/common/PlayStatus.dart';
 import 'package:audio_player/src/lee/common/PlayUtils.dart';
-import 'package:audio_player/src/lee/common/RouterManager.dart';
-import 'package:audio_player/src/lee/component/DDownButton.dart';
 import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:audio_player/src/lee/model/MiGu.dart';
-import 'package:audio_player/src/lee/view/Player.dart';
-import 'package:audio_player/src/rust/api/simple.dart';
 import 'package:flutter/material.dart';
-
+import 'package:path_provider/path_provider.dart';
+import 'package:file_picker/file_picker.dart';
 import '../common/Utils.dart';
 import '../component/CheckBoxList.dart';
 import '../model/BasePlatform.dart';
@@ -112,9 +108,36 @@ class _SearchState extends State<Search> {
       title: Text(song.name!),
       subtitle: Text("${song.proSong?.artist} · ${song.proSong?.album ?? ""}"),
       trailing: Container(
-        width: 100,
+        padding: EdgeInsets.zero,
+        alignment: Alignment.centerRight,
+         height: 30,
+         width: 90,
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
           children: [
+            SizedBox(
+              width: 30,
+              child:  IconButton(
+                  padding: EdgeInsets.zero,
+                  iconSize: 30,
+                  onPressed: () async{
+                    // TODO 下载当前歌曲
+                    final path = await FilePicker.platform.getDirectoryPath();
+                    var res = song.getPlaySong();
+                    if(null != path && path.isNotEmpty){
+                      await Utils.download(song.proSong?.url, path,song.name!,callBack: (v){
+                        if(v){
+                          Utils.toShowDialog(context, children:Container(
+                            alignment: Alignment.center,
+                            height: 60,
+                            width: 100,
+                            child: const Text("Download successfully!"),) );
+                        }
+                      });
+                    }
+                  }, icon: const Icon(Icons.download)),
+            ) ,
             CheckBoxWidget(
               isCheck: song.selected ?? false,
               callback: (v) {
@@ -122,15 +145,20 @@ class _SearchState extends State<Search> {
                 print("song.proSong  song.proSong:${song.proSong}");
                 if (song.selected!) {
                   song.getPlaySong();
+                  Songlist.getInstance().add(song.proSong!);
                 } else {
                   Songlist.getInstance().remove(song.proSong!);
                 }
               },
             ),
-            IconButton(
+            SizedBox(
+                width:30,child: IconButton(
+              padding: EdgeInsets.zero,
+              iconSize: 30,
               icon: const Icon(Icons.play_circle_outline),
               onPressed: () => _playSong(song),
-            )
+            ))
+
           ],
         ),
       ),
@@ -268,9 +296,9 @@ class _SearchState extends State<Search> {
     );
   }
 
-  /** 
-  @override
-  Widget build(BuildContext context) {
+/**
+    @override
+    Widget build(BuildContext context) {
     print("build");
     return 
      Row(
@@ -389,6 +417,6 @@ class _SearchState extends State<Search> {
         ))
       ],
     );
-  }
-  */
+    }
+ */
 }

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.lee.MusicService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.flutter.embedding.engine.FlutterEngine;
@@ -45,10 +46,19 @@ public class FlutterMethodPlugin implements MethodChannel.MethodCallHandler, Cal
         Log.i(TAG, "configureFlutterEngine onMethodCall come from flutter reqPara: call.method: " + call.method + ", arguments : " + call.arguments);
         if (null != musicService) {
             if (call.method.equals("SetPlayList")) {
-                List<String> arguments = (List<String>) call.arguments;
+                ArrayList<String> arguments = (ArrayList<String>) call.arguments;
                 Log.i(TAG, "来自flutter songs : " + arguments);
                 if (null != musicService) {
                     musicService.setPlaylist(arguments);
+                } else {
+                    Log.e(TAG, "onMethodCall: musicService==null");
+                }
+                // res = "这个是来自native的问候! SetPlayList";
+            }else   if (call.method.equals("AddSongs")) {
+                ArrayList<String> arguments = (ArrayList<String>) call.arguments;
+                Log.i(TAG, "来自flutter songs : " + arguments);
+                if (null != musicService) {
+                    musicService.addSongs(arguments);
                 } else {
                     Log.e(TAG, "onMethodCall: musicService==null");
                 }
@@ -77,6 +87,8 @@ public class FlutterMethodPlugin implements MethodChannel.MethodCallHandler, Cal
                 musicService.pause();
             } else if (call.method.equals("Stop")) {
                 musicService.stop();
+            } else if (call.method.equals("ClearPlaylist")) {
+                musicService.clearPlaylist();
             } else if (call.method.equals("PlayMode")) {
                 List<Object> para = call.arguments();
                 if (para.size() > 0) {

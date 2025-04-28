@@ -74,6 +74,17 @@ class PlayUtils {
     }
   }
 
+  static Future<dynamic> addSongList(
+      {required List<String> songs, AsyncValueChanged? callback}) async {
+    if (Platform.isAndroid && isChange) {
+      return await InteractUtil.instance.androidExe("AddSongs", songs);
+    } else {
+      return await addSongs(songs: songs).listen((v) async {
+        await callback?.call(v);
+      });
+    }
+  }
+
   static Future<dynamic> toPause({AsyncValueChanged? callback}) async {
     if (Platform.isAndroid && isChange) {
       return await InteractUtil.instance.androidExe("Pause", []);

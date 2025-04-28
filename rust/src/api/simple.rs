@@ -36,6 +36,14 @@ pub fn set_playlist(songs:Vec<String>,_sink: StreamSink<String>){
     player.set_playlist(songs).expect("set_playlist failed!");
     }
 }
+
+#[flutter_rust_bridge::frb(sync)]
+pub fn add_songs(songs:Vec<String>,_sink: StreamSink<String>){
+    if let Ok(mut player) =  Player_instance.try_write(){
+    player.add_songs(songs).expect("add_songs failed!");
+    }
+}
+
 #[flutter_rust_bridge::frb(sync)]
 pub fn pause(_sink: StreamSink<String>){
     if let Ok(mut player) =  Player_instance.try_write(){

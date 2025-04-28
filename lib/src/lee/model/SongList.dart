@@ -24,8 +24,8 @@ class Songlist extends ChangeNotifier {
   int add(ProSong item) {
     if (!proPlaySongList.contains(item)) {
       proPlaySongList.add(item);
+      PlayUtils.addSongList(songs: [item.url ?? ""]);
       notifyListeners();
-      PlayUtils.setList2Player(songs: proPlaySongList.map((e) => e.url ?? "").toList());
     }
     return proPlaySongList.length - 1;
   }
@@ -33,8 +33,8 @@ class Songlist extends ChangeNotifier {
   void addSongs(List<ProSong> item) {
     if (!proPlaySongList.contains(item)) {
       proPlaySongList.addAll(item);
+      PlayUtils.addSongList(songs: item.map((e) => e.url ?? "").toList());
       print("proPlaySongList :$proPlaySongList");
-      PlayUtils.setList2Player(songs: proPlaySongList.map((e) => e.url ?? "").toList());
       notifyListeners();
     }
   }

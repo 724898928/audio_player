@@ -396,6 +396,10 @@ impl Player {
     pub fn set_playlist(&mut self, playlist: Vec<String>) -> Result<()> {
         *self.playlist.try_write().unwrap() = playlist;
         Ok(())
+    }  
+     pub fn add_songs(&mut self, mut playlist: Vec<String>) -> Result<()> {
+        self.playlist.try_write().unwrap().append(&mut playlist);
+        Ok(())
     }
 
     pub fn pause(&mut self) -> Result<()> {

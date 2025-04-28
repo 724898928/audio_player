@@ -11,9 +11,6 @@ class LyrWidget extends StatefulWidget {
     await lyrWidgetState.update();
   }
 
-  Future<void> clear() async {
-    await lyrWidgetState.clear();
-  }
 }
 
 class _LyrWidgetState extends State<LyrWidget> {
@@ -53,15 +50,15 @@ class _LyrWidgetState extends State<LyrWidget> {
     if (null == currentTime) {
       return;
     }
-    if (null != playState.lyrics &&
-        _currentLyricIndex < playState.lyrics!.length - 1) {
+    if (null != playState.lyrics && _currentLyricIndex < playState.lyrics!.length - 1) {
       var tmp = playState.lyrics!.keys.toList().indexOf(currentTime!);
       _currentLyricIndex = -1 == tmp ? _currentLyricIndex : tmp;
-      if (mounted) {
-        setState(() {
-          _scrollToCurrentLyric();
-        });
-      }
+
+    }
+    if (mounted) {
+      setState(() {
+        _scrollToCurrentLyric();
+      });
     }
   }
 
@@ -91,7 +88,7 @@ class _LyrWidgetState extends State<LyrWidget> {
               fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
             ),
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 12),
+              padding: EdgeInsets.symmetric(vertical: 8.0),
               child: Text(
                   playState.lyrics?.values.elementAt(index).first.text ?? ""),
             ),

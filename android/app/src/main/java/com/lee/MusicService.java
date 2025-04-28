@@ -6,6 +6,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.flutter.embedding.engine.FlutterEngine;
@@ -34,8 +35,15 @@ public class MusicService extends Service {
         Log.d(TAG, "MusicService onCreate ");
     }
     // 暴露给客户端的控制方法
-    public void setPlaylist(List<String> list) {
+    public void setPlaylist(ArrayList<String> list) {
         player.setPlaylist(list);
+    }
+    public void addSongs(ArrayList<String> list) {
+        player.addSongs(list);
+    }
+
+    public void clearPlaylist() {
+        player.clearPlaylist();
     }
     public void play(int idx) {
         player.play(idx);
@@ -71,9 +79,6 @@ public class MusicService extends Service {
         return player.isPlaying();
     }
     // 供 Activity 调用的方法
-    public void doTask(String input) {
-        Log.d(TAG, "执行任务: " + input);
-    }
 
     public String getCurrentInfo(){
         return player.getCurrentInfo();

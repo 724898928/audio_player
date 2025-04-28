@@ -17,6 +17,7 @@ class PlayStatus {
   static late Timer _timer;
 
   bool isPlaying = false;
+  ProSong? current_song;
   double pross = 0.0; // 当前播放进度
   double volume = 0.0; // 当前音量
   int currentIndex = -1; // 当前播放音乐索引
@@ -28,6 +29,7 @@ class PlayStatus {
   double playSpeed = 1.0; // 当前播放速度
   LinkedHashMap<int, List<Lyric>>? lyrics = null;
   String? currentlrcUrl = null;
+
   VoidCallback? callBack;
   static PlayStatus getInstance() {
     _timer = Timer.periodic(Duration(milliseconds: 500), (timer) async {
@@ -41,14 +43,14 @@ class PlayStatus {
           _instance.playTotalTime = Duration(milliseconds: dat['len'].toInt());
           _instance.playSpeed = dat['speed'].toDouble();
           //   _instance.volume = dat['vol'].toDouble();
-          await _instance.updateIdxLyc(dat['idx'].toInt());
+          await _instance.updateCurrentInfo(dat['idx'].toInt());
           _instance.playModeIndex = dat['mode'].toInt();
           _instance.isPlaying = dat['playing'];
           // _instance.currentlrcUrl = dat['lrcUrl'];
           var temp = dat['pos'].toDouble() / dat['len'].toDouble();
           _instance.pross = temp < 1.0 ? temp : 1.0;
           if (null != _instance.callBack) {
-            _instance.callBack!.call();
+            _instance.callBack?.call();
           }
         }
       });
@@ -64,11 +66,16 @@ class PlayStatus {
     this.lyrics = lyrics;
   }
 
-  Future<dynamic> updateIdxLyc(int index) async {
+  Future<void> clearLyrics() async{
+    this.lyrics = null;
+  }
+
+  Future<dynamic> updateCurrentInfo(int index) async {
     // 当切换下首个歌曲时，清空歌词,并重新加载歌词
     print("updateIdxLyc currentIndex:$currentIndex, index:$index");
-    if (this.currentIndex != index) {
-      var lyr = songList.proPlaySongList[index].lyrics;
+    if ((this.currentIndex != index || null == this.lyrics) && index != -1) {
+      current_song = songList.proPlaySongList[index];
+      var lyr = current_song?.lyrics;
       if (null != lyr && lyr.isNotEmpty && lyr.first.isNotEmpty) {
         this.currentlrcUrl = lyr.first;
         var res = await Utils.get(this.currentlrcUrl!);
@@ -79,12 +86,6 @@ class PlayStatus {
       }
       this.currentIndex = index;
     }
-  }
-
-  set newPlayIdx(int index) {
-    this.currentIndex = index;
-    this.currentlrcUrl = null;
-    this.lyrics = null;
   }
 
   toJson() {

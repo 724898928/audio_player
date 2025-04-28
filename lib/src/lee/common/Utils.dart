@@ -40,8 +40,26 @@ class Utils {
 
 
 
-  static Future<dynamic> download(String? url, String path) async {
-    print("download url: $url, path :$path");
+  static Future<dynamic> download(String? url, String? path,String fileName,{ValueChanged? callBack}) async {
+    final savePath = '${path}/$fileName.mp3';
+    print("download url: $url, savePath :$savePath");
+    if(null!=url && null != savePath){
+      try {
+        var response =  await dio.download(url!, savePath, onReceiveProgress: (received, total) {
+          if (total <= 0) return;
+          var pross = (received / total * 100).toStringAsFixed(0);
+            print("Downloading: $pross% , total:${total}, received:$received");
+          if('$pross' == '100'){
+            callBack?.call(true);
+          }
+        },);
+        //  print("response: " + response.toString());
+        return '$response';
+      } catch (e) {
+        print(e);
+      }
+    }
+    return callBack?.call(false);
   }
 
   static Future<void> toShowDialog(BuildContext context,
@@ -51,14 +69,14 @@ class Utils {
         builder: (ctx) {
           return SimpleDialog(
             backgroundColor: Colors.blueAccent,
-            children: children,
+            children: [children],
           );
         });
   }
 
   static Future<void> showListDialog(
       BuildContext context, List<ProSong> songs, ValueChanged callback) async {
-    toShowDialog(context, children: [
+    toShowDialog(context, children:
       Container(
           height: 500,
           width: 300,
@@ -80,7 +98,7 @@ class Utils {
                 return Divider();
               },
               itemCount: songs.length))
-    ]);
+    );
   }
   //
   // Future<List<dynamic>> getSongsMetaData(List<String> songs) async {

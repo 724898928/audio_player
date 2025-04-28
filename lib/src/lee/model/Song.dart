@@ -37,6 +37,9 @@ class LyricParser {
     //lrcContent = filterSpecialChars(lrcContent);
     print('parse lrcContent = $lrcContent');
     final LinkedHashMap<int, List<Lyric>> linkedHashMap = LinkedHashMap();
+    if(null == lrcContent||lrcContent.isEmpty){
+      return linkedHashMap;
+    }
     final lines = lrcContent.split('\n');
     for (var line in lines) {
       late Duration? cDuration = null;

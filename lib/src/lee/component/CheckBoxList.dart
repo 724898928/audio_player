@@ -14,16 +14,21 @@ class CheckBoxWidget extends StatefulWidget {
 class _CheckBoxWidgetState extends State<CheckBoxWidget> {
   @override
   Widget build(BuildContext context) {
-    return Checkbox(
-        value: widget.isCheck,
-        onChanged: (v) {
-          if (null != widget.callback) {
-            setState(() {
-              widget.isCheck = !widget.isCheck;
-              widget.callback.call(v);
-            });
-          }
-        });
+    return SizedBox(
+      height: 30,
+      width: 30,
+      child: Checkbox(
+
+          value: widget.isCheck,
+          onChanged: (v) {
+            if (null != widget.callback) {
+              setState(() {
+                widget.isCheck = !widget.isCheck;
+                widget.callback.call(v);
+              });
+            }
+          }),
+    ) ;
   }
 }
 

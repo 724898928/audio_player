@@ -306,7 +306,6 @@ class _PlayerState extends State<Player>
                                 // 播放或暂停
                                 if (!isPlaying) {
                                   playIcon = Icons.pause;
-                                  idx == -1 ? idx = 0 : idx = idx;
                                   await PlayUtils.toPlay(idx: idx);
                                   if(null != totalTime){
                                     await PlayUtils.toSeek(
@@ -351,8 +350,7 @@ class _PlayerState extends State<Player>
                             color: Colors.white,
                             iconSize: 30,
                             onPressed: () async {
-                              mode_click =
-                                  (mode_click + 1) % PlayMode.values.length;
+                              mode_click = (mode_click + 1) % PlayMode.values.length;
                               await PlayUtils.toPlayMode(
                                   mode: modleIcon[mode_click]['mode']);
                               crrentModleIcon = modleIcon[mode_click];

@@ -32,6 +32,7 @@ public class AudioPlayer {
     private int currentIndex = -1;
     private PlayMode playMode = PlayMode.LOOP;
     private boolean isPlaying = false;
+    private boolean isPressBut = false;
     private float playSpeed = 1.0f;
     private float volume = 1.0f;
 
@@ -67,10 +68,17 @@ public class AudioPlayer {
             public void onPlaybackStateChanged(int state) {
                 switch (state) {
                     case Player.STATE_READY:
+                        Log.i(TAG, "onPlaybackStateChanged  Player.STATE_READY: currentIndex = " + currentIndex + " isPressBut = "+isPressBut);
                         updateNotification();
                         break;
                    case Player.STATE_ENDED:
-                        next();
+                        Log.i(TAG, "onPlaybackStateChanged  Player.STATE_ENDED: currentIndex = " + currentIndex + " isPressBut = "+isPressBut);
+                        if (isPressBut){
+                            isPressBut = false;
+                        }else {
+                            advanceIndex(true);
+                            playTrack(playlist.get(currentIndex));
+                        }
                         break;
                 }
             }
@@ -83,14 +91,17 @@ public class AudioPlayer {
     private void playTrack(String audioUrl) {
         Log.i(TAG, "playTrack: audioUrl=>" + audioUrl);
         if (null != player){
-            player.clearMediaItems();
-            MediaItem mediaItem = MediaItem.fromUri(Uri.parse(audioUrl));
-            player.setMediaItem(mediaItem);
-            player.prepare();
-            player.play();
-            isPlaying = true;
+            try {
+                player.clearMediaItems();
+                MediaItem mediaItem = MediaItem.fromUri(Uri.parse(audioUrl));
+                player.setMediaItem(mediaItem);
+                player.prepare();
+                player.play();
+                isPlaying = true;
+            }catch (Exception e){
+                Log.e(TAG, "playTrack: Exception e=>" + e);
+            }
         }
-
     }
 
     // 根据模式前进或后退索引
@@ -99,6 +110,7 @@ public class AudioPlayer {
         if (size == 0) return;
         switch (playMode) {
             case NORMAL:
+                break;
             case LOOP:
                 if (forward) {
                     currentIndex = (currentIndex + 1) % size;
@@ -119,8 +131,8 @@ public class AudioPlayer {
     // 控制播放
     public void play(int index) {
         if (player != null) {
-            if (index >= 0 && index < playlist.size()) {
-                currentIndex = index;
+            if (index < playlist.size()) {
+                currentIndex = index < 0 ? 0 : index;
                 playTrack(playlist.get(currentIndex));
             }
         }
@@ -191,11 +203,13 @@ public class AudioPlayer {
 
 
     public void next() {
+        isPressBut = true;
         advanceIndex(true);
         playTrack(playlist.get(currentIndex));
     }
 
     public void previous() {
+        isPressBut = true;
         advanceIndex(false);
         playTrack(playlist.get(currentIndex));
     }

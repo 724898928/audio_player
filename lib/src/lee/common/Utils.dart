@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:audio_player/src/lee/common/PlayUtils.dart';
 import 'package:audio_player/src/lee/model/Song.dart';
 import 'package:dio/io.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-//import 'package:flutter_media_metadata/flutter_media_metadata.dart';
 
 
 class Utils {
@@ -117,7 +117,7 @@ class Utils {
   }
 
   static Future<void> showListDialog(
-      BuildContext context, List<ProSong> songs, ValueChanged callback) async {
+      BuildContext context, List<ProSong> songs, AsyncValueChanged callback) async {
     toShowDialog(context, children: [
       Container(
           height: 500,
@@ -125,12 +125,11 @@ class Utils {
           child: ListView.separated(
               shrinkWrap: true,
               itemBuilder: (ctx, idx) {
-                //return Text(songs[idx].toString());
                 return Container(
                   padding: EdgeInsets.only(left: 30),
                   child: GestureDetector(
                       onTap: () async {
-                        callback(BigInt.from(idx));
+                       await callback(idx);
                       },
                       child: Text(
                           '${songs[idx].title.toString()}  ${songs[idx].artist.toString()}')),

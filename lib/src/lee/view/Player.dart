@@ -265,8 +265,7 @@ class _PlayerState extends State<Player>
                           iconSize: 30,
                           onPressed: () async {
                             // 打开播放列表
-                            await Utils.showListDialog(
-                                context, Songlist.getInstance().proPlaySongList,
+                            await Utils.showListDialog(context, Songlist.getInstance().proPlaySongList,
                                 (i) async {
                                await playStatus.clearLyrics();
                               await PlayUtils.toPlay(idx: i);

@@ -39,13 +39,13 @@ class PlayStatus {
         print("playerThreadRun  msg1:$v");
         if (null != v && v.toString().isNotEmpty) {
           var dat = jsonDecode(v);
+          _instance.isPlaying = dat['playing'];
           _instance.playTime = Duration(milliseconds: dat['pos'].toInt());
           _instance.playTotalTime = Duration(milliseconds: dat['len'].toInt());
           _instance.playSpeed = dat['speed'].toDouble();
           //   _instance.volume = dat['vol'].toDouble();
           await _instance.updateCurrentInfo(dat['idx'].toInt());
           _instance.playModeIndex = dat['mode'].toInt();
-          _instance.isPlaying = dat['playing'];
           // _instance.currentlrcUrl = dat['lrcUrl'];
           var temp = dat['pos'].toDouble() / dat['len'].toDouble();
           _instance.pross = temp < 1.0 ? temp : 1.0;
@@ -56,6 +56,10 @@ class PlayStatus {
       });
     });
     return _instance;
+  }
+
+  Future<dynamic> noRight()async{
+    return ;
   }
 
   set setCurrentlrcUrl(String? url) {

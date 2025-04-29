@@ -132,6 +132,7 @@ public class AudioPlayer {
     public void play(int index) {
         if (player != null) {
             if (index < playlist.size()) {
+                isPressBut = true;
                 currentIndex = index < 0 ? 0 : index;
                 playTrack(playlist.get(currentIndex));
             }
@@ -140,6 +141,7 @@ public class AudioPlayer {
 
     public void pause() {
         if (player != null) {
+            isPressBut = true;
             player.pause();
             //   abandonAudioFocus(); // 释放音频焦点
             //  updateNotification();
@@ -149,6 +151,7 @@ public class AudioPlayer {
 
     public void stop() {
         if (player != null) {
+            isPressBut = true;
             player.stop();
             //  abandonAudioFocus();
             //  updateNotification();
@@ -160,6 +163,7 @@ public class AudioPlayer {
     public void releasePlayer() {
         Log.i(TAG, "AudioPlayer releasePlayer: ");
         if (player != null) {
+            //isPressBut = true;
             player.release();
             player = null;
             mediaSession.release();
@@ -219,6 +223,7 @@ public class AudioPlayer {
     }
 
     public void resume() {
+        isPressBut = true;
         player.play();
     }
 

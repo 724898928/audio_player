@@ -42,8 +42,7 @@ class _LyrWidgetState extends State<LyrWidget> {
 
   Future<void> update() async {
     print("update lyric widget");
-    _simulatePlayback(
-        currentTime: (playState.playTime!.inMilliseconds / 500).toInt());
+    _simulatePlayback(currentTime: (playState.playTime!.inMilliseconds / 500).toInt());
   }
 
   void _simulatePlayback({int? currentTime}) async {

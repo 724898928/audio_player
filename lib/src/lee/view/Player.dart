@@ -55,7 +55,7 @@ class _PlayerState extends State<Player>
 
   double playSpeed = 1.0;
 
-  late LyrWidget lyrWidget;
+  LyrWidget lyrWidget = LyrWidget();
 
   NetworkImage? imgWidgets = null;
 
@@ -72,7 +72,6 @@ class _PlayerState extends State<Player>
   @override
   void initState() {
     crrentModleIcon = modleIcon[0];
-    lyrWidget = LyrWidget();
     setTimer();
     setCurrentPlayState();
     super.initState();

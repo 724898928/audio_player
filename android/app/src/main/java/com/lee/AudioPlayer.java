@@ -73,12 +73,11 @@ public class AudioPlayer {
                         break;
                    case Player.STATE_ENDED:
                         Log.i(TAG, "onPlaybackStateChanged  Player.STATE_ENDED: currentIndex = " + currentIndex + " isPressBut = "+isPressBut);
-                        if (isPressBut){
-                            isPressBut = false;
-                        }else {
+                        if (!isPressBut){
                             advanceIndex(true);
                             playTrack(playlist.get(currentIndex));
                         }
+                       isPressBut = false;
                         break;
                 }
             }

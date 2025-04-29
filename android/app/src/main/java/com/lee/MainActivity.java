@@ -60,6 +60,7 @@ public class MainActivity extends FlutterActivity{
         Log.d(TAG,"MainActivity onCreate");
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent,connection, Context.BIND_AUTO_CREATE);
+
     }
 
     @Override

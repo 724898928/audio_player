@@ -253,7 +253,9 @@ public class AudioPlayer {
                 pos = 0;
                 len = 0;
             }
-
+            if (pos >= len){
+                next();
+            }
             info = "{\"pos\":" + pos +
                     ",\"len\":" + len +
                     ",\"playing\":" + isPlaying +

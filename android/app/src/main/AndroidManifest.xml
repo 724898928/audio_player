@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <!-- usesCleartextTraffic 是 Android 应用 程序开发中的一个重要配置选项，用于控制应用程序是否允许通过不加密的 HTTP 协议进行网络通信。 -->
     <application
         android:label="audio player"

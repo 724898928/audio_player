@@ -3,8 +3,11 @@ package com.lee;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +20,6 @@ public class MusicService extends Service {
 
     private AudioPlayer player;
     private final IBinder binder = new LocalBinder();
-
-
     // Binder 子类，用于向 Activity 暴露 Service 实例
 
     public class LocalBinder extends Binder {
@@ -82,6 +83,10 @@ public class MusicService extends Service {
 
     public String getCurrentInfo(){
         return player.getCurrentInfo();
+    }
+    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD_MR1)
+    public String getSongMetadata(String filePath){
+        return MusicUtils.getSongMetadata(filePath);
     }
     public long totalLen() {
         return player.totalLen();

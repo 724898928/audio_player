@@ -168,12 +168,11 @@ class PlayUtils {
     }
   }
 
-  static String songMetadata({required String filePath}) {
+  static Future<String> songMetadata({required String filePath}) async {
     if (Platform.isAndroid && isChange) {
-      // InteractUtil.instance.addListener();
-      return "";
+      return await InteractUtil.instance.androidExe("SongMetadata", [filePath]);
     } else {
-      return getSongMetadata(filePath: filePath);
+      return await getSongMetadata(filePath: filePath);
     }
   }
 }

@@ -1,8 +1,12 @@
 package io.flutter.plugins;
 
+import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
+
 import com.lee.MusicService;
+import com.lee.MusicUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +43,7 @@ public class FlutterMethodPlugin implements MethodChannel.MethodCallHandler, Cal
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD_MR1)
     @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
         Log.d(TAG, "onMethodCall call: " + call);
@@ -69,6 +74,21 @@ public class FlutterMethodPlugin implements MethodChannel.MethodCallHandler, Cal
                     int idx = (int) para.get(0);
                     if (null != musicService) {
                         musicService.play(idx);
+                    } else {
+                        Log.e(TAG, "onMethodCall: musicService==null");
+                    }
+                    //    res = "这个是来自native的问候!  play idx:" + idx;
+                } else {
+                    Log.e(TAG, "idx == null");
+                }
+
+            } else if (call.method.equals("SongMetadata")) {
+                List<Object> para = call.arguments();
+                if (para.size() > 0) {
+                    String path = (String) para.get(0);
+                    if (null != musicService) {
+                       //res = MusicUtils.getSongMetadata(path);
+                       res = musicService.getSongMetadata(path);
                     } else {
                         Log.e(TAG, "onMethodCall: musicService==null");
                     }

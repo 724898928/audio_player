@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:audio_player/src/lee/common/PlayStatus.dart';
 import 'package:audio_player/src/lee/common/PlayUtils.dart';
 import 'package:audio_player/src/lee/view/SongsListView.dart';
@@ -109,10 +110,11 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                         items: images.map((imagePath) {
                           return Container(
                             width: double.infinity,
+                            alignment: Alignment.center,
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 image: AssetImage(imagePath),
-                                fit: BoxFit.cover,
+                                fit: BoxFit.fill,
                               ),
                             ),
                           );
@@ -178,28 +180,31 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   }
 
   Future<void> _scanLocalSongs() async {
-    // List<ProSong> localSongs = [];
+    var allowedExtensions = null;
+    if (!Platform.isAndroid) {
+      allowedExtensions = ['mp3', 'wav', 'ogg', 'm4a', 'acc', 'midi'];
+    }
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-      allowMultiple: true,
-      type: FileType.audio,
-      allowedExtensions: ['mp3', 'wav', 'ogg', 'm4a', 'acc', 'midi'],
-    );
+        allowMultiple: true,
+        type: FileType.audio,
+        allowedExtensions: allowedExtensions);
     if (result != null) {
       print("_scanLocalSongs result != null result :$result");
       // songs.proPlaySongList.clear();
-      List<String> songList = result.files.map((path) {
-        var fileMetadata = PlayUtils.songMetadata(filePath: path.path!)?.trim();
-        if (null != fileMetadata || fileMetadata!.isNotEmpty) {
+      List<String> songList = [];
+      for (var path in result.files) {
+        var fileMetadataRaw =
+            await PlayUtils.songMetadata(filePath: path.path!);
+        if (fileMetadataRaw.isNotEmpty) {
+          var fileMetadata = fileMetadataRaw.trim();
           print("fileMetadata :$fileMetadata");
           var metaJson = jsonDecode(fileMetadata);
-          // localSongs.add(
-          //     ProSong.fromJson(metaJson as Map<String, dynamic>, path.path));
           songs.add(
               ProSong.fromJson(metaJson as Map<String, dynamic>, path.path));
           print("metaJson :$metaJson");
         }
-        return path.path!;
-      }).toList();
+        songList.add(path.path!);
+      }
       print("songs :$songList");
       // currentWidget = await getlocalSongs(localSongs);
     } else {

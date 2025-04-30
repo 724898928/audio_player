@@ -141,7 +141,8 @@ class _SearchState extends State<Search> {
                       });
                     }
                   },
-                  icon: const Icon(Icons.download)),
+                  icon: const Icon(Icons.download)), 
+
             ),
             CheckBoxWidget(
               isCheck: song.selected ?? false,

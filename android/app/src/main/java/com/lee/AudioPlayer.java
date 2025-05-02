@@ -74,8 +74,7 @@ public class AudioPlayer {
                    case Player.STATE_ENDED:
                         Log.i(TAG, "onPlaybackStateChanged  Player.STATE_ENDED: currentIndex = " + currentIndex + " isPressBut = "+isPressBut);
                         if (!isPressBut){
-                            advanceIndex(true);
-                            playTrack(playlist.get(currentIndex));
+                            nextStep();
                         }
                        isPressBut = false;
                         break;
@@ -91,10 +90,10 @@ public class AudioPlayer {
         Log.i(TAG, "playTrack: audioUrl=>" + audioUrl);
         if (null != player){
             try {
-                player.clearMediaItems();
                 MediaItem mediaItem = MediaItem.fromUri(Uri.parse(audioUrl));
                 player.setMediaItem(mediaItem);
                 player.prepare();
+                player.seekTo(0); // 强制重置初始位置
                 player.play();
                 isPlaying = true;
             }catch (Exception e){
@@ -116,7 +115,7 @@ public class AudioPlayer {
                 } else {
                     currentIndex = (currentIndex - 1 + size) % size;
                 }
-                Log.i(TAG, "forward=> "+forward+" currentIndex: "+currentIndex + " playlist.size() =>"+size);
+                Log.i(TAG, "advanceIndex=> "+forward+" currentIndex: "+currentIndex + " playlist.size() =>"+size);
                 break;
             case SINGLE:
                 // 不变
@@ -140,8 +139,8 @@ public class AudioPlayer {
 
     public void pause() {
         if (player != null) {
-            isPressBut = true;
             player.pause();
+            isPressBut = true;
             //   abandonAudioFocus(); // 释放音频焦点
             //  updateNotification();
             isPlaying = false;
@@ -206,13 +205,20 @@ public class AudioPlayer {
 
 
     public void next() {
-        isPressBut = true;
+        Log.i(TAG, "next begin currentIndex" + currentIndex);
+        nextStep();
+        Log.i(TAG, "next end currentIndex" + currentIndex);
+    }
+
+    private void nextStep(){
+        player.seekTo(0); // 强制重置初始位置
         advanceIndex(true);
         playTrack(playlist.get(currentIndex));
     }
 
     public void previous() {
         isPressBut = true;
+        player.seekTo(0); // 强制重置初始位置
         advanceIndex(false);
         playTrack(playlist.get(currentIndex));
     }
@@ -250,11 +256,10 @@ public class AudioPlayer {
             long pos = player.getCurrentPosition();
             long len = player.getDuration() ;
             if (-1 == currentIndex){
-                pos = 0;
-                len = 0;
-            }
-            if (pos >= len){
-                next();
+                pos = len = 0;
+            } else if (pos > len && len > 0){
+                pos = len = 0;
+                nextStep();
             }
             info = "{\"pos\":" + pos +
                     ",\"len\":" + len +

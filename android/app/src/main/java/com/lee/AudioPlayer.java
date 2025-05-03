@@ -258,7 +258,7 @@ public class AudioPlayer {
             if (-1 == currentIndex){
                 pos = len = 0;
             } else if (pos > len && len > 0){
-                pos = len = 0;
+               // pos = len = 0;
                 nextStep();
             }
             info = "{\"pos\":" + pos +

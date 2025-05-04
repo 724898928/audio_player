@@ -43,8 +43,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
     features = [
       {"icon": Icons.money, "label": "打赏", "view": PayView()},
       {
-        "icon": Icons.star,
-        "label": "收藏",
+        "icon": Icons.favorite,
+        "label": "喜欢",
         "view": SongsListView(),
       },
       {"icon": Icons.music_note, "label": "添加本地", "view": SongsListView()},
@@ -200,7 +200,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           print("fileMetadata :$fileMetadata");
           var metaJson = jsonDecode(fileMetadata);
           songs.add(
-              ProSong.fromJson(metaJson as Map<String, dynamic>, path.path));
+              ProSong.fromJson(metaJson as Map<String, dynamic>, path: path.path));
           print("metaJson :$metaJson");
         }
         songList.add(path.path!);

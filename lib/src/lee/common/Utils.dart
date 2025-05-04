@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
+import 'package:audio_player/src/lee/common/DatabaseHelper.dart';
 import 'package:audio_player/src/lee/common/PlayUtils.dart';
 import 'package:audio_player/src/lee/model/Song.dart';
 import 'package:dio/io.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-
 
 class Utils {
   static final dio = Dio(BaseOptions(
@@ -65,8 +64,6 @@ class Utils {
     return callBack?.call(false);
   }
 
-
-
   static Future<T?> fastDialog<T>({
     required BuildContext context,
     required WidgetBuilder builder,
@@ -75,11 +72,13 @@ class Utils {
       PageRouteBuilder(
         opaque: false,
         barrierDismissible: true,
-        barrierColor: Colors.black54, // 背景遮罩颜色
+        barrierColor: Colors.black54,
+        // 背景遮罩颜色
         pageBuilder: (BuildContext context, _, __) {
           return builder(context);
         },
-        transitionDuration: Duration(milliseconds: 0), // 打开动画时间 0
+        transitionDuration: Duration(milliseconds: 0),
+        // 打开动画时间 0
         reverseTransitionDuration: Duration(milliseconds: 0), // 关闭动画时间 0
       ),
     );
@@ -116,39 +115,55 @@ class Utils {
     );
   }
 
-  static Future<void> showListDialog(
-      BuildContext context, List<ProSong> songs, AsyncValueChanged callback) async {
+  static Future<void> showListDialog(BuildContext context, List<ProSong> songs,
+      AsyncValueChanged callback) async {
     toShowDialog(context, children: [
-      Container(
-          height: 500,
-          width: 300,
-          child: ListView.separated(
-              shrinkWrap: true,
-              itemBuilder: (ctx, idx) {
-                return Container(
-                  padding: EdgeInsets.only(left: 30),
-                  child: GestureDetector(
-                      onTap: () async {
-                       await callback(idx);
-                      },
-                      child: Text(
-                          '${songs[idx].title.toString()}  ${songs[idx].artist.toString()}')),
-                );
-              },
-              separatorBuilder: (ctx, i) {
-                return Divider();
-              },
-              itemCount: songs.length))
+      StatefulBuilder(builder: (context, setState) {
+        return Container(
+            height: 500,
+            width: 300,
+            child: ListView.separated(
+                shrinkWrap: true,
+                itemBuilder: (ctx, idx) {
+                  return Container(
+                    height: 30,
+                    padding:  EdgeInsets.only(left: 10.0,top: 0.0,right: 0.0,bottom: 0.0),
+                    child: Row(
+                    children: [
+                      Expanded(flex: 4, child: GestureDetector(
+                    onTap: () async {
+                    await callback(idx);
+                    },
+                    child: Text(
+                        '${songs[idx].title.toString()}  ${songs[idx].artist.toString()}',overflow: TextOverflow.ellipsis),)),
+                     Expanded(flex: 1, child:  IconButton(
+                         onPressed: () async{
+                           songs[idx].isFavorite = !songs[idx].isFavorite!;
+                           await DatabaseHelper.instance.upsertSong(songs[idx]);
+                           setState(() {});
+                         },
+                         icon: Icon(songs[idx].isFavorite == true
+                             ? Icons.favorite
+                             : Icons.favorite_border)))
+
+                    ],
+                  ),) ;
+                },
+                separatorBuilder: (ctx, i) {
+                  return Divider();
+                },
+                itemCount: songs.length));
+      })
     ]);
   }
-  //
-  // Future<List<dynamic>> getSongsMetaData(List<String> songs) async {
-  //   var metas = songs.map((e) async {
-  //     final metadata = await MetadataRetriever.fromFile(File(e));
-  //     return metadata;
-  //   }).toList();
-  //   return metas;
-  // }
+//
+// Future<List<dynamic>> getSongsMetaData(List<String> songs) async {
+//   var metas = songs.map((e) async {
+//     final metadata = await MetadataRetriever.fromFile(File(e));
+//     return metadata;
+//   }).toList();
+//   return metas;
+// }
 }
 
 extension DurationX on Duration {

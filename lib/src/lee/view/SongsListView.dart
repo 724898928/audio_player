@@ -1,3 +1,4 @@
+import 'package:audio_player/src/lee/model/Song.dart';
 import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,12 @@ class SongsListView extends StatefulWidget {
 }
 
 class _SongsListViewState extends State<SongsListView> {
-  Songlist songs = Songlist.getInstance();
+  List<ProSong> songs = Songlist.getInstance().proPlaySongList.where((e)=>e.isFavorite==true).toList();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void updateView() {
     if (mounted) {
@@ -29,7 +35,7 @@ class _SongsListViewState extends State<SongsListView> {
     return FeatureContext(
         child: Card(
       child: ListView.builder(
-          itemCount: songs.proPlaySongList.length,
+          itemCount:songs.length,
           itemBuilder: (ctx, idx) {
             return TextButton(
                 onPressed: () async {
@@ -38,7 +44,7 @@ class _SongsListViewState extends State<SongsListView> {
                   await PlayUtils.toPlay(idx: idx);
                 },
                 child: Text(
-                    '${songs.proPlaySongList[idx].title} - ${songs.proPlaySongList[idx].artist}'));
+                    '${songs[idx].title} - ${songs[idx].artist}'));
           }),
     ));
   }

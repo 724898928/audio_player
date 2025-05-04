@@ -1,6 +1,6 @@
 import 'dart:collection';
+import 'dart:convert';
 
-import 'package:audio_player/src/lee/common/Utils.dart';
 import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:flutter/material.dart';
 
@@ -107,6 +107,7 @@ class ProSong implements BaseSong {
   final String? year;
   final String? track;
   final String? genre;
+  late bool? isFavorite;
 
   ProSong({
     required this.id,
@@ -119,20 +120,23 @@ class ProSong implements BaseSong {
     required this.genre,
     required this.lyrics,
     required this.url,
+    this.isFavorite = false
   });
 
-  factory ProSong.fromJson(Map<String, dynamic> json, String? path) {
+  factory ProSong.fromJson(Map<String, dynamic> json, {String? path}) {
+    print("ProSong.fromJson json: ${json.toString()}");
     return ProSong(
-      id: json['id'],
-      title: json['title'],
+      id: json['id']?.toString(),
+      title: json['title']?.toString(),
       artist: json['artist'] ?? 'Unknown',
       album: json['album'] ?? 'Unknown',
-      imgItems: json['imgItems'],
+      imgItems: jsonDecode(json['imgItems']),
       year: json['year']?.toString(),
       track: json['track']?.toString(),
       genre: json['genre']?.toString(),
-      lyrics: json['lyrics'],
+      lyrics: jsonDecode(json['lyrics']) ,
       url: json['url'] ?? path,
+      isFavorite: json['isFavorite'] == 1 ? true : false,
     );
   }
 
@@ -152,9 +156,24 @@ class ProSong implements BaseSong {
       'genre': this.genre ?? "",
       'lyrics': this.lyrics ?? "",
       'url': this.url ?? "",
+      'isFavorite': this.isFavorite ?? false,
     };
   }
-
+  Map<String, dynamic> toSqlMap() {
+    return {
+      'id': this.id,
+      'title': this.title,
+      'artist': this.artist,
+      'album': this.album,
+      'imgItems': jsonEncode(this.imgItems),
+      'year': this.year,
+      'track': this.track,
+      'genre': this.genre,
+      'lyrics': jsonEncode(this.lyrics),
+      'url': this.url,
+      'isFavorite': this.isFavorite! ? 1 : 0,
+    };
+  }
   @override
   String toString() {
     return toMap().toString();

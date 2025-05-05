@@ -45,6 +45,12 @@ pub fn add_songs(songs:Vec<String>,_sink: StreamSink<String>){
 }
 
 #[flutter_rust_bridge::frb(sync)]
+pub fn del_song(idx: usize, _sink: StreamSink<String>){
+    if let Ok(mut player) =  Player_instance.try_write(){
+        player.del_song(idx).expect("del_song failed!");
+    }
+}
+#[flutter_rust_bridge::frb(sync)]
 pub fn pause(_sink: StreamSink<String>){
     if let Ok(mut player) =  Player_instance.try_write(){
     player.pause().expect("pause failed!");

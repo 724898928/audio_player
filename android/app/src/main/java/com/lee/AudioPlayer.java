@@ -128,6 +128,7 @@ public class AudioPlayer {
 
     // 控制播放
     public void play(int index) {
+        Log.i(TAG, "AudioPlayer play index: "+index+" playlist.size():"+playlist.size());
         if (player != null) {
             if (index < playlist.size()) {
                 isPressBut = true;
@@ -187,7 +188,11 @@ public class AudioPlayer {
             playlist.addAll(list);
         }
     }
-
+    public void delSong(int idx){
+        if(null != playlist){
+            playlist.remove(idx);
+        }
+    }
     public void setPlaylist(ArrayList<String> list) {
         if (!list.isEmpty() && null != playlist){
             playlist.clear();

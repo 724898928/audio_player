@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:audio_player/src/lee/common/DatabaseHelper.dart';
 import 'package:audio_player/src/lee/common/PlayUtils.dart';
 import 'package:audio_player/src/lee/model/Song.dart';
+import 'package:audio_player/src/lee/model/SongList.dart';
 import 'package:dio/io.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -130,7 +131,7 @@ class Utils {
                     padding:  EdgeInsets.only(left: 10.0,top: 0.0,right: 0.0,bottom: 0.0),
                     child: Row(
                     children: [
-                      Expanded(flex: 4, child: GestureDetector(
+                      Expanded(flex: 6, child: GestureDetector(
                     onTap: () async {
                     await callback(idx);
                     },
@@ -144,7 +145,11 @@ class Utils {
                          },
                          icon: Icon(songs[idx].isFavorite == true
                              ? Icons.favorite
-                             : Icons.favorite_border)))
+                             : Icons.favorite_border))),
+                      Expanded(flex: 1, child: IconButton(onPressed: ()async{
+                        await Songlist.getInstance().remove(songs[idx]);
+                        setState(() {});
+                      }, icon: Icon(Icons.remove_circle_outline)))
 
                     ],
                   ),) ;

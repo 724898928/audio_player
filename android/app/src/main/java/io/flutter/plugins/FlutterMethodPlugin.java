@@ -82,6 +82,20 @@ public class FlutterMethodPlugin implements MethodChannel.MethodCallHandler, Cal
                     Log.e(TAG, "idx == null");
                 }
 
+            }else if (call.method.equals("DelSong")) {
+                List<Object> para = call.arguments();
+                if (para.size() > 0) {
+                    int idx = (int) para.get(0);
+                    if (null != musicService) {
+                        musicService.delSong(idx);
+                    } else {
+                        Log.e(TAG, "onMethodCall: musicService==null");
+                    }
+                    //    res = "这个是来自native的问候!  play idx:" + idx;
+                } else {
+                    Log.e(TAG, "idx == null");
+                }
+
             } else if (call.method.equals("SongMetadata")) {
                 List<Object> para = call.arguments();
                 if (para.size() > 0) {

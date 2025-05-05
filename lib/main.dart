@@ -13,6 +13,7 @@ import 'package:sqflite/sqflite.dart';
 import 'src/lee/common/EventBus.dart';
 import 'src/lee/common/RouterManager.dart';
 import 'package:window_manager/window_manager.dart';
+//import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 // 定义一个top-level (全局)变量, 页面引入该文件后可以直接使用Bus
 EventBus eventBus = EventBus();
@@ -24,6 +25,7 @@ Future<void> main() async {
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     await RustLib.init();
     await windowManager.ensureInitialized();
+  //  sqfliteFfiInit();
     WindowOptions windowOptions = WindowOptions(
         center: true,
         minimumSize: Size(470, 825),

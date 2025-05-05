@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:audio_player/src/lee/common/Utils.dart';
+import 'package:audio_player/src/lee/model/Song.dart';
 
 import '../../rust/api/simple.dart';
 import '../../rust/music_service.dart';
@@ -82,6 +83,14 @@ class PlayUtils {
       return await addSongs(songs: songs).listen((v) async {
         await callback?.call(v);
       });
+    }
+  }
+
+  static Future<dynamic> removeSong(int idx) async {
+    if (Platform.isAndroid && isChange){
+      return await InteractUtil.instance.androidExe("DelSong",[idx]);
+    }else{
+      return await delSong(idx: BigInt.from(idx));
     }
   }
 

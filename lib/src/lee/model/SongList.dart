@@ -14,7 +14,7 @@ class Songlist extends ChangeNotifier {
   Songlist._iniernal(){
     Future.delayed(Duration.zero,()async{
       proPlaySongList = await _dbHelper.getSongs();
-      PlayUtils.addSongList(songs: proPlaySongList.map((e) => e.url ?? "").toList());
+      PlayUtils.setList2Player(songs: proPlaySongList.map((e) => e.url ?? "").toList());
     });
   }
 
@@ -50,10 +50,11 @@ class Songlist extends ChangeNotifier {
     }
   }
 
-  void remove(ProSong item) {
-    proPlaySongList.remove(item);
-    PlayUtils.setList2Player(songs: proPlaySongList.map((e) => e.url ?? "").toList());
-    _dbHelper.delSong(item);
+  Future<void> remove(ProSong item) async{
+    var idx = proPlaySongList.indexOf(item);
+    proPlaySongList.removeAt(idx);
+   await PlayUtils.removeSong(idx);
+   await _dbHelper.delSong(item);
     notifyListeners();
   }
 

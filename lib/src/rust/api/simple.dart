@@ -22,6 +22,9 @@ Stream<String> setPlaylist({required List<String> songs}) =>
 Stream<String> addSongs({required List<String> songs}) =>
     RustLib.instance.api.crateApiSimpleAddSongs(songs: songs);
 
+Stream<String> delSong({required BigInt idx}) =>
+    RustLib.instance.api.crateApiSimpleDelSong(idx: idx);
+
 Stream<String> pause() => RustLib.instance.api.crateApiSimplePause();
 
 Stream<String> stop() => RustLib.instance.api.crateApiSimpleStop();

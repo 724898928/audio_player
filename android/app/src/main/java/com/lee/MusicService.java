@@ -49,6 +49,9 @@ public class MusicService extends Service {
     public void play(int idx) {
         player.play(idx);
     }
+    public void delSong(int idx) {
+        player.delSong(idx);
+    }
     public void pause() {
         player.pause();
     }

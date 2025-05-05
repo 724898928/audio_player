@@ -393,6 +393,11 @@ impl Player {
         Ok(())
     }
 
+    pub fn del_song(&mut self, i: usize) -> Result<()>{
+       let song = self.playlist.try_write().unwrap().remove(i);
+        Ok(())
+    }
+
     pub fn set_playlist(&mut self, playlist: Vec<String>) -> Result<()> {
         *self.playlist.try_write().unwrap() = playlist;
         Ok(())

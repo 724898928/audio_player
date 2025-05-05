@@ -199,8 +199,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           var fileMetadata = fileMetadataRaw.trim();
           print("fileMetadata :$fileMetadata");
           var metaJson = jsonDecode(fileMetadata);
-          songs.add(
-              ProSong.fromJson(metaJson as Map<String, dynamic>, path: path.path));
+          songs.add(ProSong.fromJson(metaJson as Map<String, dynamic>, path: path.path));
           print("metaJson :$metaJson");
         }
         songList.add(path.path!);

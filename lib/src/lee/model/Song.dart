@@ -130,11 +130,11 @@ class ProSong implements BaseSong {
       title: json['title']?.toString(),
       artist: json['artist'] ?? 'Unknown',
       album: json['album'] ?? 'Unknown',
-      imgItems: jsonDecode(json['imgItems']),
+      imgItems: null != json['imgItems'] ? jsonDecode(json['imgItems']): null,
       year: json['year']?.toString(),
       track: json['track']?.toString(),
       genre: json['genre']?.toString(),
-      lyrics: jsonDecode(json['lyrics']) ,
+      lyrics: null != json['lyrics'] ? jsonDecode(json['lyrics']): null,
       url: json['url'] ?? path,
       isFavorite: json['isFavorite'] == 1 ? true : false,
     );

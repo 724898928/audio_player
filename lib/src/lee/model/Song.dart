@@ -19,7 +19,6 @@ class Lyric {
 }
 
 class LyricParser {
-
   static String filterSpecialChars(String input) {
     // 保留字母、数字、中文、空格及常用标点（根据需求调整）
     RegExp regExp = RegExp(r'^\w\s\u4e00-\u9fa5，。！？、‘’“”《》【】（）');
@@ -28,7 +27,7 @@ class LyricParser {
 
   static final RegExp _lrcRegex = RegExp(
     r'^\[(\d+):(\d+)(?:\.(\d+))?\](.*?)(?:\/(.*))?$',
-  //  r'^\[(\d{2}):(\d{2})\.(\d{2})\](.*)$',
+    //  r'^\[(\d{2}):(\d{2})\.(\d{2})\](.*)$',
     caseSensitive: false,
     multiLine: true,
   );
@@ -37,7 +36,7 @@ class LyricParser {
     //lrcContent = filterSpecialChars(lrcContent);
     print('parse lrcContent = $lrcContent');
     final LinkedHashMap<int, List<Lyric>> linkedHashMap = LinkedHashMap();
-    if(null == lrcContent||lrcContent.isEmpty){
+    if (null == lrcContent || lrcContent.isEmpty) {
       return linkedHashMap;
     }
     final lines = lrcContent.split('\n');
@@ -48,27 +47,29 @@ class LyricParser {
       if (line.isEmpty) continue;
       final match = _lrcRegex.firstMatch(line);
       if (match != null) {
-        final minutes = int.parse(match.group(1)?? '0');
+        final minutes = int.parse(match.group(1) ?? '0');
         final seconds = int.parse(match.group(2) ?? '0');
         final milliseconds = int.parse(match.group(3) ?? '0');
-        final time = (minutes * 60 + seconds) * 1000 + milliseconds * 10; // 转换为毫秒
+        final time =
+            (minutes * 60 + seconds) * 1000 + milliseconds * 10; // 转换为毫秒
         cDuration = Duration(milliseconds: time);
         print('LyricParser1 cDuration:${cDuration.toString()}  line = $line');
         final text = match.group(4)?.trim() ?? '';
-         lyric = Lyric(
+        lyric = Lyric(
           //  time: totalDuration.inSeconds,
           text: text,
-          translation:  match.group(5)?.trim(),
+          translation: match.group(5)?.trim(),
         );
-
       } else {
         print('LyricParser2 parse = $line');
         // 处理元数据（如 [ti:...]）
         // totalDuration = parseMetadata(line);
         // lyric =  Lyric(text: line.split("]").last?.trim()??'');
       }
-      if(null!=cDuration)
-      linkedHashMap.putIfAbsent((cDuration.inMilliseconds / 500).toInt(), () => []).add(lyric);
+      if (null != cDuration)
+        linkedHashMap
+            .putIfAbsent((cDuration.inMilliseconds / 500).toInt(), () => [])
+            .add(lyric);
     }
     print("lyrics  :$linkedHashMap");
 
@@ -109,19 +110,18 @@ class ProSong implements BaseSong {
   final String? genre;
   late bool? isFavorite;
 
-  ProSong({
-    required this.id,
-    required this.title,
-    required this.artist,
-    required this.album,
-    required this.imgItems,
-    required this.year,
-    required this.track,
-    required this.genre,
-    required this.lyrics,
-    required this.url,
-    this.isFavorite = false
-  });
+  ProSong(
+      {required this.id,
+      required this.title,
+      required this.artist,
+      required this.album,
+      required this.imgItems,
+      required this.year,
+      required this.track,
+      required this.genre,
+      required this.lyrics,
+      required this.url,
+      this.isFavorite = false});
 
   factory ProSong.fromJson(Map<String, dynamic> json, {String? path}) {
     print("ProSong.fromJson json: ${json.toString()}");
@@ -130,11 +130,12 @@ class ProSong implements BaseSong {
       title: json['title']?.toString(),
       artist: json['artist'] ?? 'Unknown',
       album: json['album'] ?? 'Unknown',
-      imgItems: null != json['imgItems'] ? jsonDecode(json['imgItems']): null,
+      imgItems: null != json['imgItems'] ? jsonDecode(json['imgItems']) : null,
       year: json['year']?.toString(),
       track: json['track']?.toString(),
       genre: json['genre']?.toString(),
-      lyrics: null != json['lyrics'] ? jsonDecode(json['lyrics']): null,
+      lyrics:
+          null != json['lyrics'] ? jsonDecode(json['lyrics'].toString()) : null,
       url: json['url'] ?? path,
       isFavorite: json['isFavorite'] == 1 ? true : false,
     );
@@ -159,6 +160,7 @@ class ProSong implements BaseSong {
       'isFavorite': this.isFavorite ?? false,
     };
   }
+
   Map<String, dynamic> toSqlMap() {
     return {
       'id': this.id,
@@ -174,6 +176,7 @@ class ProSong implements BaseSong {
       'isFavorite': this.isFavorite! ? 1 : 0,
     };
   }
+
   @override
   String toString() {
     return toMap().toString();

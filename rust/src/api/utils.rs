@@ -37,6 +37,7 @@ lazy_static! {
 //}
 
 pub fn get_song_metadata(file_path: &str) -> Result<String>{
+    let title_1: Vec<&str>  = file_path.split(&['\\', '/', '.'][..]).collect();
     // 读取 MP3 文件的 ID3 标签
     match Tag::read_from_path(file_path) {
         Ok(tag) => {
@@ -51,7 +52,7 @@ pub fn get_song_metadata(file_path: &str) -> Result<String>{
                 \"genre\": {:?},
                 \"lyrics\": {:#?}
                  }}",
-                tag.title().unwrap_or(""),
+                tag.title().unwrap_or(title_1[title_1.len()-2]),
                 tag.artist().unwrap_or(""),
                 tag.album().unwrap_or(""),
                 tag.year().unwrap_or(0),
@@ -65,7 +66,6 @@ pub fn get_song_metadata(file_path: &str) -> Result<String>{
             // }
         },
         Err(e) => {
-            let title_1: Vec<&str>  = file_path.split(&['\\', '/', '.'][..]).collect();
             if title_1.len() >= 2 {
                 return Ok(format!("{{\"title\":{:?}}}", title_1[title_1.len()-2]));
                 

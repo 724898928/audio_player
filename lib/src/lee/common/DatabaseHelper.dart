@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../model/Song.dart';
 
@@ -35,9 +37,21 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDatabase() async {
-    String path = join(await getDatabasesPath(), dbName);
-    return await openDatabase(path,
-        version: 1, onCreate: _onCreate, onUpgrade: _onUpgrade);
+    if (Platform.isAndroid) {
+      String path = join(await getDatabasesPath(), dbName);
+      return await openDatabase(path,
+          version: 1, onCreate: _onCreate, onUpgrade: _onUpgrade);
+    } else if (Platform.isWindows) {
+      var databaseFactory = databaseFactoryFfi;
+      return await databaseFactory.openDatabase(inMemoryDatabasePath,
+          options: OpenDatabaseOptions(
+            version: 1,
+            onCreate: _onCreate,
+            onUpgrade: _onUpgrade,
+          ));
+    } else {
+      throw Exception('Unsupported platform');
+    }
   }
 
   FutureOr<void> _onCreate(Database db, int version) async {
@@ -95,29 +109,29 @@ class DatabaseHelper {
     });
   }
 
-  Future<int> addSong(ProSong song) async{
+  Future<int> addSong(ProSong song) async {
     final db = await database;
-   return await db.insert(tableName, song.toSqlMap());
+    return await db.insert(tableName, song.toSqlMap());
   }
 
-  Future<int> delSong(ProSong song) async{
+  Future<int> delSong(ProSong song) async {
     final db = await database;
-   return await db.delete(
+    return await db.delete(
       tableName,
       where: 'id = ?',
       whereArgs: [song.id],
     );
   }
 
-  Future<int> upsertSong(ProSong song) async{
+  Future<int> upsertSong(ProSong song) async {
     final db = await database;
-    if(song.id == null){
+    if (song.id == null) {
       return await db.insert(tableName, song.toSqlMap());
-    }else{
-      return await db.update(tableName, song.toSqlMap(),where: '$id = ?',whereArgs: [song.id]);
+    } else {
+      return await db.update(tableName, song.toSqlMap(),
+          where: '$id = ?', whereArgs: [song.id]);
     }
   }
-
 
   Future<List<ProSong>> getSongs({bool? favorite}) async {
     final db = await database;
@@ -125,7 +139,7 @@ class DatabaseHelper {
     if (favorite != null) {
       maps = await db.query(tableName,
           where: '$isFavorite = ?', whereArgs: [favorite ? 1 : 0]);
-    }else{
+    } else {
       maps = await db.query(tableName);
     }
     return maps.map((e) => ProSong.fromJson(e)).toList();

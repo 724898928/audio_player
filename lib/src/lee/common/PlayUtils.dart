@@ -87,9 +87,9 @@ class PlayUtils {
   }
 
   static Future<dynamic> removeSong(int idx) async {
-    if (Platform.isAndroid && isChange){
-      return await InteractUtil.instance.androidExe("DelSong",[idx]);
-    }else{
+    if (Platform.isAndroid && isChange) {
+      return await InteractUtil.instance.androidExe("DelSong", [idx]);
+    } else {
       return await delSong(idx: BigInt.from(idx));
     }
   }
@@ -116,6 +116,7 @@ class PlayUtils {
 
   static Future<dynamic> toPlay(
       {required int idx, AsyncValueChanged? callback}) async {
+    if (idx < 0) idx = 0;
     if (Platform.isAndroid && isChange) {
       return await InteractUtil.instance.androidExe("Play", [idx]);
     } else {

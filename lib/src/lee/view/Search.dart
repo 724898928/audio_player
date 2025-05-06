@@ -96,9 +96,11 @@ class _SearchState extends State<Search> {
   }
 
   _showToast(String msg, {int? duration, int? position}) {
-    FlutterToastr.show(msg, context, duration: duration, position: position,backgroundColor: Colors.blueAccent);
+    FlutterToastr.show(msg, context,
+        duration: duration,
+        position: position,
+        backgroundColor: Colors.blueAccent);
   }
-
 
   Widget _buildResultItem(SearchSong song) {
     return ListTile(
@@ -128,7 +130,6 @@ class _SearchState extends State<Search> {
                   padding: EdgeInsets.zero,
                   iconSize: 30,
                   onPressed: () async {
-                    // TODO 下载当前歌曲
                     final path = await FilePicker.platform.getDirectoryPath();
                     var res = song.getPlaySong();
                     if (null != path && path.isNotEmpty) {
@@ -141,8 +142,7 @@ class _SearchState extends State<Search> {
                       });
                     }
                   },
-                  icon: const Icon(Icons.download)), 
-
+                  icon: const Icon(Icons.download)),
             ),
             CheckBoxWidget(
               isCheck: song.selected ?? false,
@@ -261,8 +261,8 @@ class _SearchState extends State<Search> {
       int idx = songlist.proPlaySongList.indexOf(song.proSong!);
       if (idx < 0) {
         idx = song.getPlaySong();
+        idx = Songlist.getInstance().add(song.proSong!);
       }
-      // PlayStatus.getInstance().newPlayIdx = idx;
       await PlayUtils.toPlay(idx: idx);
     }
   }

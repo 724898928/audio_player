@@ -83,7 +83,9 @@ class _PlayerState extends State<Player>
     idx = playStatus.currentIndex;
     print(
         "setCurrentPlayState idx:$idx, playStatus.currentIndex:${playStatus.currentIndex} ,songList.proPlaySongList.length:${songList.proPlaySongList.length}");
-    if (songList.proPlaySongList.isNotEmpty &&  idx > -1 &&  idx < songList.proPlaySongList.length) {
+    if (songList.proPlaySongList.isNotEmpty &&
+        idx > -1 &&
+        idx < songList.proPlaySongList.length) {
       current_song = playStatus.current_song;
       imgWidgets = null != current_song?.imgItems?.first['img']
           ? NetworkImage(current_song?.imgItems?.first['img'])
@@ -214,10 +216,10 @@ class _PlayerState extends State<Player>
                             },
                             onChanged: (value) async {
                               currentPross = value;
-                              if(null != totalTime){
+                              if (null != totalTime) {
                                 await PlayUtils.toSeek(
                                     tm: (currentPross *
-                                        totalTime!.inMilliseconds)
+                                            totalTime!.inMilliseconds)
                                         .toInt());
                               }
                               setState(() {});
@@ -263,9 +265,10 @@ class _PlayerState extends State<Player>
                           iconSize: 30,
                           onPressed: () async {
                             // 打开播放列表
-                            await Utils.showListDialog(context, Songlist.getInstance().proPlaySongList,
+                            await Utils.showListDialog(
+                                context, Songlist.getInstance().proPlaySongList,
                                 (i) async {
-                               await playStatus.clearLyrics();
+                              await playStatus.clearLyrics();
                               await PlayUtils.toPlay(idx: i);
                             });
                           },
@@ -303,10 +306,10 @@ class _PlayerState extends State<Player>
                                 if (!isPlaying) {
                                   playIcon = Icons.pause;
                                   await PlayUtils.toPlay(idx: idx);
-                                  if(null != totalTime){
+                                  if (null != totalTime) {
                                     await PlayUtils.toSeek(
                                         tm: (currentPross *
-                                            totalTime!.inMilliseconds)
+                                                totalTime!.inMilliseconds)
                                             .toInt());
                                   }
                                   await PlayUtils.toSpeed(s: playSpeed);
@@ -346,7 +349,8 @@ class _PlayerState extends State<Player>
                             color: Colors.white,
                             iconSize: 30,
                             onPressed: () async {
-                              mode_click = (mode_click + 1) % PlayMode.values.length;
+                              mode_click =
+                                  (mode_click + 1) % PlayMode.values.length;
                               await PlayUtils.toPlayMode(
                                   mode: modleIcon[mode_click]['mode']);
                               crrentModleIcon = modleIcon[mode_click];

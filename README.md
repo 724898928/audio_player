@@ -9,5 +9,7 @@
 本播放器的音乐来源于网络，如有侵权，请联系本人。
 
 ## 捐赠
+微信
 ![image](https://github.com/724898928/audio_player/blob/main/assets/img/weixin.jpg)
+支付宝
 ![image](https://github.com/724898928/audio_player/blob/main/assets/img/zhifubao.jpg)

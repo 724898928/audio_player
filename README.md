@@ -8,6 +8,11 @@
 如果您要更好的体验音乐，请购买正版音乐。
 本播放器的音乐来源于网络，如有侵权，请联系本人。
 
+## 应用使用截图
+![audio_player_1.png](assets%2Fimg%2Faudio_player_1.png)
+![audio_player_2.png](assets%2Fimg%2Faudio_player_2.png)
+![audio_player_3.png](assets%2Fimg%2Faudio_player_3.png)
+
 ## 捐赠
 微信
 ![image](https://github.com/724898928/audio_player/blob/main/assets/img/weixin.jpg)
